@@ -16,6 +16,10 @@ import './bootstrap';
 window.Vue = require('vue');
 
 require('./commons');
+require('./filters');
+
+
+Vue.prototype.$route = window.laroute.route;
 
 const app = new Vue({
     el: '#app'
