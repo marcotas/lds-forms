@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "bcf516bc0b3dbee7fa5f0bcaeb3fd879",
+    "content-hash": "2ecb976b9d8bf94fbe44b47141e5d496",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -3082,6 +3082,63 @@
                 "environment"
             ],
             "time": "2018-07-01T10:25:50+00:00"
+        },
+        {
+            "name": "zachflower/eloquent-interactions",
+            "version": "v0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zachflower/eloquent-interactions.git",
+                "reference": "65d434be579eb2da2a486c9ef148324375b1fdcd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zachflower/eloquent-interactions/zipball/65d434be579eb2da2a486c9ef148324375b1fdcd",
+                "reference": "65d434be579eb2da2a486c9ef148324375b1fdcd",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "~5.3|~5.4|~5.5|~5.6",
+                "illuminate/support": "~5.3|~5.4|~5.5|~5.6",
+                "illuminate/validation": "~5.3|~5.4|~5.5|~5.6",
+                "php": "^5.6|~7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.0",
+                "orchestra/testbench": "~3.0",
+                "phpunit/phpunit": "~5.0|~6.0|~7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ZachFlower\\EloquentInteractions\\EloquentInteractionsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ZachFlower\\EloquentInteractions\\": "src/EloquentInteractions"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Zachary Flower",
+                    "email": "zach@zacharyflower.com"
+                }
+            ],
+            "description": "An implementation of the interactor pattern for Laravel.",
+            "keywords": [
+                "eloquent",
+                "interactor",
+                "laravel",
+                "library"
+            ],
+            "time": "2018-04-21T02:31:44+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",
