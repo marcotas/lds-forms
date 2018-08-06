@@ -22,7 +22,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+        <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark-blue navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
@@ -34,7 +34,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        <li class="nav-item">
+                            <a href="{{ route('home') }}" class="nav-link">Atas</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -71,7 +73,7 @@
             </div>
         </nav>
 
-        <main class="py-4">
+        <main class="py-4" style="margin-top: 55px">
             @yield('content')
         </main>
     </div>

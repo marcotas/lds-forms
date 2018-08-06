@@ -1,4 +1,3 @@
-
 window._ = require('lodash');
 window.Popper = require('popper.js').default;
 
@@ -12,7 +11,7 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
-} catch (e) { }
+} catch (e) {}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -21,6 +20,7 @@ try {
  */
 
 window.axios = require('axios');
+window.http = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -55,5 +55,24 @@ if (token) {
 //     encrypted: true
 // });
 
-window.laroute = require('./commons/laroute')
-window.route = laroute.route
+// window.toastr = require('toastr');
+
+import Vue from 'vue';
+import VCalendar from 'v-calendar';
+import { Form } from './utils';
+import Toasted from 'vue-toasted';
+import moment from 'moment-timezone';
+
+Vue.use(Toasted, {
+    iconPack: 'fontawesome',
+    duration: 5000,
+});
+
+Vue.use(VCalendar, {
+    locale: 'pt-br',
+});
+
+window.moment = moment;
+window.laroute = require('./commons/laroute');
+window.route = laroute.route;
+window.Form = Form;

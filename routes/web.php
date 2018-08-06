@@ -17,4 +17,11 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::middleware('auth')->group(function () {
+    Route::get('home', 'HomeController@index')->name('home');
+    Route::view('atas', 'minutes.index')->name('minutes.index');
+    // Route::get('minutes', 'Web\MinutesController@index')->name('minutes.index');
+    Route::get('atas/next', 'Web\MinutesController@next')->name('minutes.next');
+    Route::get('atas/prev', 'Web\MinutesController@prev')->name('minutes.prev');
+    Route::get('atas/{minute}', 'Web\MinutesController@show')->name('minutes.show');
+});
