@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Minute extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'date',
         'presided_by',
@@ -41,7 +44,12 @@ class Minute extends Model
     ];
 
     protected $casts = [
-        'date' => 'date',
+        'date'           => 'date',
+        'callings'       => 'json',
+        'confirmations'  => 'json',
+        'baby_blessings' => 'json',
+        'ordinances'     => 'json',
+        'comments'       => 'json',
     ];
 
     public function setDateAttribute($value)

@@ -90,9 +90,9 @@ export default class {
         })
         .catch(error => {
           this.submitting = false;
-          if (error.response.status === 422) this.onFail(error.response.data.errors);
+          if (error.response && error.response.status === 422) this.onFail(error.response.data.errors);
 
-          reject(error.response);
+          reject(error);
         });
     });
   }

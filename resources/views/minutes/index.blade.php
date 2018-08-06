@@ -2,6 +2,6 @@
 
 @section('content')
 <div class="container">
-    <minutes-list :minutes="{{ $minutes }}"></minutes-list>
+    <minutes-list></minutes-list>
 </div>
 @endsection

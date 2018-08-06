@@ -16,7 +16,9 @@ class MinutesController extends Controller
     {
         return MinuteResource::collection(
             $this->execute(ListMinutes::class, ['request' => $request])
-        );
+        )->additional([
+            'next_sunday' => now()->modify('next sunday')->toDateString(),
+        ]);
     }
 
     public function store(MinuteRequest $request)
@@ -37,5 +39,12 @@ class MinutesController extends Controller
         $minute->update($request->validated());
 
         return new MinuteResource($minute->fresh());
+    }
+
+    public function destroy(Minute $minute)
+    {
+        $minute->delete();
+
+        return response()->json([], Response::HTTP_NO_CONTENT);
     }
 }

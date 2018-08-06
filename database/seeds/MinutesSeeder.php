@@ -12,6 +12,6 @@ class MinutesSeeder extends Seeder
      */
     public function run()
     {
-        factory(Minute::class, 10)->create();
+        factory(Minute::class, 20)->create();
     }
 }

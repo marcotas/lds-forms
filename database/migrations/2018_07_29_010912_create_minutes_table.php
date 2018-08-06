@@ -41,6 +41,8 @@ class CreateMinutesTable extends Migration
             $table->string('second_speaker')->nullable();
             $table->string('third_speaker')->nullable();
 
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }
