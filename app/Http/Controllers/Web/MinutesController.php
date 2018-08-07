@@ -19,32 +19,37 @@ class MinutesController extends Controller
 
     public function next(Request $request)
     {
-        $this->validate($request, [
-            'from' => 'sometimes|date',
-        ]);
-
-        $from = $request->from;
-
-        $minute = Minute::firstOrCreate([
-            'date' => (new Carbon($from))->modify('next sunday')->toDateString()
-        ]);
+        $minute = $this->getNextMinute($request);
 
         return redirect()->to(route('minutes.show', ['minute' => $minute->id]));
     }
 
+    public function nextForm(Request $request)
+    {
+        $minute = $this->getNextMinute($request);
+
+        return redirect()->to(route('minutes.form', ['minute' => $minute->id]));
+    }
+
     public function prev(Request $request)
     {
-        abort_unless($request->from, Response::HTTP_NOT_FOUND);
-
-        $this->validate($request, [
-            'from' => 'sometimes|date',
-        ]);
-
-        $minute = Minute::firstOrCreate([
-            'date' => (new Carbon($request->from))->modify('previous sunday')->toDateString()
-        ]);
+        $minute = $this->getPrevMinute($request);
 
         return redirect()->to(route('minutes.show', ['minute' => $minute->id]));
+    }
+
+    public function prevForm(Request $request)
+    {
+        $minute = $this->getPrevMinute($request);
+
+        return redirect()->to(route('minutes.form', ['minute' => $minute->id]));
+    }
+
+    public function form(Minute $minute)
+    {
+        $minute = json_encode(new MinuteResource($minute));
+
+        return view('minutes.form', compact('minute'));
     }
 
     public function show(Minute $minute)
@@ -52,5 +57,29 @@ class MinutesController extends Controller
         $minute = json_encode(new MinuteResource($minute));
 
         return view('minutes.show', compact('minute'));
+    }
+
+    private function getNextMinute(Request $request)
+    {
+        $this->validate($request, [
+            'from' => 'sometimes|date',
+        ]);
+
+        $from = $request->from;
+
+        return Minute::firstOrCreate([
+            'date' => (new Carbon($from))->modify('next sunday')->toDateString()
+        ]);
+    }
+
+    private function getPrevMinute(Request $request)
+    {
+        $this->validate($request, [
+            'from' => 'sometimes|date',
+        ]);
+
+        return Minute::firstOrCreate([
+            'date' => (new Carbon($request->from))->modify('previous sunday')->toDateString()
+        ]);
     }
 }

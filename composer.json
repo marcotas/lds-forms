@@ -44,9 +44,11 @@
     },
     "scripts": {
         "post-install-cmd": [
-          "Illuminate\\Foundation\\ComposerScripts::postInstall",
-          "php artisan laroute:generate",
-          "php artisan passport:install"
+            "Illuminate\\Foundation\\ComposerScripts::postInstall",
+            "php artisan clear-compiled",
+            "chmod -R 777 storage",
+            "php artisan laroute:generate",
+            "php artisan passport:keys"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

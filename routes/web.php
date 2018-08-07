@@ -23,5 +23,8 @@ Route::middleware('auth')->group(function () {
     // Route::get('minutes', 'Web\MinutesController@index')->name('minutes.index');
     Route::get('atas/next', 'Web\MinutesController@next')->name('minutes.next');
     Route::get('atas/prev', 'Web\MinutesController@prev')->name('minutes.prev');
+    Route::get('atas/next-form', 'Web\MinutesController@nextForm')->name('minutes.next-form');
+    Route::get('atas/prev-form', 'Web\MinutesController@prevForm')->name('minutes.prev-form');
     Route::get('atas/{minute}', 'Web\MinutesController@show')->name('minutes.show');
+    Route::get('atas/{minute}/form', 'Web\MinutesController@form')->name('minutes.form');
 });
