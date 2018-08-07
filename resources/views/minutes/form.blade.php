@@ -2,6 +2,6 @@
 
 @section('content')
     <div class="container">
-        <minute-view :minute="{{ $minute }}"></minute-view>
+        <minute-form :minute="{{ $minute }}"></minute-form>
     </div>
 @endsection

@@ -6,7 +6,7 @@
                 button.btn.float-right.btn-sm.btn-primary(@click="addEntry")
                     i.fa.fa-plus
                     |  Adicionar
-        table.table.mb-0.table-bordered(v-if="entries.length")
+        table.table.table-sm.mb-0.table-bordered(v-if="entries.length")
             thead
                 tr
                     th.text-center(v-for="column of columns", :style="column.style")
@@ -20,8 +20,9 @@
                         v-for="column of columns",
                         :key="column.name",
                         v-model="entry[column.name]",
+                        :style="column.style",
                         @input="onChange")
-                    td(:style="columns[index].style")
+                    td(style="width: 10%")
                         button.btn.btn-sm.btn-danger(@click="removeEntry(index)")
                             i.fa.fa-trash
 
@@ -50,11 +51,11 @@ export default {
             this.entries.push(this.createEntry());
         },
         createEntry() {
-            let value = {};
+            let entry = {};
             this.columns.forEach((column, index) => {
-                value[column.name] = null;
+                entry[column.name] = null;
             })
-            return value;
+            return entry;
         },
         removeEntry(index) {
             this.entries.splice(index, 1);

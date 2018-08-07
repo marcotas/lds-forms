@@ -71,19 +71,23 @@
                 input-text(label="Último Hino", :form="form", field="last_hymn", v-model="form.last_hymn")
                 input-text.mb-0(label="Última Oração", :form="form", field="last_prayer", v-model="form.last_prayer")
 
-        .card.fixed-bottom.rounded-0
+        .card.fixed-bottom.rounded-0.d-print-none
             .card-body
                 .container
                     .btn-group.mr-2
                         a.btn.btn-default(:href="prev")
                             i.fa.fa-angle-double-left.mr-2
-                            |  Anterior
+                            span.d-none.d-md-inline  Anterior
                         a.btn.btn-default(:href="next")
-                            | Próxima
+                            span.d-none.d-md-inline Próxima
                             i.fa.fa-angle-double-right.ml-2
-                    button-loading.btn.btn-primary.float-right(@click="save", :loading="form.submitting")
+                    button-loading.btn.btn-success.float-right(@click="save", :loading="form.submitting")
                         i.fa.fa-save(v-if="!form.submitting")
                         span.ml-2 Salvar
+                    a.btn.btn-default.float-right.mr-2(
+                        :href="$route('minutes.show', { minute: form.id })")
+                        i.fa.fa-eye
+                        span.ml-2.d-none.d-md-inline Visualizar
 
 </template>
 
@@ -121,13 +125,16 @@ export default {
             ],
         };
     },
-    created() { console.log('minute', this.minute) },
     computed: {
         next() {
-            return this.$route('minutes.next', { from: moment(this.form.date).format() });
+            return this.$route(
+                'minutes.nextForm', { from: moment(this.form.date).format('YYYY-MM-DD')
+            });
         },
         prev() {
-            return this.$route('minutes.prev', { from: moment(this.form.date).format() });
+            return this.$route(
+                'minutes.prevForm', { from: moment(this.form.date).format('YYYY-MM-DD')
+            });
         },
     },
     methods: {
