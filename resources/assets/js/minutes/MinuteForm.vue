@@ -127,13 +127,15 @@ export default {
     },
     computed: {
         next() {
-            return this.$route(
-                'minutes.nextForm', { from: moment(this.form.date).format('YYYY-MM-DD')
+            const url = this.$route(
+                'minutes.next-form', { from: moment(this.form.date).format('YYYY-MM-DD')
             });
+            console.log('next url', url);
+            return url;
         },
         prev() {
             return this.$route(
-                'minutes.prevForm', { from: moment(this.form.date).format('YYYY-MM-DD')
+                'minutes.prev-form', { from: moment(this.form.date).format('YYYY-MM-DD')
             });
         },
     },
