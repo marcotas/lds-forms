@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    h1
+    h1.clearfix
         | Atas Sacramentais
         a.btn.btn-primary.float-right(:href="$route('minutes.next')") Ata do Próximo Domingo
     .card

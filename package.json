@@ -20,6 +20,7 @@
         "popper.js": "^1.12",
         "v-calendar": "^0.9.7",
         "vue": "^2.5.16",
+        "vue-api-query": "^1.1.0",
         "vue-multiselect": "^2.1.0",
         "vue-router": "^3.0.1",
         "vue-toasted": "^1.1.24",

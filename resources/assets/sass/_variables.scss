@@ -1,6 +1,6 @@
 
 // Body
-$body-bg: #f8fafc;
+$body-bg: #e4eaec;
 
 // Typography
 $font-family-sans-serif: "Nunito", sans-serif;
@@ -21,6 +21,11 @@ $cyan: #6cb2eb;
 
 $primary: #0091bc;
 $dark-blue: #3c4d71;
+// $border-radius: 2rem;
+$border-radius:    .4rem !default;
+$border-radius-lg: .5rem !default;
+$border-radius-sm: .25rem !default;
+$custom-checkbox-indicator-border-radius: $border-radius-sm !default;
 
 $theme-colors: (
   "dark-blue": $dark-blue,

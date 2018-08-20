@@ -1,6 +1,6 @@
-Vue.component('button-loading', require('./ButtonLoading'));
-Vue.component('input-text', require('./InputText'));
-Vue.component('modal', require('./Modal'));
-Vue.component('pagination', require('./Pagination'));
+Vue.component('button-loading', require('./button-loading'));
+Vue.component('input-text', require('./input-text'));
+Vue.component('modal', require('./modal'));
+Vue.component('pagination', require('./pagination'));
 Vue.component('editable', require('./editable'));
 Vue.component('divisor', require('./divisor'));

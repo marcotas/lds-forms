@@ -14,6 +14,7 @@
         "laravel/passport": "^6.0",
         "laravel/tinker": "^1.0",
         "lord/laroute": "^2.4",
+        "spatie/laravel-query-builder": "^1.10",
         "zachflower/eloquent-interactions": "^0.2.0"
     },
     "require-dev": {

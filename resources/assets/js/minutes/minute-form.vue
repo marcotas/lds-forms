@@ -71,9 +71,9 @@
                 input-text(label="Último Hino", :form="form", field="last_hymn", v-model="form.last_hymn")
                 input-text.mb-0(label="Última Oração", :form="form", field="last_prayer", v-model="form.last_prayer")
 
-        .card.fixed-bottom.rounded-0.d-print-none
+        .card.fixed-bottom.rounded-0.d-print-none.border-top.border-right-0.border-bottom-0.border-left-0
             .card-body
-                .container
+                .container.p-0.p-md-3
                     .btn-group.mr-2
                         a.btn.btn-default(:href="prev")
                             i.fa.fa-angle-double-left.mr-2

@@ -20,4 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::name('api.')->middleware('auth:api')->group(function () {
     // Minutes Resource
     Route::resource('minutes', 'Api\MinutesController');
+
+    // Recipes Routes
+    Route::resource('recipes', 'Api\RecipesController', ['except' => ['edit', 'create']]);
 });

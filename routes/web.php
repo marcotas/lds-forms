@@ -27,4 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::get('atas/prev-form', 'Web\MinutesController@prevForm')->name('minutes.prev-form');
     Route::get('atas/{minute}', 'Web\MinutesController@show')->name('minutes.show');
     Route::get('atas/{minute}/form', 'Web\MinutesController@form')->name('minutes.form');
+
+    // Recipes
+    Route::get('receitas', 'Web\RecipesController@index')->name('recipes.index');
 });

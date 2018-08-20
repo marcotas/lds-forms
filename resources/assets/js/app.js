@@ -16,7 +16,12 @@ window.Vue = require("vue");
 
 require("./commons");
 require("./filters");
+
+require('./components/table');
+
+// Resources
 require("./minutes");
+require('./recipes');
 
 Vue.prototype.$route = window.laroute.route;
 Vue.prototype.$http = window.axios;
