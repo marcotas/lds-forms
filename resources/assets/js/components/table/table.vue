@@ -27,7 +27,15 @@
                     tr
                         th.text-secondary.py-1.border-top-0.border-bottom-0
                         th.text-secondary.py-1.text-uppercase.border-top-0.border-bottom-0(v-for="column of columns", :key="column")
-                            | {{ head(column) }}
+                            .d-flex.align-items-center(
+                                style="position: relative",
+                                :class="{'is-sortable': isSortable(column)}",
+                                @click="sortBy(column)"
+                            )
+                                span {{ head(column) }}
+                                span.indicators.d-inline-flex.flex-column.pl-2(v-if="isSortable(column)")
+                                    i.fa.fa-chevron-up(:class="{active: hasSorted(column)}")
+                                    i.fa.fa-chevron-down(:class="{active: hasSortedReverse(column)}")
                 tbody
                     tr(v-for="resource of resources.data", :key="resource[trackBy]")
                         td
@@ -41,14 +49,27 @@
                                     span.text-hide Checkbox
                         td(v-for="column of columns", :key="column")
                             slot(:row="resource", :name="column") {{ resource[column] }}
-                        //- td {{ resource.description }}
-                        //- td
-                            button-loading.btn.btn-sm.btn-danger(
-                                @click="remove(resource)",
-                                :loading="isRemoving(resource)")
-                                i.fa.fa-trash(v-if="!isRemoving(resource)")
+
             pagination.border-top.pt-3.pb-2(:meta="resources.meta", :links="resources.links", @page="fetchResources" v-if="hasPage")
 </template>
+
+<style lang="sass" scoped>
+@import '../../../sass/_variables.scss'
+.is-sortable
+    user-select: none
+
+    span
+        cursor: pointer
+
+    .indicators
+        font-size: .65rem
+        i.fa
+            opacity: 0.4
+            &.active
+                opacity: 1
+                color: $primary
+</style>
+
 
 <script>
 export default {
@@ -80,9 +101,23 @@ export default {
             type: String,
         },
 
+        /**
+         * Table options.
+         */
         options: {
             required: false,
-            default: () => ({})
+            default: () => ({
+                headers: {},
+                sortable: [],
+            })
+        },
+
+        /**
+         * Initial sorted column.
+         */
+        defaultSort: {
+            required: false,
+            default: null,
         }
     },
 
@@ -97,12 +132,20 @@ export default {
             loading: false,
             search: null,
             selected: [],
+            sort: null,
         };
     },
 
     created() {
+        this.sort = this.defaultSort;
         if (this.url) {
             this.fetchResources();
+        }
+        if (!this.options) {
+            this.options = {};
+        }
+        if (!this.options.sortable) {
+            this.options.sortable = [];
         }
     },
 
@@ -116,14 +159,18 @@ export default {
         allSelected() {
             return !this.ids.some(id => !this.selected.includes(id));
         },
+        sortables() {
+            return this.options.sortable;
+        },
     },
 
     methods: {
         async fetchResources(page = 1) {
             this.loading = true;
             const search = this.search || null;
+            const sort = this.sort;
             this.page = search ? page : 1;
-            const { data: resources } = await http.get(this.url, { params: { page, search } });
+            const { data: resources } = await http.get(this.url, { params: { page, search, sort } });
             this.loading = false;
             this.resources = resources;
         },
@@ -141,9 +188,43 @@ export default {
             return column;
         },
 
+        sortBy(column) {
+            if (!this.isSortable(column)) return;
+
+            if (this.hasSorted(column)) {
+                this.sort = '-' + column;
+            } else if (this.hasSortedReverse(column)) {
+                this.sort = null;
+            } else {
+                this.sort = column;
+            }
+
+            this.refresh();
+        },
+
+        hasSorted(column) {
+            return this.sort === column;
+        },
+
+        hasSortedReverse(column) {
+            return this.sort === `-${column}`;
+        },
+
+        removeSort(column) {
+            const index = this.sort.map(c => c.replace('-', '')).findIndex(c => c === column);
+
+            if (index >= 0) {
+                this.sort.splice(index, 1);
+            }
+        },
+
         isResourceSelected(resource) {
             const id = resource[this.trackBy];
             return this.selected.includes(id);
+        },
+
+        isSortable(column) {
+            return this.sortables.includes(column);
         },
 
         selectAll() {

@@ -6,6 +6,7 @@ use App\Actions\Action;
 use App\Filters\RecipeFilters;
 use App\Traits\Paginations;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ListRecipes extends Action
 {
@@ -19,11 +20,10 @@ class ListRecipes extends Action
     public function execute()
     {
         $user = $this->request->user();
-        return $this->request
-            ->user()->recipes()
+
+        return QueryBuilder::for($user->recipes()->getQuery())
+            ->allowedSorts('id', 'name')
             ->filters($this->filters)
-            ->paginate(
-                $this->perPage($this->request)
-            );
+            ->paginate($this->perPage($this->request));
     }
 }

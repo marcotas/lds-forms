@@ -6,14 +6,8 @@
             ref="table",
             :url="$route('api.recipes.index')",
             :columns="['id', 'name', 'description', 'actions']",
-            :options="{\
-                headers: {\
-                    id: 'ID',\
-                    actions: '',\
-                    name: 'Nome',\
-                    description: 'Descrição'\
-                }\
-            }"
+            default-sort="name",
+            :options="tableOptions"
         )
             template(slot="actions", slot-scope="props")
                 button-loading.btn.btn-sm.btn-danger(
@@ -33,6 +27,15 @@ export default {
                 meta: null,
             },
             removing: [],
+            tableOptions: {
+                headers: {
+                    id: 'ID',
+                    name: 'Nome',
+                    description: 'Descrição',
+                    actions: '',
+                },
+                sortable: ['id', 'name']
+            }
         };
     },
     methods: {
