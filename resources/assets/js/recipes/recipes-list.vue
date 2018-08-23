@@ -4,16 +4,10 @@
 
         mt-table(
             ref="table",
-            :url="$route('api.recipes.index')",
-            :columns="['id', 'name', 'description', 'actions']",
+            model-type="recipe",
+            :columns="['id', 'name', 'description']",
             default-sort="name",
-            :options="tableOptions"
-        )
-            template(slot="actions", slot-scope="props")
-                button-loading.btn.btn-sm.btn-danger(
-                    :loading="isRemoving(props.row)",
-                    @click="remove(props.row)")
-                    i.fa.fa-trash(v-if="!isRemoving(props.row)")
+            :options="tableOptions")
 </template>
 
 <script>
@@ -32,24 +26,10 @@ export default {
                     id: 'ID',
                     name: 'Nome',
                     description: 'Descrição',
-                    actions: '',
                 },
                 sortable: ['id', 'name']
             }
         };
-    },
-    methods: {
-        async remove(recipe) {
-            this.removing.push(recipe.id);
-            await http.delete(
-                route('api.recipes.destroy', { recipe: recipe.id })
-            );
-            this.$toasted.show('Receita removida com sucesso', { singleton: true });
-            this.$refs.table.refresh();
-        },
-        isRemoving(recipe) {
-            return this.removing.includes(recipe.id);
-        },
     },
 }
 </script>

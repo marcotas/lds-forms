@@ -1,9 +1,9 @@
 <template lang="pug">
     .modal(:class='effect')
         .modal-dialog(:class="{'modal-dialog-centered': centered, ['modal-' + size]: true}")
-            .modal-content
-                .modal-header
-                    h5.modal-title
+            .modal-content.border-0
+                .modal-header.border-bottom-0
+                    h3.modal-title
                         slot(name='title') Modal title
                     small
                         slot(name='subtitle')
@@ -11,9 +11,9 @@
                         span(aria-hidden='true') &times;
                 .modal-body
                     slot
-                .modal-footer(v-if='hasFooter')
+                .modal-footer.bg-light.rounded-bottom(v-if='hasFooter')
                     slot(name='footer')
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        button.btn.bg-transparent(type='button', data-dismiss='modal') Close
                         button.btn.btn-primary(type='button') Save changes
 
 </template>

@@ -36,6 +36,7 @@
                                 span.indicators.d-inline-flex.flex-column.pl-2(v-if="isSortable(column)")
                                     i.fa.fa-chevron-up(:class="{active: hasSorted(column)}")
                                     i.fa.fa-chevron-down(:class="{active: hasSortedReverse(column)}")
+                        th.text-secondary.py-1.border-top-0.border-bottom-0(style="min-width: 130px")
                 tbody
                     tr(v-for="resource of resources.data", :key="resource[trackBy]")
                         td
@@ -49,8 +50,27 @@
                                     span.text-hide Checkbox
                         td(v-for="column of columns", :key="column")
                             slot(:row="resource", :name="column") {{ resource[column] }}
+                        td
+                            slot(:row="resource", name="actions")
+                                .actions
+                                    button.btn.btn-sm.bg-transparent
+                                        i.far.fa-eye.text-black-50
+                                    button.btn.btn-sm.bg-transparent
+                                        i.far.fa-edit.text-black-50
+                                    button.btn.btn-sm.bg-transparent(@click="confirmRemove(resource)")
+                                        i.far.fa-trash-alt.text-black-50
 
             pagination.border-top.pt-3.pb-2(:meta="resources.meta", :links="resources.links", @page="fetchResources" v-if="hasPage")
+
+        modal(ref="confirmDelete", :centered="true", effect="zoomin")
+            span(slot="title") Confirmation
+            .lead Are you sure you want to delete this record?
+            div(slot="footer")
+                button.btn.bg-transparent(type='button', data-dismiss='modal') Cancel
+                button-loading.btn.btn-danger.ml-2(
+                    type='button',
+                    @click="remove(targetResource)",
+                    :loading="isRemoving(targetResource)") Yes, I'm Sure
 </template>
 
 <style lang="sass" scoped>
@@ -68,20 +88,26 @@
             &.active
                 opacity: 1
                 color: $primary
+
+.modal.zoomin
+    transform: scale(1.2)
+    opacity: 0
+    transition: all .2s ease
+    &.show
+        transform: scale(1)
+        opacity: 1
+        transition: all .2s ease
+
+.table
+    .actions
+        i
+            font-size: 1rem
 </style>
 
 
 <script>
 export default {
     props: {
-        /**
-         * Resource's url
-         */
-        url: {
-            required: true,
-            type: String
-        },
-
         /**
          * The columns fields to be displayed.
          *
@@ -102,6 +128,22 @@ export default {
         },
 
         /**
+         * The model type name.
+         */
+        modelType: {
+            required: true,
+            type: String,
+        },
+
+        /**
+         * The model type plural name.
+         */
+        modelTypePlural: {
+            required: false,
+            type: String,
+        },
+
+        /**
          * Table options.
          */
         options: {
@@ -118,7 +160,14 @@ export default {
         defaultSort: {
             required: false,
             default: null,
-        }
+        },
+
+        /**
+         * Message when a resource is deleted
+         */
+        deleteMessage: {
+            default: 'Resource successfully deleted',
+        },
     },
 
     data() {
@@ -133,12 +182,14 @@ export default {
             search: null,
             selected: [],
             sort: null,
+            removing: [],
+            targetResource: null,
         };
     },
 
     created() {
         this.sort = this.defaultSort;
-        if (this.url) {
+        if (this.indexUrl) {
             this.fetchResources();
         }
         if (!this.options) {
@@ -162,15 +213,41 @@ export default {
         sortables() {
             return this.options.sortable;
         },
+        modelPlural() { return this.modelTypePlural || this.modelType + 's' },
+        indexUrl() { return this.$route(`api.${this.modelPlural}.index`); },
+        destroyUrl() {
+            return this.$route(`api.${this.modelPlural}.destroy`, {
+                [this.modelType]: this.targetResource[this.trackBy]
+            });
+        },
     },
 
     methods: {
+        confirmRemove(resource) {
+            this.targetResource = resource;
+            this.$refs.confirmDelete.open();
+        },
+
+        async remove(resource) {
+            this.removing.push(resource[this.trackBy]);
+            await http.delete(this.destroyUrl);
+            this.$toasted.show(this.deleteMessage, { singleton: true });
+            this.targetResource = null;
+            this.refresh();
+            this.$refs.confirmDelete.close();
+        },
+
+        isRemoving(resource) {
+            return resource
+                && this.removing.includes(resource[this.trackBy]);
+        },
+
         async fetchResources(page = 1) {
             this.loading = true;
             const search = this.search || null;
             const sort = this.sort;
             this.page = search ? page : 1;
-            const { data: resources } = await http.get(this.url, { params: { page, search, sort } });
+            const { data: resources } = await http.get(this.indexUrl, { params: { page, search, sort } });
             this.loading = false;
             this.resources = resources;
         },
