@@ -22,7 +22,12 @@ try {
 window.axios = require('axios');
 window.http = axios;
 
+const qs = require('qs');
+
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.paramsSerializer = params => {
+    return qs.stringify(params, { arrayFormat: 'brackets' });
+}
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that

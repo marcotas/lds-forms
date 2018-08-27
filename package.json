@@ -18,6 +18,7 @@
         "moment": "^2.22.2",
         "moment-timezone": "^0.5.21",
         "popper.js": "^1.12",
+        "qs": "^6.5.2",
         "v-calendar": "^0.9.7",
         "vue": "^2.5.16",
         "vue-api-query": "^1.1.0",
