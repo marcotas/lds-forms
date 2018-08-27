@@ -11,17 +11,40 @@
                     | Nova receita
 
         .card.border-0.shadow-sm
-            .card-header.bg-white(style="padding-left: 0.75rem")
+            .card-header.bg-white(style="padding: 0.75rem")
                 .d-flex.align-items-center
-                    .custom-control.custom-checkbox.dropdown-toggle(data-toggle="dropdown")
-                        input#bulk-checkbox.custom-control-input(type="checkbox", :checked="allSelected")
-                        label.custom-control-label(for="bulk-checkbox")
-                            span.text-hide Checkbox
-                    .dropdown-menu
-                        a.dropdown-item(href="#", @click.prevent="selectAll") Selecionar Todos
-                        a.dropdown-item(href="#", @click.prevent="unselectAll") Deselecionar Todos
-                        a.dropdown-item(href="#", @click.prevent="clearSelection") Limpar Seleção
+                    div
+                        .custom-control.custom-checkbox.dropdown-toggle(data-toggle="dropdown")
+                            input#bulk-checkbox.custom-control-input(type="checkbox", :checked="allSelected")
+                            label.custom-control-label(for="bulk-checkbox")
+                                span.text-hide Checkbox
+                        .dropdown-menu
+                            a.dropdown-item(href="#", @click.prevent="selectAll") Selecionar Todos
+                            a.dropdown-item(href="#", @click.prevent="unselectAll") Deselecionar Todos
+                            a.dropdown-item(href="#", @click.prevent="clearSelection") Limpar Seleção
                     .ml-3(v-if="selected.length") {{ selected.length }} selecionado(s)
+                    .ml-auto.d-flex
+                        //- FILTERS
+                        button-dropdown(v-if="hasFilters",
+                            :button-classes="buttonFilterClasses",
+                            dropdown-classes="dropdown-menu-right")
+                            span.mr-2(v-if="appliedFilters.length") ({{ appliedFilters.length }})
+                            i.fa.fa-filter
+                            div(slot="items")
+                                a.dropdown-item(
+                                    v-for="filter of filters", href="#", @click.prevent.stop="toggleFilter(filter)",
+                                    :class="{active: isAppliedFilter(filter)}") {{ filter.label }}
+                                //- a.dropdown-item.active(href="#", @click.prevent="unselectAll") Deselecionar Todos
+                                //- a.dropdown-item(href="#", @click.prevent="clearSelection") Limpar Seleção
+
+                        //- BULK DELETE OPTION
+                        button-dropdown.ml-2(v-if="selected.length && hasBulkDelete",
+                            button-classes="btn-sm btn-default",
+                            dropdown-classes="dropdown-menu-right")
+                            i.fa.fa-trash-alt.text-black-50
+                            div(slot="items")
+                                a.dropdown-item(href="#", @click.prevent="selectAll") Deletar Todos ({{ selected.length }})
+
             table.table.mb-0
                 thead.bg-light
                     tr
@@ -168,6 +191,13 @@ export default {
         deleteMessage: {
             default: 'Resource successfully deleted',
         },
+
+        /**
+         * Flag to display the bulk delete option.
+         */
+        hasBulkDelete: {
+            default: true
+        }
     },
 
     data() {
@@ -184,6 +214,7 @@ export default {
             sort: null,
             removing: [],
             targetResource: null,
+            appliedFilters: [],
         };
     },
 
@@ -220,9 +251,29 @@ export default {
                 [this.modelType]: this.targetResource[this.trackBy]
             });
         },
+        hasFilters() {
+            return this.options.filters && this.options.filters.length;
+        },
+        filters() {
+            return this.options.filters;
+        },
+        buttonFilterClasses() {
+            return this.appliedFilters.length ? 'btn-sm btn-primary' : 'btn-sm btn-default';
+        },
     },
 
     methods: {
+        applyFilter(filter) {
+            this.appliedFilters.push(filter);
+        },
+
+        toggleFilter(filter) {
+            this.isAppliedFilter(filter) ?
+                this.removeFilter(filter) :
+                this.applyFilter(filter);
+            this.refresh();
+        },
+
         confirmRemove(resource) {
             this.targetResource = resource;
             this.$refs.confirmDelete.open();
@@ -237,6 +288,14 @@ export default {
             this.$refs.confirmDelete.close();
         },
 
+        removeFilter(filter) {
+            this.appliedFilters.splice(this.appliedFilters.indexOf(filter), 1);
+        },
+
+        isAppliedFilter(filter) {
+            return this.appliedFilters.includes(filter);
+        },
+
         isRemoving(resource) {
             return resource
                 && this.removing.includes(resource[this.trackBy]);
@@ -247,9 +306,21 @@ export default {
             const search = this.search || null;
             const sort = this.sort;
             this.page = search ? page : 1;
-            const { data: resources } = await http.get(this.indexUrl, { params: { page, search, sort } });
+            const filter = this.getPreparedFilters();
+            const { data: resources } = await http.get(this.indexUrl, { params: { page, search, sort, filter }});
             this.loading = false;
             this.resources = resources;
+        },
+
+        getPreparedFilters() {
+            const filters = {};
+            this.appliedFilters.forEach(filter => {
+                if (filters[filter.name]) {
+                    return filters[filter.name] += ',' + filter.value;
+                }
+                filters[filter.name] = filter.value;
+            });
+            return filters;
         },
 
         refresh() {

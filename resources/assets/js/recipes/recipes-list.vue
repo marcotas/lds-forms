@@ -5,9 +5,11 @@
         mt-table(
             ref="table",
             model-type="recipe",
-            :columns="['id', 'name', 'description']",
+            :columns="['id', 'name', 'description', 'status']",
             default-sort="name",
             :options="tableOptions")
+            template(slot="status", slot-scope="prop")
+                | {{ prop.row.status === 'active' ? 'Ativo' : 'Inativo' }}
 </template>
 
 <script>
@@ -26,8 +28,13 @@ export default {
                     id: 'ID',
                     name: 'Nome',
                     description: 'Descrição',
+                    status: 'Situação',
                 },
-                sortable: ['id', 'name']
+                sortable: ['id', 'name'],
+                filters: [
+                    { name: 'status', label: 'Status Ativo', value: 'active' },
+                    { name: 'status', label: 'Status Inativo', value: 'inactive' },
+                ]
             }
         };
     },

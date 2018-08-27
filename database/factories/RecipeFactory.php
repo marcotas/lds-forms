@@ -7,5 +7,6 @@ $factory->define(Recipe::class, function (Faker $faker) {
     return [
         'name'        => $faker->name,
         'description' => $faker->realtext,
+        'status'      => collect(['active', 'inactive'])->random(),
     ];
 });

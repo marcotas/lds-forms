@@ -13,6 +13,7 @@ class CreateRecipesTable extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->unsignedInteger('user_id');
+            $table->string('status')->nullable();
 
             $table->foreign('user_id')
                 ->references('id')->on('users')
