@@ -22,5 +22,6 @@ Route::name('api.')->middleware('auth:api')->group(function () {
     Route::resource('minutes', 'Api\MinutesController');
 
     // Recipes Routes
+    Route::post('recipes/destroy-bulk', 'Api\RecipesController@destroyBulk')->name('recipes.destroy-bulk');
     Route::resource('recipes', 'Api\RecipesController', ['except' => ['edit', 'create']]);
 });

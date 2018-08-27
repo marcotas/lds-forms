@@ -8,6 +8,11 @@
             :columns="['id', 'name', 'description', 'status']",
             default-sort="name",
             :options="tableOptions")
+            template(slot="top-actions")
+                button.btn.btn-primary.float-right.text-gray-500
+                    i.fa.fa-plus.mr-2
+                    | Nova receita
+
             template(slot="status", slot-scope="prop")
                 | {{ prop.row.status === 'active' ? 'Ativo' : 'Inativo' }}
 </template>
@@ -32,8 +37,8 @@ export default {
                 },
                 sortable: ['id', 'name'],
                 filters: [
-                    { name: 'status', label: 'Status Ativo', value: 'active' },
-                    { name: 'status', label: 'Status Inativo', value: 'inactive' },
+                    { field: 'status', label: 'Status Ativo', value: 'active' },
+                    { field: 'status', label: 'Status Inativo', value: 'inactive' },
                 ]
             }
         };

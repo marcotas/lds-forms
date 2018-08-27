@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Recipes\BulkDestroy;
 use App\Actions\Recipes\ListRecipes;
 use App\Filters\RecipeFilters;
 use App\Http\Controllers\Controller;
@@ -39,5 +40,11 @@ class RecipesController extends Controller
     public function destroy(Recipe $recipe)
     {
         $recipe->delete();
+    }
+
+    public function destroyBulk(Request $request)
+    {
+        $destroyed = $this->execute(BulkDestroy::class, $request->all());
+        return response()->json(compact('destroyed'));
     }
 }

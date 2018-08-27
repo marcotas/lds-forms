@@ -6,9 +6,7 @@
                     @input="onSearch",
                     v-model="search")
             .col-md-8
-                button.btn.btn-primary.float-right.text-gray-500
-                    i.fa.fa-plus.mr-2
-                    | Nova receita
+                slot(name="top-actions")
 
         .card.border-0.shadow-sm
             .card-header.bg-white(style="padding: 0.75rem")
@@ -29,13 +27,11 @@
                             :button-classes="buttonFilterClasses",
                             dropdown-classes="dropdown-menu-right")
                             span.mr-2(v-if="appliedFilters.length") ({{ appliedFilters.length }})
-                            i.fa.fa-filter
+                            i.fa.fa-filter(:class="{ 'text-black-50': !appliedFilters.length }")
                             div(slot="items")
                                 a.dropdown-item(
                                     v-for="filter of filters", href="#", @click.prevent.stop="toggleFilter(filter)",
                                     :class="{active: isAppliedFilter(filter)}") {{ filter.label }}
-                                //- a.dropdown-item.active(href="#", @click.prevent="unselectAll") Deselecionar Todos
-                                //- a.dropdown-item(href="#", @click.prevent="clearSelection") Limpar Seleção
 
                         //- BULK DELETE OPTION
                         button-dropdown.ml-2(v-if="selected.length && hasBulkDelete",
@@ -43,7 +39,7 @@
                             dropdown-classes="dropdown-menu-right")
                             i.fa.fa-trash-alt.text-black-50
                             div(slot="items")
-                                a.dropdown-item(href="#", @click.prevent="selectAll") Deletar Todos ({{ selected.length }})
+                                a.dropdown-item(href="#", @click.prevent="confirmBulkDelete") Deletar Todos ({{ selected.length }})
 
             table.table.mb-0
                 thead.bg-light
@@ -94,6 +90,16 @@
                     type='button',
                     @click="remove(targetResource)",
                     :loading="isRemoving(targetResource)") Yes, I'm Sure
+
+        modal(ref="confirmBulkDelete", :centered="true", effect="zoomin")
+            span(slot="title") Confirmation
+            .lead Are you sure you want to delete all the {{ selected.length }} selected resources?
+            div(slot="footer")
+                button.btn.bg-transparent(type='button', data-dismiss='modal') Cancel
+                button-loading.btn.btn-danger.ml-2(
+                    type='button',
+                    @click="removeBulk",
+                    :loading="removing_bulk") YES, DELETE ALL
 </template>
 
 <style lang="sass" scoped>
@@ -193,6 +199,13 @@ export default {
         },
 
         /**
+         * Message when resources are deleted in a bulk.
+         */
+        bulkDeleteMessage: {
+            default: 'Selected resources successfully deleted',
+        },
+
+        /**
          * Flag to display the bulk delete option.
          */
         hasBulkDelete: {
@@ -213,6 +226,7 @@ export default {
             selected: [],
             sort: null,
             removing: [],
+            removing_bulk: false,
             targetResource: null,
             appliedFilters: [],
         };
@@ -251,6 +265,9 @@ export default {
                 [this.modelType]: this.targetResource[this.trackBy]
             });
         },
+        bulkDestroyUrl() {
+            return this.$route(`api.${this.modelPlural}.destroy-bulk`);
+        },
         hasFilters() {
             return this.options.filters && this.options.filters.length;
         },
@@ -279,6 +296,10 @@ export default {
             this.$refs.confirmDelete.open();
         },
 
+        confirmBulkDelete() {
+            this.$refs.confirmBulkDelete.open();
+        },
+
         async remove(resource) {
             this.removing.push(resource[this.trackBy]);
             await http.delete(this.destroyUrl);
@@ -286,6 +307,17 @@ export default {
             this.targetResource = null;
             this.refresh();
             this.$refs.confirmDelete.close();
+        },
+
+        async removeBulk() {
+            this.removing_bulk = true;
+            const ids = this.selected;
+            await http.post(this.bulkDestroyUrl, { ids });
+            this.selected = [];
+            this.removing_bulk = false;
+            this.refresh();
+            this.$refs.confirmBulkDelete.close();
+            this.$toasted.show(this.bulkDeleteMessage, { singleton: true });
         },
 
         removeFilter(filter) {
@@ -315,10 +347,10 @@ export default {
         getPreparedFilters() {
             const filters = {};
             this.appliedFilters.forEach(filter => {
-                if (filters[filter.name]) {
-                    return filters[filter.name] += ',' + filter.value;
+                if (filters[filter.field]) {
+                    return filters[filter.field] += ',' + filter.value;
                 }
-                filters[filter.name] = filter.value;
+                filters[filter.field] = filter.value;
             });
             return filters;
         },
