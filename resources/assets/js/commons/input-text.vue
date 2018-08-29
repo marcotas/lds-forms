@@ -28,6 +28,10 @@
     position: relative
 
     .has-icon
+        & ~ i
+            position: absolute
+            top: 10px
+            font-size: 1rem
         &.icon-left
             padding-left: 2.4rem
             & ~ i
@@ -36,10 +40,18 @@
             padding-right: 2.4rem
             & ~ i
                 right: 10px
+
+    .form-control-sm
         & ~ i
-            position: absolute
-            top: 10px
-            font-size: 1rem
+            top: 6px
+        &.icon-left
+            padding-left: 1.8rem
+            & ~ i
+                left: 6px
+        &.icon-right
+            padding-right: 1.8rem
+            & ~ i
+                right: 6px
 </style>
 
 <script>
