@@ -18,6 +18,7 @@ require("./commons");
 require("./filters");
 
 require('./components/table');
+require('./components/forms');
 
 // Resources
 require("./minutes");
