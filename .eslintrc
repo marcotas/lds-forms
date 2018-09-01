@@ -6,7 +6,22 @@
 	"rules": {
         "vue/html-self-closing": "off",
         "vue/require-prop-types": "off",
-        "no-undef":"warn"
+        "no-undef":"warn",
+        "semi": [
+            "error",
+            "always"
+        ],"indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ]
     },
     "parserOptions": {
         "sourceType": "module",
