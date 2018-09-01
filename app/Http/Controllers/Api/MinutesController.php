@@ -9,13 +9,14 @@ use App\Http\Resources\MinuteResource;
 use App\Models\Minute;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Filters\MinutesFilters;
 
 class MinutesController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, MinutesFilters $filters)
     {
         return MinuteResource::collection(
-            $this->execute(ListMinutes::class, ['request' => $request])
+            $this->execute(ListMinutes::class, compact('request', 'filters'))
         )->additional([
             'next_sunday' => now()->modify('next sunday')->toDateString(),
         ]);
