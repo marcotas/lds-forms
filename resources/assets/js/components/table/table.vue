@@ -22,6 +22,20 @@
                             a.dropdown-item(href="#", @click.prevent="clearSelection") Limpar Seleção
                     .ml-3(v-if="selected.length") {{ selected.length }} selecionado(s)
                     .ml-auto.d-flex
+                        //- ACTIONS
+                        .d-flex(v-if="selected.length")
+                            mt-select.mr-2(
+                                button-class="btn-sm btn-default",
+                                v-model="actionSelected",
+                                track-by="name",
+                                label="name",
+                                :options="_actions")
+                            button-loading.btn.btn-primary.btn-sm.mr-2(
+                                :disabled="!actionSelected",
+                                @click="performAction",
+                                :loading="actionLoading")
+                                i.fa.fa-play.fa-fwfw(v-if="!actionLoading")
+
                         //- FILTERS
                         button-dropdown(v-if="hasFilters",
                             :button-classes="buttonFilterClasses",
@@ -72,12 +86,15 @@
                         td
                             slot(:row="resource", name="actions")
                                 .actions
-                                    button.btn.btn-sm.bg-transparent
+                                    a.btn.btn-sm.bg-transparent(v-if="detailUrl", :href="detailUrl")
                                         i.far.fa-eye.text-black-50
-                                    button.btn.btn-sm.bg-transparent
+                                    a.btn.btn-sm.bg-transparent(v-if="editUrl", :href="editUrl")
                                         i.far.fa-edit.text-black-50
                                     button.btn.btn-sm.bg-transparent(@click="confirmRemove(resource)")
                                         i.far.fa-trash-alt.text-black-50
+                    tr(v-if="resources.data.length === 0")
+                        td(:colspan="columns.length + 2")
+                            slot(name="empty-table") No data found
 
             pagination.border-top.pt-3.pb-2(:meta="resources.meta", :links="resources.links", @page="fetchResources" v-if="hasPage")
 
@@ -100,6 +117,8 @@
                     type='button',
                     @click="removeBulk",
                     :loading="removing_bulk") YES, DELETE ALL
+
+        confirmation(ref="confirmAction")
 </template>
 
 <style lang="sass" scoped>
@@ -135,8 +154,17 @@
 
 
 <script>
+import _ from 'lodash';
+
 export default {
     props: {
+        /**
+         * Message when resources are deleted in a bulk.
+         */
+        bulkDeleteMessage: {
+            default: 'Selected resources successfully deleted',
+        },
+
         /**
          * The columns fields to be displayed.
          *
@@ -144,43 +172,7 @@ export default {
          */
         columns: {
             required: true,
-            type: Array
-        },
-
-        /**
-         * The ID of each object.
-         */
-        trackBy: {
-            required: false,
-            default: 'id',
-            type: String,
-        },
-
-        /**
-         * The model type name.
-         */
-        modelType: {
-            required: true,
-            type: String,
-        },
-
-        /**
-         * The model type plural name.
-         */
-        modelTypePlural: {
-            required: false,
-            type: String,
-        },
-
-        /**
-         * Table options.
-         */
-        options: {
-            required: false,
-            default: () => ({
-                headers: {},
-                sortable: [],
-            })
+            type: Array,
         },
 
         /**
@@ -199,18 +191,62 @@ export default {
         },
 
         /**
-         * Message when resources are deleted in a bulk.
+         * Url for the detail button
          */
-        bulkDeleteMessage: {
-            default: 'Selected resources successfully deleted',
+        detailUrl: {
+            default: null,
+        },
+
+        /**
+         * URL for the edit page.
+         */
+        editUrl: {
+            default: null,
         },
 
         /**
          * Flag to display the bulk delete option.
          */
         hasBulkDelete: {
-            default: true
-        }
+            default: true,
+        },
+
+        /**
+         * The model type name.
+         */
+        modelType: {
+            required: true,
+            type: String,
+        },
+
+        /**
+         * The model type plural name.
+         */
+        modelTypePlural: {
+            required: false,
+            default: null,
+            type: String,
+        },
+
+        /**
+         * Table options.
+         */
+        options: {
+            required: false,
+            default: () => ({
+                headers: {},
+                sortable: [],
+            }),
+        },
+
+        /**
+         * The ID of each object.
+         */
+        trackBy: {
+            required: false,
+            default: 'id',
+            type: String,
+        },
     },
 
     data() {
@@ -229,7 +265,53 @@ export default {
             removing_bulk: false,
             targetResource: null,
             appliedFilters: [],
+            actionSelected: null,
+            actionLoading: false,
         };
+    },
+
+    computed: {
+        hasPage() {
+            return this.resources.meta && this.resources.meta.last_page > 1;
+        },
+        ids() {
+            return this.resources.data.map(r => r[this.trackBy]);
+        },
+        allSelected() {
+            return !this.ids.some(id => !this.selected.includes(id)) && this.ids.length;
+        },
+        sortables() {
+            return this.options.sortable;
+        },
+        modelPlural() {
+            return this.modelTypePlural || this.modelType + 's';
+        },
+        indexUrl() {
+            return this.$route(`api.${this.modelPlural}.index`);
+        },
+        destroyUrl() {
+            return this.$route(`api.${this.modelPlural}.destroy`, {
+                [this.modelType]: this.targetResource[this.trackBy],
+            });
+        },
+        bulkDestroyUrl() {
+            return this.$route(`api.${this.modelPlural}.destroy-bulk`);
+        },
+        hasFilters() {
+            return this.options.filters && this.options.filters.length;
+        },
+        hasActions() {
+            return this.options.actions && this.options.actions.length;
+        },
+        filters() {
+            return this.options.filters;
+        },
+        buttonFilterClasses() {
+            return this.appliedFilters.length ? 'btn-sm btn-primary' : 'btn-sm btn-default';
+        },
+        _actions() {
+            return this.hasActions ? this.options.actions : [];
+        },
     },
 
     created() {
@@ -245,50 +327,43 @@ export default {
         }
     },
 
-    computed: {
-        hasPage() {
-            return this.resources.meta && this.resources.meta.last_page > 1;
-        },
-        ids() {
-            return this.resources.data.map(r => r[this.trackBy]);
-        },
-        allSelected() {
-            return !this.ids.some(id => !this.selected.includes(id));
-        },
-        sortables() {
-            return this.options.sortable;
-        },
-        modelPlural() { return this.modelTypePlural || this.modelType + 's' },
-        indexUrl() { return this.$route(`api.${this.modelPlural}.index`); },
-        destroyUrl() {
-            return this.$route(`api.${this.modelPlural}.destroy`, {
-                [this.modelType]: this.targetResource[this.trackBy]
-            });
-        },
-        bulkDestroyUrl() {
-            return this.$route(`api.${this.modelPlural}.destroy-bulk`);
-        },
-        hasFilters() {
-            return this.options.filters && this.options.filters.length;
-        },
-        filters() {
-            return this.options.filters;
-        },
-        buttonFilterClasses() {
-            return this.appliedFilters.length ? 'btn-sm btn-primary' : 'btn-sm btn-default';
-        },
-    },
-
     methods: {
         applyFilter(filter) {
             this.appliedFilters.push(filter);
         },
 
         toggleFilter(filter) {
-            this.isAppliedFilter(filter) ?
-                this.removeFilter(filter) :
-                this.applyFilter(filter);
+            this.isAppliedFilter(filter) ? this.removeFilter(filter) : this.applyFilter(filter);
             this.refresh();
+        },
+
+        async performAction() {
+            try {
+                const confirmed = await this.checkConfirmationDialog();
+                if (!confirmed) return;
+
+                this.actionLoading = true;
+                await this.actionSelected.callback(this.selected);
+                this.$toasted.success('Action performed successfully');
+            } catch (error) {
+                typeof this.actionSelected.onError === 'function'
+                    ? this.actionSelected.onError(error)
+                    : this.$toasted.error('Oops! Something went wrong.');
+            } finally {
+                this.$refs.confirmAction.close();
+                this.clearAction();
+            }
+        },
+
+        async checkConfirmationDialog() {
+            try {
+                if (this.actionSelected.confirmation || this.actionSelected.confirm) {
+                    await this.$refs.confirmAction.ask(this.actionSelected.confirmation || {});
+                }
+                return true;
+            } catch (error) {
+                return false;
+            }
         },
 
         confirmRemove(resource) {
@@ -302,8 +377,8 @@ export default {
 
         async remove(resource) {
             this.removing.push(resource[this.trackBy]);
-            await http.delete(this.destroyUrl);
-            this.$toasted.show(this.deleteMessage, { singleton: true });
+            await this.$http.delete(this.destroyUrl);
+            this.$toasted.show(this.deleteMessage);
             this.targetResource = null;
             this.refresh();
             this.$refs.confirmDelete.close();
@@ -312,12 +387,12 @@ export default {
         async removeBulk() {
             this.removing_bulk = true;
             const ids = this.selected;
-            await http.post(this.bulkDestroyUrl, { ids });
+            await this.$http.post(this.bulkDestroyUrl, { ids });
             this.selected = [];
             this.removing_bulk = false;
             this.refresh();
             this.$refs.confirmBulkDelete.close();
-            this.$toasted.show(this.bulkDeleteMessage, { singleton: true });
+            this.$toasted.show(this.bulkDeleteMessage);
         },
 
         removeFilter(filter) {
@@ -329,8 +404,7 @@ export default {
         },
 
         isRemoving(resource) {
-            return resource
-                && this.removing.includes(resource[this.trackBy]);
+            return resource && this.removing.includes(resource[this.trackBy]);
         },
 
         async fetchResources(page = 1) {
@@ -339,7 +413,7 @@ export default {
             const sort = this.sort;
             this.page = search ? page : 1;
             const filter = this.getPreparedFilters();
-            const { data: resources } = await http.get(this.indexUrl, { params: { page, search, sort, filter }});
+            const { data: resources } = await this.$http.get(this.indexUrl, { params: { page, search, sort, filter } });
             this.loading = false;
             this.resources = resources;
         },
@@ -348,7 +422,7 @@ export default {
             const filters = {};
             this.appliedFilters.forEach(filter => {
                 if (filters[filter.field]) {
-                    return filters[filter.field] += ',' + filter.value;
+                    return (filters[filter.field] += ',' + filter.value);
                 }
                 filters[filter.field] = filter.value;
             });
@@ -360,8 +434,7 @@ export default {
         },
 
         head(column) {
-            let header = this.options.headers
-                && this.options.headers[column]
+            let header = this.options.headers && this.options.headers[column];
             if (header !== undefined) {
                 return header;
             }
@@ -408,12 +481,12 @@ export default {
         },
 
         selectAll() {
-            this.ids.filter(id => !this.selected.includes(id))
-                .forEach(id => this.selected.push(id));
+            this.ids.filter(id => !this.selected.includes(id)).forEach(id => this.selected.push(id));
         },
 
         unselectAll() {
-            this.ids.filter(id => this.selected.includes(id))
+            this.ids
+                .filter(id => this.selected.includes(id))
                 .forEach(id => this.selected.splice(this.selected.indexOf(id), 1));
         },
 
@@ -421,14 +494,17 @@ export default {
             this.selected = [];
         },
 
-        onCheck(resource) {
-            const id = resource[this.trackBy];
-            this.selected.includes(id) ?
-                this.selected.splice(this.selected.indexOf(id), 1) :
-                this.selected.push(id);
+        clearAction() {
+            this.actionSelected = null;
+            this.actionLoading = false;
         },
 
-        onSearch: _.debounce(function (text) {
+        onCheck(resource) {
+            const id = resource[this.trackBy];
+            this.selected.includes(id) ? this.selected.splice(this.selected.indexOf(id), 1) : this.selected.push(id);
+        },
+
+        onSearch: _.debounce(function() {
             this.refresh();
         }, 500),
 
@@ -436,5 +512,5 @@ export default {
             return 'checkbox-' + resource[this.trackBy];
         },
     },
-}
+};
 </script>
