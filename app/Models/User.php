@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
 class User extends Authenticatable implements HasMedia
 {
-    use Notifiable, HasApiTokens, HasMediaTrait;
+    use Notifiable, HasApiTokens, HasMediaTrait, Filterable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -34,5 +36,11 @@ class User extends Authenticatable implements HasMedia
     public function recipes() : HasMany
     {
         return $this->hasMany(Recipe::class);
+    }
+
+    public function registerMediaCollections()
+    {
+        $this->addMediaCollection('avatar')
+            ->singleFile();
     }
 }

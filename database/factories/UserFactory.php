@@ -14,9 +14,13 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(App\Models\User::class, function (Faker $faker) {
+    $gender = collect(['male', 'female'])->random();
+
     return [
-        'name'           => $faker->name,
+        'name'           => $faker->name($gender),
         'email'          => $faker->unique()->safeEmail,
+        'gender'         => $gender,
+        'active'         => collect([true, false])->random(),
         'password'       => bcrypt('123456'), // secret
         'remember_token' => str_random(10),
     ];

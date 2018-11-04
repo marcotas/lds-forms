@@ -77,6 +77,9 @@ export default {
             this.innerYesLabel = config.yesLabel !== undefined ? config.yesLabel : this.innerYesLabel;
             this.innerDangerous = config.dangerous !== undefined ? config.dangerous : this.innerDangerous;
         },
+        stopLoading() {
+            this.loading = false;
+        },
     },
 };
 </script>

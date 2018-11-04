@@ -2,7 +2,11 @@
     div
         .row
             .col-md-4
-                input-text(icon="fa fa-search", placeholder="Pesquisar...", input-class="shadow-sm border-0",
+                input-text(
+                    v-if="!hideSearch",
+                    icon="fa fa-search",
+                    placeholder="Pesquisar...",
+                    input-class="shadow-sm border-0",
                     @input="onSearch",
                     v-model="search")
             .col-md-8
@@ -23,7 +27,7 @@
                     .ml-3(v-if="selected.length") {{ selected.length }} selecionado(s)
                     .ml-auto.d-flex
                         //- ACTIONS
-                        .d-flex(v-if="selected.length")
+                        .d-flex(v-if="hasActions && selected.length")
                             mt-select.mr-2(
                                 button-class="btn-sm btn-default",
                                 v-model="actionSelected",
@@ -37,15 +41,20 @@
                                 i.fa.fa-play.fa-fwfw(v-if="!actionLoading")
 
                         //- FILTERS
-                        button-dropdown(v-if="hasFilters",
+                        button-dropdown(v-if="hasOption('filters')",
                             :button-classes="buttonFilterClasses",
                             dropdown-classes="dropdown-menu-right")
                             span.mr-2(v-if="appliedFilters.length") ({{ appliedFilters.length }})
                             i.fa.fa-filter(:class="{ 'text-black-50': !appliedFilters.length }")
                             div(slot="items")
-                                a.dropdown-item(
-                                    v-for="filter of filters", href="#", @click.prevent.stop="toggleFilter(filter)",
-                                    :class="{active: isAppliedFilter(filter)}") {{ filter.label }}
+                                div(v-for="filter of filters")
+                                    .bg-light.px-3.text-muted.text-uppercase(
+                                        v-if="filter.header", @click.stop.prevent="() => {}")
+                                        small {{ filter.header }}
+                                    a.dropdown-item(
+                                        v-if="!filter.header"
+                                        href="#", @click.prevent.stop="toggleFilter(filter)",
+                                        :class="{active: isAppliedFilter(filter)}") {{ filter.label }}
 
                         //- BULK DELETE OPTION
                         button-dropdown.ml-2(v-if="selected.length && hasBulkDelete",
@@ -71,8 +80,8 @@
                                     i.fa.fa-chevron-down(:class="{active: hasSortedReverse(column)}")
                         th.text-secondary.py-1.border-top-0.border-bottom-0(style="min-width: 130px")
                 tbody
-                    tr(v-for="resource of resources.data", :key="resource[trackBy]")
-                        td
+                    tr(valign="middle", v-for="resource of resources.data", :key="resource[trackBy]")
+                        td.align-middle
                             .custom-control.custom-checkbox
                                 input.custom-control-input(
                                     type="checkbox",
@@ -81,17 +90,33 @@
                                     :checked="isResourceSelected(resource)")
                                 label.custom-control-label(:for="checkboxId(resource)")
                                     span.text-hide Checkbox
-                        td(v-for="column of columns", :key="column")
-                            slot(:row="resource", :name="column") {{ resource[column] }}
-                        td
+                        td.align-middle(v-for="column of columns", :key="column")
+                            slot(:row="resource", :name="column")
+                                span(v-if="!isAvatar(column)") {{ resource[column] }}
+                                img.rounded-circle.float-right(
+                                    v-if="isAvatar(column)",
+                                    :src="resource[column]",
+                                    style="max-width: 32px")
+                        td.align-middle
                             slot(:row="resource", name="actions")
                                 .actions
                                     a.btn.btn-sm.bg-transparent(v-if="detailUrl", :href="detailUrl")
                                         i.far.fa-eye.text-black-50
                                     a.btn.btn-sm.bg-transparent(v-if="editUrl", :href="editUrl")
                                         i.far.fa-edit.text-black-50
-                                    button.btn.btn-sm.bg-transparent(@click="confirmRemove(resource)")
+                                    button.btn.btn-sm.bg-transparent(
+                                        @click="confirmRemove(resource)",
+                                        v-if="!wasSoftDeleted(resource)")
                                         i.far.fa-trash-alt.text-black-50
+                                    button.btn.btn-sm.bg-transparent(
+                                        @click="confirmForceDelete(resource)",
+                                        v-if="wasSoftDeleted(resource)")
+                                        i.far.fa-trash-alt.text-danger
+                                    button-loading.btn.btn-sm.bg-transparent(
+                                        v-if="wasSoftDeleted(resource)",
+                                        @click="restore(resource)",
+                                        :loading="isRestoring(resource)")
+                                        i.fas.fa-redo.text-black-50(v-if="!isRestoring(resource)")
                     tr(v-if="resources.data.length === 0")
                         td(:colspan="columns.length + 2")
                             slot(name="empty-table") No data found
@@ -119,6 +144,7 @@
                     :loading="removing_bulk") YES, DELETE ALL
 
         confirmation(ref="confirmAction")
+        confirmation(ref="confirmForceDelete")
 </template>
 
 <style lang="sass" scoped>
@@ -212,6 +238,13 @@ export default {
         },
 
         /**
+         * Flag to show the search bar or not
+         */
+        hideSearch: {
+            default: false,
+        },
+
+        /**
          * The model type name.
          */
         modelType: {
@@ -263,6 +296,7 @@ export default {
             sort: null,
             removing: [],
             removing_bulk: false,
+            restoring: [],
             targetResource: null,
             appliedFilters: [],
             actionSelected: null,
@@ -297,9 +331,6 @@ export default {
         bulkDestroyUrl() {
             return this.$route(`api.${this.modelPlural}.destroy-bulk`);
         },
-        hasFilters() {
-            return this.options.filters && this.options.filters.length;
-        },
         hasActions() {
             return this.options.actions && this.options.actions.length;
         },
@@ -330,6 +361,14 @@ export default {
     methods: {
         applyFilter(filter) {
             this.appliedFilters.push(filter);
+        },
+
+        arrayFromObject(object, keyName = 'key') {
+            const arr = [];
+            for (let key in object) {
+                arr.push({ [keyName]: key, value: object[key] });
+            }
+            return arr;
         },
 
         toggleFilter(filter) {
@@ -366,6 +405,22 @@ export default {
             }
         },
 
+        async confirmForceDelete(resource) {
+            try {
+                await this.$refs.confirmForceDelete.ask({
+                    title: 'Attention',
+                    message: `Are you really sure you want to permanently destroy this resource?
+                        This action cannot be undone.`,
+                    dangerous: true,
+                });
+                await this.$http.delete(this.resourceUrl(resource) + '/force');
+                this.$refs.confirmForceDelete.close();
+                this.refresh();
+            } catch (error) {
+                this.$refs.confirmForceDelete.stopLoading();
+            }
+        },
+
         confirmRemove(resource) {
             this.targetResource = resource;
             this.$refs.confirmDelete.open();
@@ -380,6 +435,7 @@ export default {
             await this.$http.delete(this.destroyUrl);
             this.$toasted.show(this.deleteMessage);
             this.targetResource = null;
+            this.removing.splice(this.removing.indexOf(resource[this.trackBy]), 1);
             this.refresh();
             this.$refs.confirmDelete.close();
         },
@@ -401,6 +457,12 @@ export default {
 
         isAppliedFilter(filter) {
             return this.appliedFilters.includes(filter);
+        },
+
+        isAvatar(column) {
+            if (!this.hasOption('avatars')) return false;
+
+            return this.options.avatars.includes(column);
         },
 
         isRemoving(resource) {
@@ -426,11 +488,12 @@ export default {
                 }
                 filters[filter.field] = filter.value;
             });
+            console.log('prepared filters', filters);
             return filters;
         },
 
         refresh() {
-            this.fetchResources(this.page);
+            return this.fetchResources(this.page);
         },
 
         head(column) {
@@ -455,6 +518,14 @@ export default {
             this.refresh();
         },
 
+        hasOption(optionName) {
+            const option = this.options[optionName];
+
+            if (!option) return false;
+
+            return Array.isArray(option) ? option.length > 0 : Object.keys(option).length > 0;
+        },
+
         hasSorted(column) {
             return this.sort === column;
         },
@@ -471,9 +542,25 @@ export default {
             }
         },
 
+        resourceUrl(resource) {
+            return `${this.indexUrl}/${resource[this.trackBy]}`;
+        },
+
+        async restore(resource) {
+            const restoreUrl = this.resourceUrl(resource) + '/restore';
+            this.restoring.push(resource[this.trackBy]);
+            await this.$http.post(restoreUrl);
+            await this.refresh();
+            this.restoring.splice(this.restoring.indexOf(resource[this.trackBy]), 1);
+        },
+
         isResourceSelected(resource) {
             const id = resource[this.trackBy];
             return this.selected.includes(id);
+        },
+
+        isRestoring(resource) {
+            return this.restoring.includes(resource[this.trackBy]);
         },
 
         isSortable(column) {
@@ -510,6 +597,10 @@ export default {
 
         checkboxId(resource) {
             return 'checkbox-' + resource[this.trackBy];
+        },
+
+        wasSoftDeleted(resource) {
+            return resource.deleted_at;
         },
     },
 };

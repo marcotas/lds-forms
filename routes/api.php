@@ -24,4 +24,9 @@ Route::name('api.')->middleware('auth:api')->group(function () {
     // Recipes Routes
     Route::post('recipes/destroy-bulk', 'Api\RecipesController@destroyBulk')->name('recipes.destroy-bulk');
     Route::resource('recipes', 'Api\RecipesController', ['except' => ['edit', 'create']]);
+
+    // Users Routes
+    Route::post('users/{user}/restore', 'Api\UsersController@restore')->name('users.restore');
+    Route::delete('users/{user}/force', 'Api\UsersController@forceDestroy')->name('users.force-destroy');
+    Route::resource('users', 'Api\UsersController', ['except' => ['edit', 'create']]);
 });

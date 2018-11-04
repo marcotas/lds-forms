@@ -23,13 +23,6 @@
 export default {
     data() {
         return {
-            page: 1,
-            recipes: {
-                data: [],
-                links: null,
-                meta: null,
-            },
-            removing: [],
             tableOptions: {
                 headers: {
                     id: 'ID',

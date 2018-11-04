@@ -28,6 +28,9 @@ Route::middleware('auth')->group(function () {
     Route::get('atas/{minute}', 'Web\MinutesController@show')->name('minutes.show');
     Route::get('atas/{minute}/form', 'Web\MinutesController@form')->name('minutes.form');
 
+    // Admin
+    Route::view('admin/usuarios', 'admin.users.index')->name('admin.users.index');
+
     // Recipes
     Route::get('receitas', 'Web\RecipesController@index')->name('recipes.index');
 });

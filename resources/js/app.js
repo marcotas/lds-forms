@@ -4,7 +4,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-import "./bootstrap";
+import './bootstrap';
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -12,22 +12,23 @@ import "./bootstrap";
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-window.Vue = require("vue");
+window.Vue = require('vue');
 
-require("./commons");
-require("./filters");
+require('./commons');
+require('./filters');
 
 require('./components/table');
 require('./components/dialogs');
 require('./components/forms');
 
 // Resources
-require("./minutes");
+require('./minutes');
 require('./recipes');
+require('./users');
 
 Vue.prototype.$route = window.laroute.route;
 Vue.prototype.$http = window.axios;
 
 new Vue({
-    el: "#app"
+    el: '#app'
 });
