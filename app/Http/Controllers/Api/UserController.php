@@ -4,14 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Filters\UsersFilters;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
+use App\Http\Traits\BulkDestroy;
 use App\Interactions\Action\Users\ListUsers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Traits\BulkDestroy;
 
-class UsersController extends Controller
+class UserController extends Controller
 {
     use BulkDestroy;
 
@@ -23,9 +24,9 @@ class UsersController extends Controller
             ->paginate($this->perPage($request));
     }
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        //
+        dd($request->validated());
     }
 
     public function show($id)
@@ -33,9 +34,14 @@ class UsersController extends Controller
         //
     }
 
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
-        //
+        dd($request->validated());
+    }
+
+    public function edit(User $user)
+    {
+        return view('admin.users.edit', compact('user'));
     }
 
     public function destroy(User $user)
