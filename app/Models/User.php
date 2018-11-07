@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
@@ -32,14 +33,17 @@ class User extends Authenticatable implements HasMedia
 
     public function registerMediaCollections()
     {
-        $this->addMediaCollection('avatar')
-            ->singleFile();
+        $this->addMediaCollection('avatar')->singleFile();
     }
 
-    // public function avatar()
-    // {
-    //     return $this->morphOne(Media::class, 'model')->where('collection_name', 'avatar');
-    // }
+    public function registerMediaConversions(\Spatie\MediaLibrary\Models\Media $media = null)
+    {
+        $this->addMediaConversion('thumb')
+            ->fit(Manipulations::FIT_CROP, 512, 512)
+            ->nonOptimized()
+            ->nonQueued()
+            ->performOnCollections('avatar');
+    }
 
     public function getAvatarAttribute()
     {

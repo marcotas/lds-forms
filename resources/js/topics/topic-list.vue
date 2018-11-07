@@ -14,7 +14,7 @@
                     button.btn.btn-default.ml-auto.text-gray-500.shadow-sm(@click="distribute")
                         i.fa.fa-code-branch.mr-2
                         | Distribute Topics
-                    button.btn.btn-primary.ml-2.text-gray-500.shadow-sm
+                    a.btn.btn-primary.ml-2.text-gray-500.shadow-sm(:href="$route('admin.topics.new')")
                         i.fa.fa-plus.mr-2
                         | New Topic
 
@@ -26,13 +26,18 @@
             default-sort="date",
             :options="tableOptions")
             template(slot="name", slot-scope="{ row: topic }")
-                a(:href="topic.link", target="_blank") {{ topic.name }}
+                a(:href="$route('admin.topics.edit', { topic: topic.id })") {{ topic.name }}
+                a(:href="topic.link", target="_blank")
+                    i.fa.fa-external-link-alt.ml-2
             template(slot="date", slot-scope="{ row: topic }")
                 | {{ topic.date | date('DD MMMM Y') }}
             template(slot="speaker", slot-scope="{ row: topic }")
                 div(v-if="topic.speaker")
                     img.rounded-circle.avatar(:src="topic.speaker.avatar", v-if="topic.speaker.avatar")
                     span.ml-2 {{ topic.speaker.name }}
+            template(slot="actions", slot-scope="{ row: topic }")
+                a.btn.btn-sm.bg-transparent(:href="$route('admin.topics.edit', { topic: topic.id })")
+                    i.far.fa-edit.text-black-50
 
         confirmation(ref="confirmation")
 </template>

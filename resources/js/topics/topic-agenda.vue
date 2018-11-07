@@ -1,6 +1,9 @@
 <template lang="pug">
     div
-        h3.mb-4 Topic Agenda
+        .d-flex
+            h3.mb-4 Topic Agenda
+            .ml-auto
+                a.btn.btn-default(:href="$route('admin.topics.new')") New Topic
         .row
             .col-4.mb-5(v-for="date of dates", :key="date")
                 h5.text-muted.text-center {{ date | date('ddd, D MMM Y') }}
@@ -9,8 +12,6 @@
                         .float-right
                             img.avatar.rounded-circle(:src="topic.speaker.avatar", v-if="topic.speaker && topic.speaker.avatar")
                         .lead {{ topic.name }}
-                        //- a(:href="topic.link", target="_blank")
-                            i.fa.fa-external-link-alt
 </template>
 
 <script>

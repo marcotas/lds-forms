@@ -49,7 +49,7 @@
                         dropdown-classes="dropdown-menu-right")
                         i.fa.fa-trash-alt.text-black-50
                         div(slot="items")
-                            a.dropdown-item(href="#", @click.prevent="confirmBulkDelete") Deletar Todos ({{ selected.length }})
+                            a.dropdown-item(href="#", @click.prevent="confirmBulkDelete") Delete All ({{ selected.length }})
 
         table.table.mb-0
             thead.bg-light
@@ -87,31 +87,31 @@
                                 }"
                                 :src="$obj_get(resource, column)")
                     td.align-middle
-                        slot(:row="resource", name="actions")
-                            .actions
+                        .actions
+                            slot(:row="resource", name="actions")
                                 a.btn.btn-sm.bg-transparent(v-if="detailUrl", :href="detailUrl")
                                     i.far.fa-eye.text-black-50
                                 a.btn.btn-sm.bg-transparent(v-if="editUrl", :href="editUrl")
                                     i.far.fa-edit.text-black-50
-                                button.btn.btn-sm.bg-transparent(
-                                    @click="confirmRemove(resource)",
-                                    v-if="!wasSoftDeleted(resource) && resourceUrl(resource)")
-                                    i.far.fa-trash-alt.text-black-50
-                                button.btn.btn-sm.bg-transparent(
-                                    @click="confirmForceDelete(resource)",
-                                    v-if="wasSoftDeleted(resource)")
-                                    i.far.fa-trash-alt.text-danger
-                                button-loading.btn.btn-sm.bg-transparent(
-                                    v-if="wasSoftDeleted(resource)",
-                                    @click="restore(resource)",
-                                    :loading="isRestoring(resource)")
-                                    i.fas.fa-redo.text-black-50(v-if="!isRestoring(resource)")
+                            button.btn.btn-sm.bg-transparent(
+                                @click="confirmRemove(resource)",
+                                v-if="!wasSoftDeleted(resource) && resourceUrl(resource)")
+                                i.far.fa-trash-alt.text-black-50
+                            button.btn.btn-sm.bg-transparent(
+                                @click="confirmForceDelete(resource)",
+                                v-if="wasSoftDeleted(resource)")
+                                i.far.fa-trash-alt.text-danger
+                            button-loading.btn.btn-sm.bg-transparent(
+                                v-if="wasSoftDeleted(resource)",
+                                @click="restore(resource)",
+                                :loading="isRestoring(resource)")
+                                i.fas.fa-redo.text-black-50(v-if="!isRestoring(resource)")
                 tr(v-if="resources.data.length === 0")
                     td(:colspan="columns.length + 2")
                         slot(name="empty-table") No data found
 
         pagination.border-top.pt-3.pb-2(:meta="resources.meta", :links="resources.links", @page="fetchResources" v-if="hasPage")
-        
+
         modal(ref="confirmDelete", :centered="true", effect="zoomin")
             span(slot="title") Confirmation
             .lead Are you sure you want to delete this record?

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\Topic;
-use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Filter;
 use App\Filters\TopicFilters;
-use App\Http\Resources\DataResource;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\BulkDestroyRequest;
-use Illuminate\Http\Response;
+use App\Http\Requests\TopicRequest;
+use App\Http\Resources\DataResource;
 use App\Http\Traits\BulkDestroy;
+use App\Models\Topic;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TopicController extends Controller
 {
@@ -35,14 +36,21 @@ class TopicController extends Controller
             ->paginate($this->perPage($request)));
     }
 
-    public function store(Request $request)
+    public function edit(Topic $topic)
     {
-        //
+        return view('admin.topics.edit', compact('topic'));
     }
 
-    public function update(Request $request, $id)
+    public function store(TopicRequest $request)
     {
-        //
+        return Topic::create($request->validated());
+    }
+
+    public function update(TopicRequest $request, Topic $topic)
+    {
+        $topic->update($request->validated());
+
+        return $topic->fresh();
     }
 
     public function destroy($id)

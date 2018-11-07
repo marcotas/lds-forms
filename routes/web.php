@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
 
     // Topics
     Route::view('admin/topics', 'admin.topics.index')->name('admin.topics.index');
+    Route::view('admin/topics/new', 'admin.topics.new')->name('admin.topics.new');
+    Route::get('admin/topics/{topic}/edit', 'Api\TopicController@edit')->name('admin.topics.edit');
     Route::view('topics', 'topics.agenda')->name('topics.index');
-    // Route::resource('topics', '')
 });
