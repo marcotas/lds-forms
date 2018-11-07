@@ -1,128 +1,117 @@
 <template lang="pug">
-    div
-        .row
-            .col-md-4
-                input-text(
-                    v-if="!hideSearch",
-                    icon="fa fa-search",
-                    placeholder="Pesquisar...",
-                    input-class="shadow-sm border-0",
-                    @input="onSearch",
-                    v-model="search")
-            .col-md-8
-                slot(name="top-actions")
+    .card.border-0.shadow-sm
+        .card-header.bg-white(style="padding: 0.75rem")
+            .d-flex.align-items-center
+                div
+                    .custom-control.custom-checkbox.dropdown-toggle(data-toggle="dropdown")
+                        input#bulk-checkbox.custom-control-input(type="checkbox", :checked="allSelected")
+                        label.custom-control-label(for="bulk-checkbox")
+                            span.text-hide Checkbox
+                    .dropdown-menu
+                        a.dropdown-item(href="#", @click.prevent="selectAll") Select All
+                        a.dropdown-item(href="#", @click.prevent="unselectAll") Unselect All
+                        a.dropdown-item(href="#", @click.prevent="clearSelection") Clear selection
+                .ml-3(v-if="selected.length") {{ selected.length }} selected
+                .ml-auto.d-flex
+                    //- ACTIONS
+                    .d-flex(v-if="hasActions && selected.length")
+                        mt-select.mr-2(
+                            button-class="btn-sm btn-default",
+                            v-model="actionSelected",
+                            track-by="name",
+                            label="name",
+                            :options="_actions")
+                        button-loading.btn.btn-primary.btn-sm.mr-2(
+                            :disabled="!actionSelected",
+                            @click="performAction",
+                            :loading="actionLoading")
+                            i.fa.fa-play.fa-fwfw(v-if="!actionLoading")
 
-        .card.border-0.shadow-sm
-            .card-header.bg-white(style="padding: 0.75rem")
-                .d-flex.align-items-center
-                    div
-                        .custom-control.custom-checkbox.dropdown-toggle(data-toggle="dropdown")
-                            input#bulk-checkbox.custom-control-input(type="checkbox", :checked="allSelected")
-                            label.custom-control-label(for="bulk-checkbox")
+                    //- FILTERS
+                    button-dropdown(v-if="hasOption('filters')",
+                        :button-classes="buttonFilterClasses",
+                        dropdown-classes="dropdown-menu-right")
+                        span.mr-2(v-if="appliedFilters.length") ({{ appliedFilters.length }})
+                        i.fa.fa-filter(:class="{ 'text-black-50': !appliedFilters.length }")
+                        div(slot="items")
+                            div(v-for="filter of filters")
+                                .bg-light.px-3.text-muted.text-uppercase(
+                                    v-if="filter.header", @click.stop.prevent="() => {}")
+                                    small {{ filter.header }}
+                                a.dropdown-item(
+                                    v-if="!filter.header"
+                                    href="#", @click.prevent.stop="toggleFilter(filter)",
+                                    :class="{active: isAppliedFilter(filter)}") {{ filter.label }}
+
+                    //- BULK DELETE OPTION
+                    button-dropdown.ml-2(v-if="selected.length && hasBulkDelete",
+                        button-classes="btn-sm btn-default",
+                        dropdown-classes="dropdown-menu-right")
+                        i.fa.fa-trash-alt.text-black-50
+                        div(slot="items")
+                            a.dropdown-item(href="#", @click.prevent="confirmBulkDelete") Deletar Todos ({{ selected.length }})
+
+        table.table.mb-0
+            thead.bg-light
+                tr
+                    th.text-secondary.py-1.border-top-0.border-bottom-0
+                    th.text-secondary.py-1.text-uppercase.border-top-0.border-bottom-0(v-for="column of columns", :key="column")
+                        .d-flex.align-items-center(
+                            style="position: relative",
+                            :class="{'is-sortable': isSortable(column)}",
+                            @click="sortBy(column)"
+                        )
+                            span {{ head(column) }}
+                            span.indicators.d-inline-flex.flex-column.pl-2(v-if="isSortable(column)")
+                                i.fa.fa-chevron-up(:class="{active: hasSorted(column)}")
+                                i.fa.fa-chevron-down(:class="{active: hasSortedReverse(column)}")
+                    th.text-secondary.py-1.border-top-0.border-bottom-0(style="min-width: 130px")
+            tbody
+                tr(valign="middle", v-for="resource of resources.data", :key="resource[trackBy]")
+                    td.align-middle
+                        .custom-control.custom-checkbox
+                            input.custom-control-input(
+                                type="checkbox",
+                                :id="checkboxId(resource)",
+                                @input="onCheck(resource)",
+                                :checked="isResourceSelected(resource)")
+                            label.custom-control-label(:for="checkboxId(resource)")
                                 span.text-hide Checkbox
-                        .dropdown-menu
-                            a.dropdown-item(href="#", @click.prevent="selectAll") Selecionar Todos
-                            a.dropdown-item(href="#", @click.prevent="unselectAll") Deselecionar Todos
-                            a.dropdown-item(href="#", @click.prevent="clearSelection") Limpar Seleção
-                    .ml-3(v-if="selected.length") {{ selected.length }} selecionado(s)
-                    .ml-auto.d-flex
-                        //- ACTIONS
-                        .d-flex(v-if="hasActions && selected.length")
-                            mt-select.mr-2(
-                                button-class="btn-sm btn-default",
-                                v-model="actionSelected",
-                                track-by="name",
-                                label="name",
-                                :options="_actions")
-                            button-loading.btn.btn-primary.btn-sm.mr-2(
-                                :disabled="!actionSelected",
-                                @click="performAction",
-                                :loading="actionLoading")
-                                i.fa.fa-play.fa-fwfw(v-if="!actionLoading")
+                    td.align-middle(v-for="column of columns", :key="column")
+                        slot(:row="resource", :name="column")
+                            span(v-if="!isAvatar(column)") {{ $obj_get(resource, column) }}
+                            img.avatar.rounded-circle(
+                                v-if="isAvatar(column)"
+                                :class="{ \
+                                    [options.avatars[column] ? options.avatars[column]['cssClass'] || '' : '']: true \
+                                }"
+                                :src="$obj_get(resource, column)")
+                    td.align-middle
+                        slot(:row="resource", name="actions")
+                            .actions
+                                a.btn.btn-sm.bg-transparent(v-if="detailUrl", :href="detailUrl")
+                                    i.far.fa-eye.text-black-50
+                                a.btn.btn-sm.bg-transparent(v-if="editUrl", :href="editUrl")
+                                    i.far.fa-edit.text-black-50
+                                button.btn.btn-sm.bg-transparent(
+                                    @click="confirmRemove(resource)",
+                                    v-if="!wasSoftDeleted(resource) && resourceUrl(resource)")
+                                    i.far.fa-trash-alt.text-black-50
+                                button.btn.btn-sm.bg-transparent(
+                                    @click="confirmForceDelete(resource)",
+                                    v-if="wasSoftDeleted(resource)")
+                                    i.far.fa-trash-alt.text-danger
+                                button-loading.btn.btn-sm.bg-transparent(
+                                    v-if="wasSoftDeleted(resource)",
+                                    @click="restore(resource)",
+                                    :loading="isRestoring(resource)")
+                                    i.fas.fa-redo.text-black-50(v-if="!isRestoring(resource)")
+                tr(v-if="resources.data.length === 0")
+                    td(:colspan="columns.length + 2")
+                        slot(name="empty-table") No data found
 
-                        //- FILTERS
-                        button-dropdown(v-if="hasOption('filters')",
-                            :button-classes="buttonFilterClasses",
-                            dropdown-classes="dropdown-menu-right")
-                            span.mr-2(v-if="appliedFilters.length") ({{ appliedFilters.length }})
-                            i.fa.fa-filter(:class="{ 'text-black-50': !appliedFilters.length }")
-                            div(slot="items")
-                                div(v-for="filter of filters")
-                                    .bg-light.px-3.text-muted.text-uppercase(
-                                        v-if="filter.header", @click.stop.prevent="() => {}")
-                                        small {{ filter.header }}
-                                    a.dropdown-item(
-                                        v-if="!filter.header"
-                                        href="#", @click.prevent.stop="toggleFilter(filter)",
-                                        :class="{active: isAppliedFilter(filter)}") {{ filter.label }}
-
-                        //- BULK DELETE OPTION
-                        button-dropdown.ml-2(v-if="selected.length && hasBulkDelete",
-                            button-classes="btn-sm btn-default",
-                            dropdown-classes="dropdown-menu-right")
-                            i.fa.fa-trash-alt.text-black-50
-                            div(slot="items")
-                                a.dropdown-item(href="#", @click.prevent="confirmBulkDelete") Deletar Todos ({{ selected.length }})
-
-            table.table.mb-0
-                thead.bg-light
-                    tr
-                        th.text-secondary.py-1.border-top-0.border-bottom-0
-                        th.text-secondary.py-1.text-uppercase.border-top-0.border-bottom-0(v-for="column of columns", :key="column")
-                            .d-flex.align-items-center(
-                                style="position: relative",
-                                :class="{'is-sortable': isSortable(column)}",
-                                @click="sortBy(column)"
-                            )
-                                span {{ head(column) }}
-                                span.indicators.d-inline-flex.flex-column.pl-2(v-if="isSortable(column)")
-                                    i.fa.fa-chevron-up(:class="{active: hasSorted(column)}")
-                                    i.fa.fa-chevron-down(:class="{active: hasSortedReverse(column)}")
-                        th.text-secondary.py-1.border-top-0.border-bottom-0(style="min-width: 130px")
-                tbody
-                    tr(valign="middle", v-for="resource of resources.data", :key="resource[trackBy]")
-                        td.align-middle
-                            .custom-control.custom-checkbox
-                                input.custom-control-input(
-                                    type="checkbox",
-                                    :id="checkboxId(resource)",
-                                    @input="onCheck(resource)",
-                                    :checked="isResourceSelected(resource)")
-                                label.custom-control-label(:for="checkboxId(resource)")
-                                    span.text-hide Checkbox
-                        td.align-middle(v-for="column of columns", :key="column")
-                            slot(:row="resource", :name="column")
-                                span(v-if="!isAvatar(column)") {{ resource[column] }}
-                                img.rounded-circle.float-right(
-                                    v-if="isAvatar(column)",
-                                    :src="resource[column]",
-                                    style="max-width: 32px")
-                        td.align-middle
-                            slot(:row="resource", name="actions")
-                                .actions
-                                    a.btn.btn-sm.bg-transparent(v-if="detailUrl", :href="detailUrl")
-                                        i.far.fa-eye.text-black-50
-                                    a.btn.btn-sm.bg-transparent(v-if="editUrl", :href="editUrl")
-                                        i.far.fa-edit.text-black-50
-                                    button.btn.btn-sm.bg-transparent(
-                                        @click="confirmRemove(resource)",
-                                        v-if="!wasSoftDeleted(resource)")
-                                        i.far.fa-trash-alt.text-black-50
-                                    button.btn.btn-sm.bg-transparent(
-                                        @click="confirmForceDelete(resource)",
-                                        v-if="wasSoftDeleted(resource)")
-                                        i.far.fa-trash-alt.text-danger
-                                    button-loading.btn.btn-sm.bg-transparent(
-                                        v-if="wasSoftDeleted(resource)",
-                                        @click="restore(resource)",
-                                        :loading="isRestoring(resource)")
-                                        i.fas.fa-redo.text-black-50(v-if="!isRestoring(resource)")
-                    tr(v-if="resources.data.length === 0")
-                        td(:colspan="columns.length + 2")
-                            slot(name="empty-table") No data found
-
-            pagination.border-top.pt-3.pb-2(:meta="resources.meta", :links="resources.links", @page="fetchResources" v-if="hasPage")
-
+        pagination.border-top.pt-3.pb-2(:meta="resources.meta", :links="resources.links", @page="fetchResources" v-if="hasPage")
+        
         modal(ref="confirmDelete", :centered="true", effect="zoomin")
             span(slot="title") Confirmation
             .lead Are you sure you want to delete this record?
@@ -188,7 +177,7 @@ export default {
          * Message when resources are deleted in a bulk.
          */
         bulkDeleteMessage: {
-            default: 'Selected resources successfully deleted',
+            default: 'Selected resources successfully deleted'
         },
 
         /**
@@ -198,7 +187,7 @@ export default {
          */
         columns: {
             required: true,
-            type: Array,
+            type: Array
         },
 
         /**
@@ -206,59 +195,57 @@ export default {
          */
         defaultSort: {
             required: false,
-            default: null,
+            default: null
         },
 
         /**
          * Message when a resource is deleted
          */
         deleteMessage: {
-            default: 'Resource successfully deleted',
+            default: 'Resource successfully deleted'
         },
 
         /**
          * Url for the detail button
          */
         detailUrl: {
-            default: null,
+            default: null
         },
 
         /**
          * URL for the edit page.
          */
         editUrl: {
-            default: null,
+            default: null
+        },
+
+        /**
+         * Base Resource's URL
+         */
+        url: {
+            default: null
         },
 
         /**
          * Flag to display the bulk delete option.
          */
         hasBulkDelete: {
-            default: true,
+            default: true
         },
 
         /**
          * Flag to show the search bar or not
          */
-        hideSearch: {
-            default: false,
+        search: {
+            default: null
         },
 
         /**
-         * The model type name.
+         * The route id for the urls with id.
          */
-        modelType: {
-            required: true,
-            type: String,
-        },
-
-        /**
-         * The model type plural name.
-         */
-        modelTypePlural: {
-            required: false,
-            default: null,
-            type: String,
+        routeId: {
+            default: 'id',
+            type: String
         },
 
         /**
@@ -268,8 +255,8 @@ export default {
             required: false,
             default: () => ({
                 headers: {},
-                sortable: [],
-            }),
+                sortable: []
+            })
         },
 
         /**
@@ -278,8 +265,8 @@ export default {
         trackBy: {
             required: false,
             default: 'id',
-            type: String,
-        },
+            type: String
+        }
     },
 
     data() {
@@ -287,11 +274,10 @@ export default {
             resources: {
                 data: [],
                 links: null,
-                meta: null,
+                meta: null
             },
             page: 1,
             loading: false,
-            search: null,
             selected: [],
             sort: null,
             removing: [],
@@ -300,8 +286,14 @@ export default {
             targetResource: null,
             appliedFilters: [],
             actionSelected: null,
-            actionLoading: false,
+            actionLoading: false
         };
+    },
+
+    watch: {
+        search: _.debounce(function() {
+            this.refresh();
+        }, 500)
     },
 
     computed: {
@@ -317,19 +309,8 @@ export default {
         sortables() {
             return this.options.sortable;
         },
-        modelPlural() {
-            return this.modelTypePlural || this.modelType + 's';
-        },
-        indexUrl() {
-            return this.$route(`api.${this.modelPlural}.index`);
-        },
-        destroyUrl() {
-            return this.$route(`api.${this.modelPlural}.destroy`, {
-                [this.modelType]: this.targetResource[this.trackBy],
-            });
-        },
         bulkDestroyUrl() {
-            return this.$route(`api.${this.modelPlural}.destroy-bulk`);
+            return this.url + '/bulk-destroy';
         },
         hasActions() {
             return this.options.actions && this.options.actions.length;
@@ -342,12 +323,12 @@ export default {
         },
         _actions() {
             return this.hasActions ? this.options.actions : [];
-        },
+        }
     },
 
     created() {
         this.sort = this.defaultSort;
-        if (this.indexUrl) {
+        if (this.url) {
             this.fetchResources();
         }
         if (!this.options) {
@@ -411,7 +392,7 @@ export default {
                     title: 'Attention',
                     message: `Are you really sure you want to permanently destroy this resource?
                         This action cannot be undone.`,
-                    dangerous: true,
+                    dangerous: true
                 });
                 await this.$http.delete(this.resourceUrl(resource) + '/force');
                 this.$refs.confirmForceDelete.close();
@@ -432,7 +413,7 @@ export default {
 
         async remove(resource) {
             this.removing.push(resource[this.trackBy]);
-            await this.$http.delete(this.destroyUrl);
+            await this.$http.delete(this.resourceUrl(resource));
             this.$toasted.show(this.deleteMessage);
             this.targetResource = null;
             this.removing.splice(this.removing.indexOf(resource[this.trackBy]), 1);
@@ -462,7 +443,9 @@ export default {
         isAvatar(column) {
             if (!this.hasOption('avatars')) return false;
 
-            return this.options.avatars.includes(column);
+            return Array.isArray(this.options.avatars)
+                ? this.options.avatars.includes(column)
+                : Object.keys(this.options.avatars).includes(column);
         },
 
         isRemoving(resource) {
@@ -475,7 +458,8 @@ export default {
             const sort = this.sort;
             this.page = search ? page : 1;
             const filter = this.getPreparedFilters();
-            const { data: resources } = await this.$http.get(this.indexUrl, { params: { page, search, sort, filter } });
+            const { data: resources } = await this.$http.get(this.url, { params: { page, search, sort, filter } });
+            console.log('fetch resources', resources);
             this.loading = false;
             this.resources = resources;
         },
@@ -488,7 +472,6 @@ export default {
                 }
                 filters[filter.field] = filter.value;
             });
-            console.log('prepared filters', filters);
             return filters;
         },
 
@@ -543,7 +526,7 @@ export default {
         },
 
         resourceUrl(resource) {
-            return `${this.indexUrl}/${resource[this.trackBy]}`;
+            return `${this.url}/${resource[this.trackBy]}`;
         },
 
         async restore(resource) {
@@ -591,9 +574,9 @@ export default {
             this.selected.includes(id) ? this.selected.splice(this.selected.indexOf(id), 1) : this.selected.push(id);
         },
 
-        onSearch: _.debounce(function() {
-            this.refresh();
-        }, 500),
+        // onSearch: _.debounce(function() {
+        //     this.refresh();
+        // }, 500),
 
         checkboxId(resource) {
             return 'checkbox-' + resource[this.trackBy];
@@ -601,7 +584,7 @@ export default {
 
         wasSoftDeleted(resource) {
             return resource.deleted_at;
-        },
-    },
+        }
+    }
 };
 </script>

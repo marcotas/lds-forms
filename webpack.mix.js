@@ -12,4 +12,18 @@ let mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
+    .sass('resources/sass/app.scss', 'public/css')
+    .webpackConfig({
+        resolve: {
+            alias: {
+                vue$: mix.inProduction() ? 'vue/dist/vue.min' : 'vue/dist/vue.js',
+                styles: path.resolve(__dirname, 'resources/sass'),
+                '@': path.resolve(__dirname, 'resources/js'),
+                '~': path.resolve(__dirname, 'node_modules'),
+            },
+        },
+    });
+
+if (mix.inProduction()) {
+    mix.version();
+}

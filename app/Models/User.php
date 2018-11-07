@@ -15,23 +15,15 @@ class User extends Authenticatable implements HasMedia
 {
     use Notifiable, HasApiTokens, HasMediaTrait, Filterable, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'name', 'email', 'password',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $appends = ['avatar'];
 
     public function recipes() : HasMany
     {
@@ -42,5 +34,15 @@ class User extends Authenticatable implements HasMedia
     {
         $this->addMediaCollection('avatar')
             ->singleFile();
+    }
+
+    // public function avatar()
+    // {
+    //     return $this->morphOne(Media::class, 'model')->where('collection_name', 'avatar');
+    // }
+
+    public function getAvatarAttribute()
+    {
+        return optional($this->getFirstMedia('avatar'))->getFullUrl();
     }
 }

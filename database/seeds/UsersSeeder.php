@@ -19,7 +19,7 @@ class UsersSeeder extends Seeder
         $user->addMediaFromUrl("https://randomuser.me/api/portraits/men/{$numbers->pop()}.jpg")
             ->toMediaCollection('avatar');
 
-        $users = factory(User::class, 99)->create();
+        $users = factory(User::class, 9)->create();
         $users->each(function ($user) use (&$numbers) {
             $gender = $user->gender === 'male' ? 'men' : 'women';
             $user->addMediaFromUrl("https://randomuser.me/api/portraits/{$gender}/{$numbers->pop()}.jpg")

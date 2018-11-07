@@ -33,4 +33,9 @@ Route::middleware('auth')->group(function () {
 
     // Recipes
     Route::get('receitas', 'Web\RecipesController@index')->name('recipes.index');
+
+    // Topics
+    Route::view('admin/topics', 'admin.topics.index')->name('admin.topics.index');
+    Route::view('topics', 'topics.agenda')->name('topics.index');
+    // Route::resource('topics', '')
 });

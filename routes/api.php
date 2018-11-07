@@ -28,5 +28,11 @@ Route::name('api.')->middleware('auth:api')->group(function () {
     // Users Routes
     Route::post('users/{user}/restore', 'Api\UsersController@restore')->name('users.restore');
     Route::delete('users/{user}/force', 'Api\UsersController@forceDestroy')->name('users.force-destroy');
+    Route::post('users/bulk-destroy', 'Api\UsersController@bulkDestroy')->name('users.bulk-destroy');
     Route::resource('users', 'Api\UsersController', ['except' => ['edit', 'create']]);
+
+    // Topics Routes
+    Route::post('topics/distribute', 'Topics\DistributeTopicsController')->name('topics.distribute');
+    Route::post('topics/bulk-destroy', 'Api\TopicController@bulkDestroy')->name('topics.bulk-destroy');
+    Route::resource('topics', 'Api\TopicController', ['except' => ['show']]);
 });

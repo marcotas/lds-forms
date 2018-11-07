@@ -9,17 +9,18 @@ use App\Interactions\Action\Users\ListUsers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Traits\BulkDestroy;
 
 class UsersController extends Controller
 {
+    use BulkDestroy;
+
+    protected $model = User::class;
+
     public function index(Request $request, UsersFilters $filters)
     {
-        return UserResource::collection(
-            $this->execute(
-                ListUsers::class,
-                compact('filters')
-            )->paginate($this->perPage($request))
-        );
+        return $this->execute(ListUsers::class, compact('filters'))
+            ->paginate($this->perPage($request));
     }
 
     public function store(Request $request)

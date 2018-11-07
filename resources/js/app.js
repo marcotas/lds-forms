@@ -5,6 +5,7 @@
  */
 
 import './bootstrap';
+import axios from 'axios';
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -25,9 +26,14 @@ require('./components/forms');
 require('./minutes');
 require('./recipes');
 require('./users');
+require('./topics');
 
 Vue.prototype.$route = window.laroute.route;
 Vue.prototype.$http = window.axios;
+Vue.prototype.$axios = axios;
+Vue.prototype.$obj_get = (obj, str) => {
+    return str.split('.').reduce((a, c) => a ? a[c] : null, obj);
+}
 
 new Vue({
     el: '#app'

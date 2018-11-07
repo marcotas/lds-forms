@@ -11,7 +11,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ mix('js/app.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -37,6 +37,10 @@
                         <li class="nav-item">
                             <a href="{{ route('home') }}" class="nav-link">Atas</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('topics.index') }}" class="nav-link">Topics</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -56,7 +60,8 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a href="{{ route('admin.users.index') }}" class="dropdown-item">Administração</a>
+                                    <a href="{{ route('admin.users.index') }}" class="dropdown-item">Users</a>
+                                    <a href="{{ route('admin.topics.index') }}" class="dropdown-item">Topics</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

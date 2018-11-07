@@ -8,7 +8,6 @@ div
         :columns="['id', 'date', 'attendance']",
         default-sort="-date",
         :options="table",
-        :hide-search="false"
     )
         template(slot="top-actions")
             a.btn.btn-primary.float-right.mb-3(:href="$route('minutes.next')") Ata do Próximo Domingo
@@ -27,17 +26,17 @@ export default {
                 headers: {
                     id: 'ID',
                     date: 'Data',
-                    attendance: 'Frequência',
+                    attendance: 'Frequência'
                 },
-                sortable: ['id', 'date'],
-            },
+                sortable: ['id', 'date']
+            }
         };
     },
     methods: {
         isNextSunday(date) {
             date = moment(date).format('YYYY-MM-DD');
             return this.$refs.table.$data.resources.next_sunday === date;
-        },
-    },
+        }
+    }
 };
 </script>
