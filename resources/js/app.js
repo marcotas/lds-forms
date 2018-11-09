@@ -6,6 +6,10 @@
 
 import './bootstrap';
 import axios from 'axios';
+import Vue from 'vue';
+import ToggleButton from 'vue-js-toggle-button'
+
+Vue.use(ToggleButton);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -17,6 +21,7 @@ window.Vue = require('vue');
 
 require('./commons');
 require('./filters');
+require('./directives');
 
 require('./components/table');
 require('./components/dialogs');
@@ -27,6 +32,7 @@ require('./minutes');
 require('./recipes');
 require('./users');
 require('./topics');
+
 
 Vue.prototype.$route = window.laroute.route;
 Vue.prototype.$http = window.axios;

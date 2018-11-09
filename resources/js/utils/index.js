@@ -1,7 +1,7 @@
-import Form from './Form';
-import Errors from './Errors';
+import Form from './form';
+import Errors from './errors';
 
 export {
-  Form,
-  Errors
+    Form,
+    Errors
 }
