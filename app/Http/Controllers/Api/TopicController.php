@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BulkDestroyRequest;
 use App\Http\Requests\TopicRequest;
 use App\Http\Resources\DataResource;
+use App\Http\Resources\TopicResource;
 use App\Http\Traits\BulkDestroy;
 use App\Models\Topic;
 use Illuminate\Http\Request;
@@ -22,17 +23,9 @@ class TopicController extends Controller
 
     public function index(Request $request, TopicFilters $filters)
     {
-        return DataResource::collection(QueryBuilder::for(Topic::class)
-            ->allowedSorts('name', 'id', 'date')
-            ->allowedFilters([
-                Filter::exact('active'),
-                Filter::exact('gender'),
-                Filter::scope('with_trashed'),
-                Filter::scope('only_trashed'),
-            ])
+        return TopicResource::collection(QueryBuilder::for(Topic::class)
+            ->allowedSorts('name', 'id', 'date', 'created_at')
             ->filters($filters)
-            ->future()
-            ->with('speaker')
             ->paginate($this->perPage($request)));
     }
 
@@ -43,18 +36,18 @@ class TopicController extends Controller
 
     public function store(TopicRequest $request)
     {
-        return Topic::create($request->validated());
+        return new TopicResource(Topic::create($request->validated()));
     }
 
     public function update(TopicRequest $request, Topic $topic)
     {
         $topic->update($request->validated());
 
-        return $topic->fresh();
+        return new TopicResource($topic->fresh());
     }
 
-    public function destroy($id)
+    public function destroy(Topic $topic)
     {
-        //
+        $topic->delete();
     }
 }

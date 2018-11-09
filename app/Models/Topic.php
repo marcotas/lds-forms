@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\Filterable;
-use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class Topic extends Model
 {
@@ -32,6 +32,6 @@ class Topic extends Model
     public function scopeFuture(Builder $builder)
     {
         return $builder->whereDate('date', '>', now())
-            ->orWhere('date', null);
+            ->orWhereNull('date');
     }
 }

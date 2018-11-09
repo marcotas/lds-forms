@@ -28,15 +28,22 @@ Route::middleware('auth')->group(function () {
     Route::get('atas/{minute}', 'Web\MinutesController@show')->name('minutes.show');
     Route::get('atas/{minute}/form', 'Web\MinutesController@form')->name('minutes.form');
 
-    // Admin
-    Route::view('admin/usuarios', 'admin.users.index')->name('admin.users.index');
-
     // Recipes
     Route::get('receitas', 'Web\RecipesController@index')->name('recipes.index');
 
     // Topics
-    Route::view('admin/topics', 'admin.topics.index')->name('admin.topics.index');
-    Route::view('admin/topics/new', 'admin.topics.new')->name('admin.topics.new');
-    Route::get('admin/topics/{topic}/edit', 'Api\TopicController@edit')->name('admin.topics.edit');
     Route::view('topics', 'topics.agenda')->name('topics.index');
+
+    // Admin
+    Route::prefix('admin')->group(function () {
+        // Users
+        Route::view('users', 'admin.users.index')->name('admin.users.index');
+        Route::view('users/new', 'admin.users.new')->name('admin.users.new');
+        Route::get('users/{user}/edit', 'UserController@edit')->name('admin.users.edit');
+
+        // Topics
+        Route::view('topics', 'admin.topics.index')->name('admin.topics.index');
+        Route::view('topics/new', 'admin.topics.new')->name('admin.topics.new');
+        Route::get('topics/{topic}/edit', 'Api\TopicController@edit')->name('admin.topics.edit');
+    });
 });

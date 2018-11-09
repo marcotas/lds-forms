@@ -22,8 +22,8 @@
             ref="table",
             :url="$route('api.topics.index')",
             :search="search",
-            :columns="['id', 'name', 'date', 'speaker']",
-            default-sort="date",
+            :columns="['id', 'name', 'date', 'created_at', 'speaker']",
+            default-sort="-created_at",
             :options="tableOptions")
             template(slot="name", slot-scope="{ row: topic }")
                 a(:href="$route('admin.topics.edit', { topic: topic.id })") {{ topic.name }}
@@ -31,9 +31,11 @@
                     i.fa.fa-external-link-alt.ml-2
             template(slot="date", slot-scope="{ row: topic }")
                 | {{ topic.date | date('DD MMMM Y') }}
+            template(slot="created_at", slot-scope="{ row: topic }")
+                | {{ topic.created_at | date('DD MMMM Y') }}
             template(slot="speaker", slot-scope="{ row: topic }")
                 div(v-if="topic.speaker")
-                    img.rounded-circle.avatar(:src="topic.speaker.avatar", v-if="topic.speaker.avatar")
+                    img.rounded-circle.avatar(:src="topic.speaker.avatar.thumb", v-if="topic.speaker.avatar")
                     span.ml-2 {{ topic.speaker.name }}
             template(slot="actions", slot-scope="{ row: topic }")
                 a.btn.btn-sm.bg-transparent(:href="$route('admin.topics.edit', { topic: topic.id })")
@@ -60,22 +62,10 @@ export default {
                     name: 'Nome',
                     link: 'Link',
                     date: 'Data',
+                    created_at: 'Criado Em',
                     speaker: 'Discursante'
                 },
-                // avatars: ['speaker.avatar'],
-                // avatars: ['speaker.avatar'],
-                sortable: ['id', 'name', 'date']
-                // filters: [
-                //     { header: 'Situação' },
-                //     { field: 'active', label: 'Ativos', value: true },
-                //     { field: 'active', label: 'Inativos', value: false },
-                //     { header: 'Sexo' },
-                //     { field: 'gender', label: 'Homens', value: 'male' },
-                //     { field: 'gender', label: 'Mulheres', value: 'female' },
-                //     { header: 'Lixeira' },
-                //     { field: 'with_trashed', label: 'Mostrar excluídos', value: true },
-                //     { field: 'only_trashed', label: 'Mostrar Somente excluídos', value: true }
-                // ]
+                sortable: ['id', 'name', 'date', 'created_at']
             }
         };
     },

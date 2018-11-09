@@ -1,7 +1,7 @@
 <template lang="pug">
     section
-        h3.clearfix Usuários
-        
+        h3.clearfix Users
+
         .row
             .col-md-4
                 input-text(
@@ -10,22 +10,26 @@
                     input-class="shadow-sm border-0",
                     v-model="search")
             .col-md-8
-                button.btn.btn-primary.float-right.text-gray-500.shadow-sm
+                a.btn.btn-primary.float-right.text-gray-500.shadow-sm(:href="$route('admin.users.new')")
                     i.fa.fa-plus.mr-2
-                    | Novo Usuário
+                    | New User
 
         mt-table(
             ref="table",
             model-type="user",
             :url="$route('api.users.index')"
             :search="search"
-            :columns="['id', 'avatar', 'name', 'email', 'gender', 'active']",
+            :columns="['id', 'avatar.thumb', 'name', 'email', 'gender', 'active']",
             default-sort="-id",
             :options="tableOptions")
             template(slot="active", slot-scope="prop")
                 | {{ prop.row.active ? 'Ativo' : 'Inativo' }}
             template(slot="gender", slot-scope="prop")
                 | {{ prop.row.gender === 'male' ? 'Homem' : 'Mulher' }}
+
+            template(slot="actions", slot-scope="{ row: user }")
+                a.btn.btn-sm.bg-transparent(:href="$route('admin.users.edit', { user: user.id })")
+                    i.far.fa-edit.text-black-50
 
         confirmation(ref="confirmation")
 </template>
@@ -45,12 +49,12 @@ export default {
             tableOptions: {
                 headers: {
                     id: 'ID',
-                    avatar: '',
+                    'avatar.thumb': '',
                     name: 'Nome',
                     gender: 'Sexo',
                     active: 'Situação'
                 },
-                avatars: ['avatar'],
+                avatars: ['avatar.thumb'],
                 sortable: ['id', 'name', 'email'],
                 filters: [
                     { header: 'Situação' },
