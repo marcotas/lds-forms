@@ -7,8 +7,8 @@
                     | {{ placeholder }}
                     i.ml-auto.fa.fa-chevron-down
                 div.d-flex.align-items-center.flex-wrap(slot="selected", v-if="objSelected")
-                    div(v-if="sourceImage")
-                        img.small.avatar.rounded-circle(:src="sourceImage")
+                    div(v-if="sourceImage || forceImage")
+                        img.small.avatar.rounded-circle(:src="sourceImage || defaultImage")
                     .ml-2 {{ objSelected[labelBy] }}
                     i.ml-auto.fa.fa-times(@click.stop="removeSelection")
             .form-group.position-relative
@@ -59,6 +59,8 @@ export default {
         url: String,
         trackBy: { default: 'id' },
         labelBy: { default: 'name' },
+        forceImage: { default: false },
+        defaultImage: { default: 'https://www.gravatar.com/avatar?d=mp&s=500' },
         searchable: Boolean,
         searchableModel: String,
         searchableFields: {
@@ -110,7 +112,8 @@ export default {
         async fetchSource() {
             const params = {
                 per_page: 100,
-                search: this.search
+                search: this.search,
+                sort: this.labelBy
             };
             if (this.searchableModel) {
                 params.fields = { [this.searchableModel]: this.searchableFields.join(',') };
@@ -135,7 +138,7 @@ export default {
         },
 
         optionSourceImage(option) {
-            return this.$obj_get(option, this.imageAs);
+            return this.$obj_get(option, this.imageAs) || (this.forceImage && this.defaultImage);
         },
 
         onSearch: _.debounce(async function() {

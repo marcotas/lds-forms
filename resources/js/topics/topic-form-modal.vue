@@ -8,6 +8,7 @@
         input-select-2(label="Speaker", placeholder="Click to choose", :url="$route('api.users.index')",
             searchable-model="users",
             image-as="avatar.thumb",
+            :force-image="true",
             v-model="form.user_id",
             :options="userOptions"
             :form="form",
