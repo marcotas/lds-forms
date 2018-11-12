@@ -6,6 +6,15 @@
         input-text(label="Link", v-model="form.link", :form="form", field="link")
         input-text(label="Date", type="date", v-model="form.date", :form="form", field="date")
 
+        input-select-2(label="Speaker", placeholder="Click to choose", :url="$route('api.users.index')",
+            searchable-model="users",
+            image-as="avatar.thumb",
+            :force-image="true",
+            v-model="form.user_id",
+            :options="userOptions"
+            :form="form",
+            field="user_id")
+
         a.btn.btn-default.mr-2(:href="$route('admin.topics.index')")
             i.fa.fa-arrow-left.mr-2
             | Back to list
@@ -22,8 +31,13 @@ export default {
 
     data() {
         return {
-            form: new Form(this.topic || {})
+            form: new Form(this.topic || {}),
+            userOptions: []
         };
+    },
+
+    created() {
+        if (this.form.user_id) this.fetchUser(this.form.user_id);
     },
 
     methods: {
@@ -47,6 +61,11 @@ export default {
         async create() {
             const { data: topic } = await this.form.post(this.$route('api.topics.store'));
             return topic.data;
+        },
+
+        async fetchUser(id) {
+            const { data: user } = await this.$axios.get(this.$route('api.users.show', { user: id }));
+            this.userOptions = [user.data];
         }
     }
 };
