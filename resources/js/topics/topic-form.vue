@@ -9,8 +9,8 @@
         a.btn.btn-default.mr-2(:href="$route('admin.topics.index')")
             i.fa.fa-arrow-left.mr-2
             | Back to list
-        button.btn.btn-primary.mr-2(@click="submitAnother") Create & Continue
-        button-loading.btn.btn-primary(:loading="form.submitting" @click="submit") Create
+        button.btn.btn-primary.mr-2(@click="submitAnother" v-if="!form.id") Create & Continue
+        button-loading.btn.btn-primary(:loading="form.submitting" @click="save") Save
         save-indicator.ml-3(:saving="form.submitting")
 </template>
 
@@ -27,7 +27,7 @@ export default {
     },
 
     methods: {
-        async submit() {
+        async save() {
             const topic = this.form.id ? await this.update() : await this.create();
             window.location.href = this.$route('admin.topics.edit', { topic: topic.id });
         },
