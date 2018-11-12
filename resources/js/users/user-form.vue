@@ -23,7 +23,8 @@
                     a.btn.btn-default.mr-2(:href="$route('admin.users.index')")
                         i.fa.fa-arrow-left.mr-2
                         | Back to list
-                    button-loading.btn.btn-primary(:loading="form.submitting" @click="submit") Submit
+                    button-loading.btn.btn-primary(:loading="form.submitting" @click="createAndContinue") Create & Continue
+                    button-loading.btn.btn-primary.ml-2(:loading="form.submitting" @click="save") Save
                     save-indicator.ml-3(:saving="form.submitting")
 </template>
 
@@ -41,8 +42,14 @@ export default {
     },
 
     methods: {
-        async submit() {
+        async save() {
             this.form.id ? await this.update() : await this.create();
+            window.location.href = this.$route('admin.users.edit', { user: user.id });
+        },
+
+        async createAndContinue() {
+            await this.create();
+            this.form.reset();
         },
 
         async update() {
@@ -52,7 +59,6 @@ export default {
 
         async create() {
             const { data: user } = await this.form.post(this.$route('api.users.store'));
-            window.location.href = this.$route('admin.users.edit', { user: user.id });
         }
     }
 };

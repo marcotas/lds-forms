@@ -49,7 +49,7 @@ export default {
 
     methods: {
         async fetchTopics(page = 1) {
-            const params = { page, sort: 'date' };
+            const params = { page, sort: 'date', per_page: 100 };
             const { data: topics } = await this.$axios.get(this.$route('api.topics.index'), { params });
             this.topics = topics;
             this.updateGroupedTopics();
