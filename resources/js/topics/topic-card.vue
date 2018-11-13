@@ -9,7 +9,15 @@
                     data-toggle="tooltip"
                     data-placement="top")
             .lead {{ topic.name }}
+            small.time.text-black-50 {{ time }}
 </template>
+
+<style lang="sass" scoped>
+.time
+    position: relative
+    bottom: -4px
+</style>
+
 
 <script>
 export default {
@@ -38,6 +46,9 @@ export default {
         title() {
             const name = this.$obj_get(this.topic, 'speaker.name');
             return `Assigned to ${name}`;
+        },
+        time() {
+            return this.topic.position * 5 + ' minutes';
         }
     },
 
