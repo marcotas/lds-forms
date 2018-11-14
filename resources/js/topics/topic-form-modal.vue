@@ -4,6 +4,8 @@
         input-text(label="Name", v-model="form.name", :form="form", field="name")
         input-text(label="Link", v-model="form.link", :form="form", field="link")
         input-text(label="Date", type="date", v-model="form.date", :form="form", field="date")
+        input-select(label="Position", v-model="form.position", :form="form", field="position",
+            :options="positionOptions")
 
         input-select-2(label="Speaker", placeholder="Click to choose", :url="$route('api.users.index')",
             searchable-model="users",
@@ -42,7 +44,12 @@ export default {
             form: new Form(),
             userOptions: [],
             speaker: null,
-            blurred: true
+            blurred: true,
+            positionOptions: [
+                { id: 1, name: 'First Speaker' },
+                { id: 2, name: 'Second Speaker' },
+                { id: 3, name: 'Last Speaker' }
+            ]
         };
     },
 

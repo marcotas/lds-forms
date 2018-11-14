@@ -26,6 +26,7 @@ class TopicController extends Controller
         return TopicResource::collection(QueryBuilder::for(Topic::class)
             ->allowedSorts('name', 'id', 'date', 'created_at')
             ->filters($filters)
+            ->orderBy('position')
             ->paginate($this->perPage($request)));
     }
 
