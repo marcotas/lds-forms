@@ -51,64 +51,65 @@
                         div(slot="items")
                             a.dropdown-item(href="#", @click.prevent="confirmBulkDelete") Delete All ({{ selected.length }})
 
-        table.table.mb-0
-            thead.bg-light
-                tr
-                    th.text-secondary.py-1.border-top-0.border-bottom-0
-                    th.text-secondary.py-1.text-uppercase.border-top-0.border-bottom-0(v-for="column of columns", :key="column")
-                        .d-flex.align-items-center(
-                            style="position: relative",
-                            :class="{'is-sortable': isSortable(column)}",
-                            @click="sortBy(column)"
-                        )
-                            span {{ head(column) }}
-                            span.indicators.d-inline-flex.flex-column.pl-2(v-if="isSortable(column)")
-                                i.fa.fa-chevron-up(:class="{active: hasSorted(column)}")
-                                i.fa.fa-chevron-down(:class="{active: hasSortedReverse(column)}")
-                    th.text-secondary.py-1.border-top-0.border-bottom-0(style="min-width: 130px")
-            tbody
-                tr(valign="middle", v-for="resource of resources.data", :key="resource[trackBy]")
-                    td.align-middle
-                        .custom-control.custom-checkbox
-                            input.custom-control-input(
-                                type="checkbox",
-                                :id="checkboxId(resource)",
-                                @input="onCheck(resource)",
-                                :checked="isResourceSelected(resource)")
-                            label.custom-control-label(:for="checkboxId(resource)")
-                                span.text-hide Checkbox
-                    td.align-middle(v-for="column of columns", :key="column")
-                        slot(:row="resource", :name="column")
-                            span(v-if="!isAvatar(column)") {{ $obj_get(resource, column) }}
-                            img.avatar.rounded-circle(
-                                v-if="isAvatar(column)"
-                                :class="{ \
-                                    [options.avatars[column] ? options.avatars[column]['cssClass'] || '' : '']: true \
-                                }"
-                                :src="$obj_get(resource, column)")
-                    td.align-middle
-                        .actions
-                            slot(:row="resource", name="actions")
-                                a.btn.btn-sm.bg-transparent(v-if="detailUrl", :href="detailUrl")
-                                    i.far.fa-eye.text-black-50
-                                a.btn.btn-sm.bg-transparent(v-if="editUrl", :href="editUrl")
-                                    i.far.fa-edit.text-black-50
-                            button.btn.btn-sm.bg-transparent(
-                                @click="confirmRemove(resource)",
-                                v-if="!wasSoftDeleted(resource) && resourceUrl(resource)")
-                                i.far.fa-trash-alt.text-black-50
-                            button.btn.btn-sm.bg-transparent(
-                                @click="confirmForceDelete(resource)",
-                                v-if="wasSoftDeleted(resource)")
-                                i.far.fa-trash-alt.text-danger
-                            button-loading.btn.btn-sm.bg-transparent(
-                                v-if="wasSoftDeleted(resource)",
-                                @click="restore(resource)",
-                                :loading="isRestoring(resource)")
-                                i.fas.fa-redo.text-black-50(v-if="!isRestoring(resource)")
-                tr(v-if="resources.data.length === 0")
-                    td(:colspan="columns.length + 2")
-                        slot(name="empty-table") No data found
+        .table-responsive
+            table.table.mb-0
+                thead.bg-light
+                    tr
+                        th.text-secondary.py-1.border-top-0.border-bottom-0
+                        th.text-secondary.py-1.text-uppercase.border-top-0.border-bottom-0(v-for="column of columns", :key="column")
+                            .d-flex.align-items-center(
+                                style="position: relative",
+                                :class="{'is-sortable': isSortable(column)}",
+                                @click="sortBy(column)"
+                            )
+                                span {{ head(column) }}
+                                span.indicators.d-inline-flex.flex-column.pl-2(v-if="isSortable(column)")
+                                    i.fa.fa-chevron-up(:class="{active: hasSorted(column)}")
+                                    i.fa.fa-chevron-down(:class="{active: hasSortedReverse(column)}")
+                        th.text-secondary.py-1.border-top-0.border-bottom-0(style="min-width: 130px")
+                tbody
+                    tr(valign="middle", v-for="resource of resources.data", :key="resource[trackBy]")
+                        td.align-middle
+                            .custom-control.custom-checkbox
+                                input.custom-control-input(
+                                    type="checkbox",
+                                    :id="checkboxId(resource)",
+                                    @input="onCheck(resource)",
+                                    :checked="isResourceSelected(resource)")
+                                label.custom-control-label(:for="checkboxId(resource)")
+                                    span.text-hide Checkbox
+                        td.align-middle(v-for="column of columns", :key="column")
+                            slot(:row="resource", :name="column")
+                                span(v-if="!isAvatar(column)") {{ $obj_get(resource, column) }}
+                                img.avatar.rounded-circle(
+                                    v-if="isAvatar(column)"
+                                    :class="{ \
+                                        [options.avatars[column] ? options.avatars[column]['cssClass'] || '' : '']: true \
+                                    }"
+                                    :src="$obj_get(resource, column)")
+                        td.align-middle
+                            .actions
+                                slot(:row="resource", name="actions")
+                                    a.btn.btn-sm.bg-transparent(v-if="detailUrl", :href="detailUrl")
+                                        i.far.fa-eye.text-black-50
+                                    a.btn.btn-sm.bg-transparent(v-if="editUrl", :href="editUrl")
+                                        i.far.fa-edit.text-black-50
+                                button.btn.btn-sm.bg-transparent(
+                                    @click="confirmRemove(resource)",
+                                    v-if="!wasSoftDeleted(resource) && resourceUrl(resource)")
+                                    i.far.fa-trash-alt.text-black-50
+                                button.btn.btn-sm.bg-transparent(
+                                    @click="confirmForceDelete(resource)",
+                                    v-if="wasSoftDeleted(resource)")
+                                    i.far.fa-trash-alt.text-danger
+                                button-loading.btn.btn-sm.bg-transparent(
+                                    v-if="wasSoftDeleted(resource)",
+                                    @click="restore(resource)",
+                                    :loading="isRestoring(resource)")
+                                    i.fas.fa-redo.text-black-50(v-if="!isRestoring(resource)")
+                    tr(v-if="resources.data.length === 0")
+                        td(:colspan="columns.length + 2")
+                            slot(name="empty-table") No data found
 
         pagination.border-top.pt-3.pb-2(:meta="resources.meta", :links="resources.links", @page="fetchResources" v-if="hasPage")
 

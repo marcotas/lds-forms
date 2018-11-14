@@ -2,14 +2,14 @@
     section
         h3.clearfix Users
 
-        .row
-            .col-md-4
-                input-text(
+        .row.mb-3
+            .col-md-4.mt-2
+                input-text.mb-0(
                     icon="fa fa-search",
                     placeholder="Pesquisar...",
                     input-class="shadow-sm border-0",
                     v-model="search")
-            .col-md-8
+            .col-md-8.mt-2
                 a.btn.btn-primary.float-right.text-gray-500.shadow-sm(:href="$route('admin.users.new')")
                     i.fa.fa-plus.mr-2
                     | New User

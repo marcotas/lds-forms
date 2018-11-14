@@ -2,14 +2,14 @@
     section
         h3.clearfix Topics
 
-        .row
+        .row.mb-3
             .col-md-4
-                input-text(
+                input-text.mb-0.mt-2(
                     icon="fa fa-search",
                     placeholder="Pesquisar...",
                     input-class="shadow-sm border-0",
                     v-model="search")
-            .col-md-8
+            .col-md-8.mt-2
                 .d-flex
                     button.btn.btn-default.ml-auto.text-gray-500.shadow-sm(@click="distribute")
                         i.fa.fa-code-branch.mr-2
