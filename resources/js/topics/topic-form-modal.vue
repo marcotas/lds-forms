@@ -13,7 +13,18 @@
             :options="userOptions"
             :form="form",
             field="user_id")
-        //- pre form: {{ form }}
+
+        div(v-if="speaker && form.date && form.link && form.name")
+            label Message
+            .bg-light.rounded.p-3(:contenteditable="true", @click="selectText", ref="message"
+                @blur="blurred = true")
+                p {{ isMale ? 'Querido irmão' : 'Querida irmã' }} {{ speaker.name }}, o bispado da Ala Gama I gostaria de convidar você para discursar por {{ speetchTime }} no dia {{ form.date | date('LL') }} na reunião sacramental. O tema do seu discurso será:
+                p {{ form.name }} ({{ form.link }})
+                p
+                    | Desde já agradecemos por seu apoio e dedicação em servir na casa do Senhor.
+                    | "Os anjos falam pelo poder do Espírito Santo; falam, portanto, as palavras de Cristo. Por isto eu vos disse: Banqueteai-vos com as palavras de Cristo; pois eis que as palavras de Cristo vos dirão todas as coisas que deveis fazer." 2 Néfi 32:3
+                p.mb-0 Podemos contar com sua ajuda?
+
 
         div(slot="footer")
             button.btn.bg-transparent.mr-2(type="button", @click="close") Cancel
@@ -29,8 +40,19 @@ export default {
     data() {
         return {
             form: new Form(),
-            userOptions: []
+            userOptions: [],
+            speaker: null,
+            blurred: true
         };
+    },
+
+    computed: {
+        isMale() {
+            return this.speaker && this.speaker.gender === 'male';
+        },
+        speetchTime() {
+            return this.form.position * 5 + ' minutos';
+        }
     },
 
     methods: {
@@ -39,6 +61,14 @@ export default {
             this.form.user_id && this.fetchUser(this.form.user_id);
             return this;
         },
+
+        selectText() {
+            if (window.getSelection && this.blurred) {
+                window.getSelection().selectAllChildren(this.$refs.message);
+                this.blurred = false;
+            }
+        },
+
         async save() {
             const { data: topic } = await this.form.put(this.$route('api.topics.update', { topic: this.form.id }));
             this.$emit('updated', topic.data);
@@ -47,6 +77,7 @@ export default {
 
         async fetchUser(id) {
             const { data: user } = await this.$axios.get(this.$route('api.users.show', { user: id }));
+            this.speaker = user.data;
             this.userOptions = [user.data];
         }
     }
