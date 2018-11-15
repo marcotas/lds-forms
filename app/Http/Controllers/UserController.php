@@ -31,10 +31,23 @@ class UserController extends Controller
                 Filter::scope('with_trashed'),
                 Filter::scope('only_trashed'),
             ])
+            ->whereWardId($this->currentUser()->ward_id)
             ->filters($filters)
             ->paginate($this->perPage($request));
 
         return DataResource::collection($query);
+    }
+
+    public function suggestions(Request $request, UsersFilters $filters)
+    {
+        return DataResource::collection(User::whereWardId($this->currentUser()->ward_id)
+            ->filters($filters)
+            ->orderBy('name')
+            ->active()
+            ->whereDoesntHave('topics', function ($topic) {
+                return $topic->future(now()->subMonth(3));
+            })
+            ->get());
     }
 
     public function show(Request $request, User $user)

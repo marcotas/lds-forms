@@ -7,13 +7,14 @@
         input-select(label="Position", v-model="form.position", :form="form", field="position",
             :options="positionOptions")
 
-        input-select-2(label="Speaker", placeholder="Click to choose", :url="$route('api.users.index')",
+        input-select-2(label="Speaker", placeholder="Click to choose", :url="$route('api.users.suggestions')",
             searchable-model="users",
             image-as="avatar.thumb",
             :force-image="true",
             v-model="form.user_id",
             :options="userOptions"
             :form="form",
+            @opened="suggestUsers"
             field="user_id")
 
         div(v-if="speaker && form.date && form.link && form.name")
@@ -66,6 +67,7 @@ export default {
         setup(topic = {}) {
             this.form = new Form(topic || {});
             this.form.user_id && this.fetchUser(this.form.user_id);
+            this.speaker = null;
             return this;
         },
 
@@ -86,6 +88,13 @@ export default {
             const { data: user } = await this.$axios.get(this.$route('api.users.show', { user: id }));
             this.speaker = user.data;
             this.userOptions = [user.data];
+        },
+
+        async suggestUsers() {
+            this.userOptions = [];
+            const { data: users } = await this.$axios.get(this.$route('api.users.suggestions'));
+            this.userOptions = users.data;
+            this.speaker && this.userOptions.unshift(this.speaker);
         }
     }
 };

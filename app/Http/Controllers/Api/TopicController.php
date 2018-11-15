@@ -23,11 +23,25 @@ class TopicController extends Controller
 
     public function index(Request $request, TopicFilters $filters)
     {
-        return TopicResource::collection(QueryBuilder::for(Topic::class)
+        return TopicResource::collection(
+            QueryBuilder::for(Topic::class)
             ->allowedSorts('name', 'id', 'date', 'created_at')
             ->filters($filters)
             ->orderBy('position')
-            ->paginate($this->perPage($request)));
+            ->paginate($this->perPage($request))
+        );
+    }
+
+    public function agenda(Request $request, TopicFilters $filters)
+    {
+        return TopicResource::collection(
+            QueryBuilder::for(Topic::class)
+            ->allowedSorts('name', 'id', 'date', 'created_at')
+            ->future()
+            ->filters($filters)
+            ->orderBy('position')
+            ->get()
+        );
     }
 
     public function edit(Topic $topic)

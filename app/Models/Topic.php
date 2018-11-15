@@ -29,9 +29,10 @@ class Topic extends Model
         return $builder->whereNull('date');
     }
 
-    public function scopeFuture(Builder $builder)
+    public function scopeFuture(Builder $builder, $afterDate = null)
     {
-        return $builder->whereDate('date', '>', now())
-            ->orWhereNull('date');
+        $afterDate = $afterDate ?? now();
+
+        return $builder->whereDate('date', '>', now());
     }
 }

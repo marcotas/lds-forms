@@ -112,37 +112,40 @@
 <script>
 export default {
     props: {
-        minute: { required: true, type: Object },
+        minute: { required: true, type: Object }
     },
-    created() {
-        console.log('created', this.minute);
-    },
+
     computed: {
         next() {
-            return this.$route(
-                'minutes.next', { from: moment(this.minute.date).format('YYYY-MM-DD')
+            return this.$route('minutes.next', {
+                from: moment(this.minute.date).format('YYYY-MM-DD')
             });
         },
         prev() {
-            return this.$route(
-                'minutes.prev', { from: moment(this.minute.date).format('YYYY-MM-DD')
+            return this.$route('minutes.prev', {
+                from: moment(this.minute.date).format('YYYY-MM-DD')
             });
         },
         hasAnyAction() {
-            return this.hasCallings
-                || this.hasConfirmations
-                || this.hasBabyBlessings
-                || this.hasOrdinances;
+            return this.hasCallings || this.hasConfirmations || this.hasBabyBlessings || this.hasOrdinances;
         },
-        hasCallings() { return this.minute.callings && this.minute.callings.length; },
-        hasConfirmations() { return this.minute.confirmations && this.minute.confirmations.length; },
-        hasBabyBlessings() { return this.minute.baby_blessings && this.minute.baby_blessings.length; },
-        hasOrdinances() { return this.minute.ordinances && this.minute.ordinances.length; },
+        hasCallings() {
+            return this.minute.callings && this.minute.callings.length;
+        },
+        hasConfirmations() {
+            return this.minute.confirmations && this.minute.confirmations.length;
+        },
+        hasBabyBlessings() {
+            return this.minute.baby_blessings && this.minute.baby_blessings.length;
+        },
+        hasOrdinances() {
+            return this.minute.ordinances && this.minute.ordinances.length;
+        }
     },
     methods: {
         print() {
             window.print();
         }
-    },
-}
+    }
+};
 </script>

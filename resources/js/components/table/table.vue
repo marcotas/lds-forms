@@ -460,7 +460,6 @@ export default {
             this.page = search ? page : 1;
             const filter = this.getPreparedFilters();
             const { data: resources } = await this.$http.get(this.url, { params: { page, search, sort, filter } });
-            console.log('fetch resources', resources);
             this.loading = false;
             this.resources = resources;
         },

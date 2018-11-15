@@ -75,7 +75,6 @@ export default {
         async action(selected) {
             return new Promise(resolve =>
                 setTimeout(() => {
-                    console.log('ação realizada para os ids', selected);
                     resolve();
                 }, 1000)
             );

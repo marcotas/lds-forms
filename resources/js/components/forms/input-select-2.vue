@@ -19,6 +19,7 @@
                         @input="onSearch",
                         placeholder="Type to search...")
                     .scrollable
+                        em.dropdown-item-text.text-muted(v-if="noOptions") There is no options. Sorry.
                         a.dropdown-item.cursor-pointer.d-flex.align-items-center.flex-wrap(
                             href="#",
                             :class="{'active': isSelected(option)}"
@@ -74,7 +75,8 @@ export default {
             opened: false,
             search: null,
             selected: this.value,
-            innerOptions: []
+            innerOptions: [],
+            noOptions: false
         };
     },
 
@@ -84,6 +86,8 @@ export default {
         },
         options() {
             this.innerOptions = this.options;
+            this.noOptions = this.innerOptions.length === 0 && !this.objSelected;
+            console.log('no options ? ', this.noOptions, this.innerOptions, this.objSelected);
         }
     },
 
@@ -99,10 +103,13 @@ export default {
     methods: {
         toggleOpen() {
             this.opened = !this.opened;
+            this.noOptions = false;
             if (this.opened) {
                 this.search = null;
                 this.$nextTick(() => this.$refs.input.focus());
+                return this.$emit('opened');
             }
+            return this.$emit('closed');
         },
 
         outsideClick() {
@@ -120,6 +127,7 @@ export default {
             }
             const { data: innerOptions } = await this.$axios.get(this.url, { params });
             this.innerOptions = innerOptions.data ? innerOptions.data : innerOptions;
+            this.noOptions = this.innerOptions.length === 0 && !this.objSelected;
         },
 
         select(option) {

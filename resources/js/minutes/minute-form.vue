@@ -104,56 +104,50 @@ export default {
             }),
 
             callingsColumns: [
-                { name: "Nome", style: { width: "40%" } },
-                { name: "A/D", style: { width: "10%" } },
-                { name: "Chamado", style: { width: "40%" } },
+                { name: 'Nome', style: { width: '40%' } },
+                { name: 'A/D', style: { width: '10%' } },
+                { name: 'Chamado', style: { width: '40%' } }
             ],
             confirmationsColumns: [
-                { name: "Nome", style: { width: "45%" } },
-                { name: "Confirmado Por", style: { width: "45%" } },
+                { name: 'Nome', style: { width: '45%' } },
+                { name: 'Confirmado Por', style: { width: '45%' } }
             ],
             ordinancesColumns: [
-                { name: "Nome", style: { width: "35%" } },
-                { name: "Sacerdócio", style: { width: "10%" } },
-                { name: "Ofício", style: { width: "10%" } },
-                { name: "Ordenado Por", style: { width: "35%" } },
+                { name: 'Nome', style: { width: '35%' } },
+                { name: 'Sacerdócio', style: { width: '10%' } },
+                { name: 'Ofício', style: { width: '10%' } },
+                { name: 'Ordenado Por', style: { width: '35%' } }
             ],
             babyBlessingsColumns: [
-                { name: "Nome", style: { width: "35%" } },
-                { name: "Data de Nascimento", style: { width: "20%" } },
-                { name: "Abençoado(a) Por", style: { width: "35%" } },
-            ],
+                { name: 'Nome', style: { width: '35%' } },
+                { name: 'Data de Nascimento', style: { width: '20%' } },
+                { name: 'Abençoado(a) Por', style: { width: '35%' } }
+            ]
         };
     },
     computed: {
         next() {
-            const url = this.$route(
-                'minutes.next-form', { from: moment(this.form.date).format('YYYY-MM-DD')
+            const url = this.$route('minutes.next-form', {
+                from: moment(this.form.date).format('YYYY-MM-DD')
             });
-            console.log('next url', url);
             return url;
         },
         prev() {
-            return this.$route(
-                'minutes.prev-form', { from: moment(this.form.date).format('YYYY-MM-DD')
+            return this.$route('minutes.prev-form', {
+                from: moment(this.form.date).format('YYYY-MM-DD')
             });
-        },
+        }
     },
     methods: {
         async save() {
             try {
-                const { data } = await this.form.put(
-                    this.$route("api.minutes.update", { minute: this.form.id })
-                );
-                this.$toasted.show("Ata salva com sucesso.", { icon: "check" });
+                const { data } = await this.form.put(this.$route('api.minutes.update', { minute: this.form.id }));
+                this.$toasted.show('Ata salva com sucesso.', { icon: 'check' });
             } catch (e) {
-                this.$toastr.error(
-                    "Oops! Não foi possível completar essa operação.",
-                    "Error"
-                );
-                console.log("error", e);
+                this.$toastr.error('Oops! Não foi possível completar essa operação.', 'Error');
+                console.error('error', e);
             }
-        },
+        }
     }
 };
 </script>

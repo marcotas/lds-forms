@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\HasSecurePassword;
 use App\Traits\Filterable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -39,6 +40,11 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(Recipe::class);
     }
 
+    public function topics(): HasMany
+    {
+        return $this->hasMany(Topic::class);
+    }
+
     public function registerMediaCollections()
     {
         $this->addMediaCollection('avatar')->singleFile();
@@ -63,5 +69,10 @@ class User extends Authenticatable implements HasMedia
             'original' => $this->getFirstMedia('avatar')->getFullUrl(),
             'thumb'    => $this->getFirstMedia('avatar')->getFullUrl('thumb'),
         ];
+    }
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->whereActive(true);
     }
 }

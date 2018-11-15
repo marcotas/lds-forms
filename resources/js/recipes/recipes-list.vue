@@ -28,28 +28,28 @@ export default {
                     id: 'ID',
                     name: 'Nome',
                     description: 'Descrição',
-                    status: 'Situação',
+                    status: 'Situação'
                 },
                 sortable: ['id', 'name'],
                 filters: [
                     { field: 'status', label: 'Status Ativo', value: 'active' },
-                    { field: 'status', label: 'Status Inativo', value: 'inactive' },
+                    { field: 'status', label: 'Status Inativo', value: 'inactive' }
                 ],
                 actions: [
                     {
                         name: 'Activate Recipe',
-                        callback: this.action.bind(this),
+                        callback: this.action.bind(this)
                     },
                     {
                         name: 'Reiniciar',
                         callback: this.action.bind(this),
                         confirmation: {
                             message: 'Tem certeza que deseja realizar esta ação?',
-                            title: 'Confirmação',
-                        },
-                    },
-                ],
-            },
+                            title: 'Confirmação'
+                        }
+                    }
+                ]
+            }
         };
     },
 
@@ -57,11 +57,10 @@ export default {
         async action(selected) {
             return new Promise(resolve =>
                 setTimeout(() => {
-                    console.log('ação realizada para os ids', selected);
                     resolve();
-                }, 1000),
+                }, 1000)
             );
-        },
-    },
+        }
+    }
 };
 </script>

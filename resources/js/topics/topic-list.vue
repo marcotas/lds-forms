@@ -70,15 +70,10 @@ export default {
         };
     },
 
-    created() {
-        console.log('route', this.$route('api.topics.index'));
-    },
-
     methods: {
         async action(selected) {
             return new Promise(resolve =>
                 setTimeout(() => {
-                    console.log('ação realizada para os ids', selected);
                     resolve();
                 }, 1000)
             );
