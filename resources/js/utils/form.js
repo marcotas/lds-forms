@@ -1,4 +1,5 @@
 import Errors from './errors';
+import axios from 'axios';
 
 export default class {
     constructor(data = {}, format = 'json') {
@@ -38,19 +39,32 @@ export default class {
     }
 
     multipartData() {
-        let data = new FormData();
+        return this.toFormData(this.__data);
+    }
 
-        for (let property in this.__data) {
-            if (typeof (this[property]) === 'object' && !(this[property] instanceof File)) {
-                for (let sub in this[property]) {
-                    data.append(`${property}[${sub}]`, this[property][sub]);
-                }
+    toFormData(obj, form, namespace) {
+        let formData = form || new FormData();
+        let formKey;
+
+        for (let property in obj) {
+            const value = obj[property];
+
+            if (namespace) {
+                formKey = namespace + '[' + property + ']';
             } else {
-                data.append(property, this[property]);
+                formKey = property;
+            }
+
+            if (value instanceof Date) {
+                formData.append(formKey, value.toISOString());
+            } else if (typeof value === 'object' && !(value instanceof File)) {
+                this.toFormData(value, formData, formKey);
+            } else {
+                formData.append(formKey, value);
             }
         }
 
-        return data;
+        return formData;
     }
 
     reset() {
@@ -66,10 +80,18 @@ export default class {
     }
 
     put(url, fieldName = null) {
+        if (this.__multipart) {
+            this._method = 'PUT';
+            return this.submit('post', url, fieldName);
+        }
         return this.submit('put', url, fieldName);
     }
 
     patch(url, fieldName = null) {
+        if (this.__multipart) {
+            this._method = 'PATCH';
+            return this.submit('post', url, fieldName);
+        }
         return this.submit('patch', url, fieldName);
     }
 
@@ -92,7 +114,7 @@ export default class {
                     this.submitting = false;
                     if (error.response && error.response.status === 422) this.onFail(error.response.data.errors);
 
-                    reject(error);
+                    reject(error.response);
                 });
         });
     }
