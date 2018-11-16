@@ -1,0 +1,35 @@
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://use.fontawesome.com/releases/v5.5.0/css/all.css');
+
+
+// Other Libraries
+@import '~v-calendar/lib/v-calendar.min.css';
+
+// Application imports
+@import 'variables';
+@import 'components/tables';
+@import 'components/typography';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+@import 'effects';
+
+.navbar-laravel {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.avatar {
+  max-width: 2rem;
+}
+
+// Helpers
+.overflow-hidden {
+    overflow: hidden;
+}

@@ -5,10 +5,11 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\Filterable;
 
 class Minute extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Filterable;
 
     protected $fillable = [
         'date',

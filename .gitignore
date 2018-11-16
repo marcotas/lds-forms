@@ -16,4 +16,4 @@ yarn-error.log
 .env
 .env.testing
 
-resources/assets/js/commons/laroute.js
+resources/js/commons/laroute.js
