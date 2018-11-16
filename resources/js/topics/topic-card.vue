@@ -9,7 +9,12 @@
                     data-toggle="tooltip"
                     data-placement="top")
             .lead {{ topic.name }}
-            small.time.text-black-50 {{ time }}
+            div.d-flex.align-items-center.time
+                small.text-black-50 {{ time }}
+                small.ml-2.text-primary.text-uppercase(v-if="topic.invited_at",
+                    :class="topic.confirmed_at ? 'text-success' : 'text-info'")
+                    i.fa.mr-1(:class="topic.confirmed_at ? 'fa-check-double' : 'fa-check'")
+                    | {{ topic.confirmed_at ? 'Confirmed' : 'Invited' }}
 </template>
 
 <style lang="sass" scoped>

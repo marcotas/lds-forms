@@ -20,9 +20,11 @@ class TopicRequest extends FormRequest
                 'required', 'url', 'max:1024',
                 Rule::unique('topics')->ignore($this->get('id')),
             ],
-            'user_id'  => 'nullable|exists:users,id',
-            'position' => 'nullable|integer|min:1',
-            'date'     => 'nullable|date'
+            'user_id'      => 'nullable|exists:users,id',
+            'position'     => 'nullable|integer|min:1',
+            'date'         => 'nullable|date',
+            'invited_at'   => 'nullable',
+            'confirmed_at' => 'nullable',
         ];
     }
 }

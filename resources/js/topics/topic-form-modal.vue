@@ -17,7 +17,26 @@
             @opened="suggestUsers"
             field="user_id")
 
-        div(v-if="speaker && form.date && form.link && form.name")
+        .d-flex
+            .mr-3
+                toggle-button.mb-0(
+                    :value="!!form.invited_at",
+                    :sync="true",
+                    @change="invite",
+                    :labels="{ checked: 'Invited', unchecked: 'Not invited' }",
+                    :width="105",
+                    :height="25")
+            div(v-if="!!form.invited_at")
+                toggle-button.mb-0(
+                    :value="!!form.confirmed_at",
+                    :sync="true",
+                    :disabled="!form.invited_at",
+                    @change="confirm",
+                    :labels="{ checked: 'Confirmed', unchecked: 'Unconfirmed' }",
+                    :width="120",
+                    :height="25")
+
+        .mt-3(v-if="speaker && form.date && form.link && form.name && !form.invited_at")
             label Message
             .bg-light.rounded.p-3(:contenteditable="true", @click="selectText", ref="message"
                 @blur="blurred = true")
@@ -33,6 +52,11 @@
             button.btn.bg-transparent.mr-2(type="button", @click="close") Cancel
             button-loading.btn.btn-primary(:loading="form.submitting" @click="save") Save
 </template>
+
+<style lang="sass" scoped>
+.vue-js-switch
+    font-size: 0.85rem
+</style>
 
 <script>
 import ModalComponent from '@/mixins/modal-component';
@@ -95,6 +119,14 @@ export default {
             const { data: users } = await this.$axios.get(this.$route('api.users.suggestions'));
             this.userOptions = users.data;
             this.speaker && this.userOptions.unshift(this.speaker);
+        },
+
+        async invite({ value }) {
+            this.form.invited_at = value;
+        },
+
+        async confirm({ value }) {
+            this.form.confirmed_at = value;
         }
     }
 };
