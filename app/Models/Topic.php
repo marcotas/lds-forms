@@ -31,11 +31,11 @@ class Topic extends Model
         return $builder->whereNull('date');
     }
 
-    public function scopeFuture(Builder $builder, $afterDate = null)
+    public function scopeFuture(Builder $builder, $fromDate = null)
     {
-        $afterDate = $afterDate ?? now();
+        $fromDate = $fromDate ?? now();
 
-        return $builder->whereDate('date', '>', now());
+        return $builder->whereDate('date', '>=', $fromDate);
     }
 
     public function setInvitedAtAttribute($value)
