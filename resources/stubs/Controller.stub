@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\{{modelName}}Request;
+use App\Models\{{modelName}};
+use Illuminate\Http\Response;
+
+class {{modelName}}Controller extends Controller
+{
+    public function index()
+    {
+        return {{modelName}}::latest()->get();
+    }
+
+    public function store({{modelName}}Request $request)
+    {
+        return {{modelName}}::create($request->all());
+    }
+
+    public function show({{modelName}} ${{variableFormSingular}})
+    {
+        return ${{variableFormSingular}};
+    }
+
+    public function update({{modelName}}Request $request, {{modelName}} ${{variableFormSingular}})
+    {
+        ${{variableFormSingular}}->update($request->all());
+
+        return ${{variableFormSingular}};
+    }
+
+    public function destroy({{modelName}} ${{variableFormSingular}})
+    {
+        ${{variableFormSingular}}->delete();
+
+        return response()->json(null, Response::HTTP_NO_CONTENT);
+    }
+}
