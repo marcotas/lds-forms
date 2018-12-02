@@ -4,13 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Create{{modelNamePlural}}Table extends Migration
+class CreateDummyClassPluralTable extends Migration
 {
     public function up()
     {
-        Schema::create('{{modelNamePluralLowerCase}}', function (Blueprint $table) {
+        Schema::create('DummyTableName', function (Blueprint $table) {
             $table->increments('id');
-            {{schema}}
+            DummyTableSchema
 
             $table->timestamps();
         });
@@ -18,6 +18,6 @@ class Create{{modelNamePlural}}Table extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('{{modelNamePluralLowerCase}}');
+        Schema::dropIfExists('DummyTableName');
     }
 }
