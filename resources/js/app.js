@@ -7,7 +7,8 @@
 import './bootstrap';
 import axios from 'axios';
 import Vue from 'vue';
-import ToggleButton from 'vue-js-toggle-button'
+import ToggleButton from 'vue-js-toggle-button';
+import { loadProgressBar } from 'axios-progress-bar';
 
 Vue.use(ToggleButton);
 
@@ -33,13 +34,14 @@ require('./recipes');
 require('./users');
 require('./topics');
 
-
 Vue.prototype.$route = window.laroute.route;
 Vue.prototype.$http = window.axios;
 Vue.prototype.$axios = axios;
 Vue.prototype.$obj_get = (obj, str) => {
-    return str.split('.').reduce((a, c) => a ? a[c] : null, obj);
-}
+    return str.split('.').reduce((a, c) => (a ? a[c] : null), obj);
+};
+
+loadProgressBar();
 
 new Vue({
     el: '#app'

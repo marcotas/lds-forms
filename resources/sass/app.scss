@@ -5,6 +5,7 @@
 
 
 // Other Libraries
+@import '~axios-progress-bar/dist/nprogress.css';
 @import '~v-calendar/lib/v-calendar.min.css';
 
 // Application imports
@@ -17,19 +18,43 @@
 @import 'effects';
 
 .navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .cursor-pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .avatar {
-  max-width: 2rem;
+    max-width: 2rem;
 }
 
 // Helpers
 .overflow-hidden {
     overflow: hidden;
+}
+
+
+.nav-settings {
+    @extend .mb-4;
+
+    .nav-heading {
+        @extend .mb-3;
+        font-size: 14px;
+        text-transform: uppercase;
+        color: $gray-500;
+    }
+
+    .nav-link {
+        padding: 0 0 0.5rem;
+        font-size: 1rem;
+        font-weight: bold;
+        color: $gray-700;
+
+        &:hover,
+        &.active {
+            color: $primary;
+        }
+    }
 }
