@@ -10,7 +10,8 @@
                         | Update
                     button-loading.btn.btn-primary(@click='create', v-if='!form.id', :loading='form.submitting')
                         | Create
-        divDummyInputFields
+        div
+DummyInputFields
 </template>
 
 <script>

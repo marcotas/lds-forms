@@ -37,10 +37,8 @@ class MigrationRecipe extends Recipe
 
     protected function getSchema($fields)
     {
-        return collect($fields)->map(function ($field) {
-            list($field, $type) = explode(':', $field) + [null, 'string'];
-
-            return "\n" . str_repeat(' ', 12) . "\$table->$type('$field');";
+        return $this->getFields()->map(function ($field) {
+            return "\n" . $this->indent(12, $field->getSchema());
         })->implode('');
     }
 }

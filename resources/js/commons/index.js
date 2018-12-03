@@ -6,3 +6,4 @@ Vue.component('pagination', require('./pagination'));
 Vue.component('editable', require('./editable'));
 Vue.component('divisor', require('./divisor'));
 Vue.component('save-indicator', require('./save-indicator'));
+Vue.component('input-textarea', require('./input-textarea'));

@@ -23,6 +23,7 @@ window.Vue = require('vue');
 require('./commons');
 require('./filters');
 require('./directives');
+require('./components');
 
 require('./components/table');
 require('./components/dialogs');
