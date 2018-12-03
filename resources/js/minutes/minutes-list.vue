@@ -2,7 +2,7 @@
 div
     h3.clearfix Atas Sacramentais
 
-    mt-table(
+    resource-table(
         ref="table"
         model-type="minute",
         :columns="['id', 'date', 'attendance']",

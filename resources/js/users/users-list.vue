@@ -14,7 +14,7 @@
                     i.fa.fa-plus.mr-2
                     | New User
 
-        mt-table(
+        resource-table(
             ref="table",
             model-type="user",
             :url="$route('api.users.index')"

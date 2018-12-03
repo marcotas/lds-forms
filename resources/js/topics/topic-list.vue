@@ -18,7 +18,7 @@
                         i.fa.fa-plus.mr-2
                         | New Topic
 
-        mt-table(
+        resource-table(
             ref="table",
             :url="$route('api.topics.index')",
             :search="search",
