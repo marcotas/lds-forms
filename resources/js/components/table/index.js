@@ -1,1 +1,1 @@
-Vue.component('mt-table', require('./table'));
+Vue.component('resource-table', require('./resource-table'));

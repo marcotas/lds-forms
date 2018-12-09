@@ -1,7 +1,7 @@
 <template lang="pug">
-    .card.border-0.shadow-sm
+    .card.resource-table
         .card-header.bg-white(style="padding: 0.75rem")
-            .d-flex.align-items-center
+            .d-flex.align-items-center(style="height: 28px;")
                 div
                     .custom-control.custom-checkbox.dropdown-toggle(data-toggle="dropdown")
                         input#bulk-checkbox.custom-control-input(type="checkbox", :checked="allSelected")
@@ -44,10 +44,11 @@
                                     :class="{active: isAppliedFilter(filter)}") {{ filter.label }}
 
                     //- BULK DELETE OPTION
-                    button-dropdown.ml-2(v-if="selected.length && hasBulkDelete",
+                    button-dropdown.ml-2(
+                        v-if="selected.length && hasBulkDelete"
                         button-classes="btn-sm btn-default",
                         dropdown-classes="dropdown-menu-right")
-                        i.fa.fa-trash-alt.text-black-50
+                        i.far.fa-trash-alt.text-black-50
                         div(slot="items")
                             a.dropdown-item(href="#", @click.prevent="confirmBulkDelete") Delete All ({{ selected.length }})
 
@@ -80,19 +81,25 @@
                                     span.text-hide Checkbox
                         td.align-middle(v-for="column of columns", :key="column")
                             slot(:row="resource", :name="column")
-                                span(v-if="!isAvatar(column)") {{ $obj_get(resource, column) }}
+                                span(v-if="!isAvatar(column) && !isImage(column)") {{ objGet(resource, column) }}
                                 img.avatar.rounded-circle(
                                     v-if="isAvatar(column)"
                                     :class="{ \
                                         [options.avatars[column] ? options.avatars[column]['cssClass'] || '' : '']: true \
                                     }"
-                                    :src="$obj_get(resource, column)")
+                                    :src="objGet(resource, column)")
+                                img(
+                                    v-if="isImage(column)"
+                                    :class="{ \
+                                        [options.images[column] ? options.images[column]['cssClass'] || '' : 'resource-image']: true \
+                                    }"
+                                    :src="objGet(resource, column)")
                         td.align-middle
                             .actions
                                 slot(:row="resource", name="actions")
-                                    a.btn.btn-sm.bg-transparent(v-if="detailUrl", :href="detailUrl")
+                                    a.btn.btn-sm.bg-transparent(:href="resourceUrl(resource)")
                                         i.far.fa-eye.text-black-50
-                                    a.btn.btn-sm.bg-transparent(v-if="editUrl", :href="editUrl")
+                                    a.btn.btn-sm.bg-transparent(:href="editUrl(resource)")
                                         i.far.fa-edit.text-black-50
                                 button.btn.btn-sm.bg-transparent(
                                     @click="confirmRemove(resource)",
@@ -137,35 +144,41 @@
         confirmation(ref="confirmForceDelete")
 </template>
 
-<style lang="sass" scoped>
-@import '../../../sass/_variables.scss'
-.is-sortable
-    user-select: none
+<style lang="sass">
+.resource-table
+    .is-sortable
+        user-select: none
 
-    span
-        cursor: pointer
+        span
+            cursor: pointer
 
-    .indicators
-        font-size: .65rem
-        i.fa
-            opacity: 0.4
-            &.active
-                opacity: 1
-                color: $primary
+        .indicators
+            font-size: .65rem
+            i.fa
+                opacity: 0.4
+                &.active
+                    opacity: 1
+                    color: red
 
-.modal.zoomin
-    transform: scale(1.2)
-    opacity: 0
-    transition: all .2s ease
-    &.show
-        transform: scale(1)
-        opacity: 1
+    .modal.zoomin
+        transform: scale(1.2)
+        opacity: 0
         transition: all .2s ease
+        &.show
+            transform: scale(1)
+            opacity: 1
+            transition: all .2s ease
 
-.table
-    .actions
-        i
-            font-size: 1rem
+    .table
+        .actions
+            i
+                font-size: 1rem
+        .btn-default
+            background-color: #e6eaec
+
+        .resource-image
+            max-width: 80px
+            border-radius: 4px
 </style>
 
 
@@ -204,20 +217,6 @@ export default {
          */
         deleteMessage: {
             default: 'Resource successfully deleted'
-        },
-
-        /**
-         * Url for the detail button
-         */
-        detailUrl: {
-            default: null
-        },
-
-        /**
-         * URL for the edit page.
-         */
-        editUrl: {
-            default: null
         },
 
         /**
@@ -395,7 +394,7 @@ export default {
                         This action cannot be undone.`,
                     dangerous: true
                 });
-                await this.$http.delete(this.resourceUrl(resource) + '/force');
+                await this.$axios.delete(this.resourceUrl(resource) + '/force');
                 this.$refs.confirmForceDelete.close();
                 this.refresh();
             } catch (error) {
@@ -414,7 +413,7 @@ export default {
 
         async remove(resource) {
             this.removing.push(resource[this.trackBy]);
-            await this.$http.delete(this.resourceUrl(resource));
+            await this.$axios.delete(this.resourceUrl(resource));
             this.$toasted.show(this.deleteMessage);
             this.targetResource = null;
             this.removing.splice(this.removing.indexOf(resource[this.trackBy]), 1);
@@ -425,7 +424,7 @@ export default {
         async removeBulk() {
             this.removing_bulk = true;
             const ids = this.selected;
-            await this.$http.post(this.bulkDestroyUrl, { ids });
+            await this.$axios.post(this.bulkDestroyUrl, { ids });
             this.selected = [];
             this.removing_bulk = false;
             this.refresh();
@@ -449,6 +448,14 @@ export default {
                 : Object.keys(this.options.avatars).includes(column);
         },
 
+        isImage(column) {
+            if (!this.hasOption('images')) return false;
+
+            return Array.isArray(this.options.images)
+                ? this.options.images.includes(column)
+                : Object.keys(this.options.images).includes(column);
+        },
+
         isRemoving(resource) {
             return resource && this.removing.includes(resource[this.trackBy]);
         },
@@ -457,9 +464,8 @@ export default {
             this.loading = true;
             const search = this.search || null;
             const sort = this.sort;
-            this.page = search ? page : 1;
             const filter = this.getPreparedFilters();
-            const { data: resources } = await this.$http.get(this.url, { params: { page, search, sort, filter } });
+            const { data: resources } = await this.$axios.get(this.url, { params: { page, search, sort, filter } });
             this.loading = false;
             this.resources = resources;
         },
@@ -529,10 +535,14 @@ export default {
             return `${this.url}/${resource[this.trackBy]}`;
         },
 
+        editUrl(resource) {
+            return this.resourceUrl(resource) + '/edit';
+        },
+
         async restore(resource) {
             const restoreUrl = this.resourceUrl(resource) + '/restore';
             this.restoring.push(resource[this.trackBy]);
-            await this.$http.post(restoreUrl);
+            await this.$axios.post(restoreUrl);
             await this.refresh();
             this.restoring.splice(this.restoring.indexOf(resource[this.trackBy]), 1);
         },
@@ -584,6 +594,10 @@ export default {
 
         wasSoftDeleted(resource) {
             return resource.deleted_at;
+        },
+
+        objGet(obj, str) {
+            return str.split('.').reduce((a, c) => (a ? a[c] : null), obj);
         }
     }
 };

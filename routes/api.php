@@ -35,7 +35,7 @@ Route::name('api.')->middleware('auth:api')->group(function () {
 
     // Topics Routes
     Route::post('topics/distribute', 'Topics\DistributeTopicsController')->name('topics.distribute');
-    Route::post('topics/bulk-destroy', 'Api\TopicController@bulkDestroy')->name('topics.bulk-destroy');
-    Route::get('topics/agenda', 'Api\TopicController@agenda')->name('topics.agenda');
-    Route::resource('topics', 'Api\TopicController', ['except' => ['show']]);
+    Route::post('topics/bulk-destroy', 'TopicController@bulkDestroy')->name('topics.bulk-destroy');
+    Route::get('topics/agenda', 'TopicController@agenda')->name('topics.agenda');
+    Route::resource('topics', 'TopicController', ['except' => ['show']]);
 });

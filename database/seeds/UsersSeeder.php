@@ -13,7 +13,7 @@ class UsersSeeder extends Seeder
             'name'     => 'Marco Túlio',
             'email'    => 'marcotulio.avila@gmail.com',
             'gender'   => 'male',
-            'password' => bcrypt('123456'),
+            'password' => '123456',
         ]);
 
         $user->addMediaFromUrl("https://randomuser.me/api/portraits/men/{$numbers->pop()}.jpg")

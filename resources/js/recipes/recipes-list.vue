@@ -2,7 +2,7 @@
     section
         h3.clearfix Receitas
 
-        mt-table(
+        resource-table(
             ref="table",
             model-type="recipe",
             :columns="['id', 'name', 'description', 'status']",
