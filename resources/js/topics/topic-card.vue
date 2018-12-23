@@ -4,9 +4,8 @@
         class="hover:shadow")
         .card-body
             .float-right.ml-2
-                img.avatar.rounded-circle(ref="avatar", :src="avatar", v-if="topic.speaker"
-                    :title="title"
-                    data-toggle="tooltip"
+                avatar(ref="avatar", :username="topic.speaker.name", :src="avatar", v-if="topic.speaker", :title="title", color="#fff",
+                    data-toggle="tooltip",
                     data-placement="top")
             .lead {{ topic.name }}
             div.d-flex.align-items-center.time
@@ -46,7 +45,7 @@ export default {
 
     computed: {
         avatar() {
-            return this.$obj_get(this.topic, 'speaker.avatar.thumb') || '/img/default-avatar.png';
+            return this.$obj_get(this.topic, 'speaker.avatar.thumb');
         },
         title() {
             const name = this.$obj_get(this.topic, 'speaker.name');
@@ -64,7 +63,7 @@ export default {
             }
 
             if (this.$refs.avatar) {
-                this.tooltip = $(this.$refs.avatar).tooltip({
+                this.tooltip = $(this.$refs.avatar.$el).tooltip({
                     boundary: 'window',
                     delay: { show: 500, hide: 0 }
                 });

@@ -9,8 +9,10 @@ import axios from 'axios';
 import Vue from 'vue';
 import ToggleButton from 'vue-js-toggle-button';
 import { loadProgressBar } from 'axios-progress-bar';
+import VueAvatar from 'vue-avatar';
 
 Vue.use(ToggleButton);
+Vue.component('avatar', VueAvatar);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -43,8 +43,8 @@ export default {
 
     methods: {
         async save() {
-            this.form.id ? await this.update() : await this.create();
-            window.location.href = this.$route('admin.users.edit', { user: this.form.id });
+            const response = this.form.id ? await this.update() : await this.create();
+            window.location.href = this.$route('admin.users.index');
         },
 
         async createAndContinue() {
@@ -55,10 +55,12 @@ export default {
         async update() {
             const { data: user } = await this.form.post(this.$route('api.users.update', { user: this.form.id }));
             this.form = new Form(user, 'multipart');
+            return user;
         },
 
         async create() {
             const { data: user } = await this.form.post(this.$route('api.users.store'));
+            return user;
         }
     }
 };

@@ -7181,6 +7181,11 @@ vue-api-query@^1.1.0:
   resolved "https://registry.yarnpkg.com/vue-api-query/-/vue-api-query-1.1.0.tgz#2731b54f89248c9d1e73586605861b5b2c3013bb"
   integrity sha512-Ou3aUfZUJ2p0qU0vqkMsuMkEMQqv3ir7WAa9xDIXcAEH3t+FlAY473Df3rrROKzJIEMT7MXaPssaXKp8TDVW6w==
 
+vue-avatar@^2.1.7:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/vue-avatar/-/vue-avatar-2.1.7.tgz#00fca25f59ad9311159d55aacc4a98f70a23bd9d"
+  integrity sha512-1nYbgzCHPaQIN+LkOW0VH+2CrB0ljM5aiVaPtHqJ0/Uf8PnHRWLXzO3NFmXy5EPaYRjeLwnmm3ox2zac1AhBtA==
+
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-2.0.3.tgz#c268c96c6d94cfe3d938a5f7593959b0ca3360d1"
