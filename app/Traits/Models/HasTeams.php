@@ -33,7 +33,7 @@ trait HasTeams
         return $this;
     }
 
-    public function joinTeam(Team $team, $role = Role::PROFESSIONAL): self
+    public function joinTeam(Team $team, $role = Role::MEMBER): self
     {
         if ($this->onTeam($team)) {
             $this->setRoleOnTeam($role, $team);

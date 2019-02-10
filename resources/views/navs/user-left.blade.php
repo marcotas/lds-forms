@@ -9,7 +9,7 @@
     </a>
 </li>
 
-@can('manage.team.settings')
+@can('manage.team')
     <li class="site-menu-item {{ active('settings.team') }}">
         <a href="{{ route('settings.team') }}">
             <i class="fas fa-fw icon-left fa-users"></i>

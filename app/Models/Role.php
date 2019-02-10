@@ -10,20 +10,14 @@ class Role extends Model
 {
     use HasRoleAndPermissions;
 
-    const ADMIN        = 'admin';
-    const OWNER        = 'owner';
-    const PROFESSIONAL = 'professional';
-    const RECEPTIONIST = 'receptionist';
-    const CASHIER      = 'cashier';
-    const MANAGER      = 'manager';
+    const ADMIN  = 'admin';
+    const OWNER  = 'owner';
+    const MEMBER = 'member';
 
     const ALL = [
         self::ADMIN,
         self::OWNER,
-        self::PROFESSIONAL,
-        self::RECEPTIONIST,
-        self::CASHIER,
-        self::MANAGER,
+        self::MEMBER,
     ];
 
     protected $fillable = [
