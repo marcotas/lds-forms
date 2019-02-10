@@ -48,7 +48,7 @@ class Team extends Model
     public function getPhotoUrlAttribute($value)
     {
         return empty($value)
-                ? 'https://www.gravatar.com/avatar/' . md5($this->name . '@easyservice.com') . '.jpg?s=200&d=identicon'
+                ? 'https://www.gravatar.com/avatar/' . md5($this->name . '@lds-forms.com') . '.jpg?s=200&d=identicon'
                 : url($value);
     }
 
