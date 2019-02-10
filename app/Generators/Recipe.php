@@ -130,6 +130,6 @@ class Recipe
 
     public function indent(int $indented, string $string) : string
     {
-        return str_repeat(' ', $indented) . $string;
+        return "\n" . str_repeat(' ', $indented) . $string;
     }
 }

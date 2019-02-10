@@ -1,10 +1,10 @@
 <?php
-
 return [
+
     /*
      * The destination path for the javascript file.
      */
-    'path' => 'resources/js/commons',
+    'path' => 'resources/js/plugins',
 
     /*
      * The destination filename for the javascript file.
@@ -25,7 +25,7 @@ return [
     'absolute' => false,
 
     /*
-     * The Filter Method
+     * The Filter Methode
      *
      * 'all' => All routes except "'laroute' => false"
      * 'only' => Only "'laroute' => true" routes
@@ -34,7 +34,7 @@ return [
     'filter' => 'all',
 
     /*
-     * Controller Namespace
+     * Action Namespace
      *
      * Set here your controller namespace (see RouteServiceProvider -> $namespace) for cleaner action calls
      * e.g. 'App\Http\Controllers'
@@ -53,4 +53,5 @@ return [
     *
     */
     'prefix' => '',
+
 ];

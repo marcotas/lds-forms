@@ -1,0 +1,22 @@
+.nav-link.fixed-left {
+    margin-right: -1px;
+
+    &.active {
+        background: white !important;
+        border-bottom-left-radius: 0.4rem;
+        border-top-right-radius: 0;
+        border-color: #dee2e6 white #dee2e6 #dee2e6;
+    }
+    &:hover:not(.active) {
+        border-bottom-left-radius: 0.4rem !important;
+        border-top-right-radius: 0 !important;
+        border-color: #dee2e6;
+    }
+}
+
+.nav-link.white {
+    &.active {
+        background-color: white !important;
+        border-bottom-color: white !important;
+    }
+}

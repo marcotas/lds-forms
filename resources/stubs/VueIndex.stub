@@ -1,28 +1,20 @@
-<template>
-    <div>
-        <div class="row">
-            <div class="col-md-4">
-                <input-text v-model="search" left-icon="fa fa-search" input-class="border-0 shadow-sm"></input-text>
-            </div>
+<template lang="pug">
+    div
+        .row
+            .col-md-4.ml-auto.mb-3
+                a.btn.btn-primary(href='/dummy-url/create')
+                    i.fa.fa-plus
+                    |  New DummyClassTitle
+            .col-md-4.ml-auto.d-flex
+                input-text.ml-auto(v-model='search', placeholder="Search...", left-icon='fa fa-search', input-class='border-0 shadow-sm')
 
-            <div class="col-md-4 ml-auto d-flex mb-3">
-                <div class="ml-auto">
-                    <a href="/dummy-url/create" class="btn btn-primary">
-                        <i class="fa fa-plus"></i>
-                        New DummyClassTitle
-                    </a>
-                </div>
-            </div>
-        </div>
+        resource-table.border-0.shadow-sm(
+            url='/dummy-url',
+            :columns='columns',
+            :search='search',
+            :options='tableOptions',
+            default-sort='-id')
 
-        <resource-table class="border-0 shadow-sm"
-            url="/dummy-url"
-            :columns="columns"
-            :search="search"
-            :options="tableOptions"
-            default-sort="-id">
-        </resource-table>
-    </div>
 </template>
 
 <script>

@@ -2,106 +2,87 @@
 
 namespace App\Http\Controllers;
 
-use App\Filters\UsersFilters;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\Users\UserBulkDestroyRequest;
+use App\Http\Requests\Users\UserCreateRequest;
+use App\Http\Requests\Users\UserUpdateRequest;
 use App\Http\Resources\DataResource;
-use App\Http\Resources\UserResource;
-use App\Http\Traits\BulkDestroy;
+use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Spatie\QueryBuilder\Filter;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
 {
-    use BulkDestroy;
-
-    protected $model = User::class;
-
-    public function index(Request $request, UsersFilters $filters)
+    public function list(Request $request)
     {
-        $query = QueryBuilder::for(User::class)
-            ->allowedSorts('name', 'email', 'id')
-            ->allowedFields('id', 'name')
-            ->allowedFilters([
-                Filter::exact('active'),
-                Filter::exact('gender'),
-                Filter::scope('with_trashed'),
-                Filter::scope('only_trashed'),
-            ])
-            ->whereWardId($this->currentUser()->ward_id)
-            ->filters($filters)
-            ->paginate($this->perPage($request));
-
-        return DataResource::collection($query);
+        return redirect(route('admin'));
     }
 
-    public function suggestions(Request $request, UsersFilters $filters)
+    public function index(Request $request)
     {
-        return DataResource::collection(User::whereWardId($this->currentUser()->ward_id)
-            ->filters($filters)
-            ->orderBy('name')
-            ->active()
-            ->whereDoesntHave('topics', function ($topic) {
-                return $topic->future(now()->subMonth(3));
-            })
-            ->get());
-    }
-
-    public function show(Request $request, User $user)
-    {
-        return new DataResource($user);
-    }
-
-    public function store(UserRequest $request)
-    {
-        $user = User::create($request->validated());
-
-        if ($request->has('new_avatar')) {
-            $user->addMediaFromRequest('new_avatar')->toMediaCollection('avatar');
+        if (!$request->ajax()) {
+            return view('admin.users');
         }
 
-        return $user;
+        return DataResource::collection(
+            QueryBuilder::for(User::class)->search($request->search)->paginate()
+        );
     }
 
-    public function update(UserRequest $request, User $user)
+    public function create()
     {
-        $user->update($request->validated());
+        $permissions = Permission::all()->sortBy('label')->values();
 
-        if ($request->has('new_avatar')) {
-            $user->addMediaFromRequest('new_avatar')->toMediaCollection('avatar');
-        }
-
-        return $user->fresh();
+        return view('users.create', compact('permissions'));
     }
 
     public function edit(User $user)
     {
-        return view('admin.users.edit', compact('user'));
+        $user->append('specific_permissions', 'role_permissions');
+        $user->load('roles.team', 'roles.specificPermissions', 'teams');
+        $permissions = Permission::all()->sortBy('label')->values();
+
+        return view('users.edit', compact('user', 'permissions'));
+    }
+
+    public function store(UserCreateRequest $request)
+    {
+        return DB::transaction(function () use ($request) {
+            $user       = User::create($request->validated());
+            $user->role = Role::globals()->first();
+
+            return DataResource::make($user);
+        });
+    }
+
+    public function show(User $user)
+    {
+        $user->load('roles');
+
+        return DataResource::make($user);
+    }
+
+    public function update(UserUpdateRequest $request, User $user)
+    {
+        $user->update($request->validated());
+
+        return DataResource::make($user);
     }
 
     public function destroy(User $user)
     {
         $user->delete();
 
-        return response(null, Response::HTTP_NO_CONTENT);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
-    public function forceDestroy(int $id)
+    public function bulkDestroy(UserBulkDestroyRequest $request)
     {
-        $user = User::onlyTrashed()->findOrFail($id);
-        $user->forceDelete();
+        User::destroy($request->ids);
 
-        return response(null, Response::HTTP_NO_CONTENT);
-    }
-
-    public function restore(int $id)
-    {
-        $user = User::onlyTrashed()->findOrFail($id);
-        $user->restore();
-
-        return new UserResource($user->fresh());
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

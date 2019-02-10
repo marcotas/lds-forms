@@ -1,5 +1,5 @@
+
 window._ = require('lodash');
-window.Popper = require('popper.js').default;
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -8,10 +8,11 @@ window.Popper = require('popper.js').default;
  */
 
 try {
+    window.Popper = require('popper.js').default;
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
-} catch (e) {}
+} catch (e) { }
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -20,14 +21,8 @@ try {
  */
 
 window.axios = require('axios');
-window.http = axios;
-
-const qs = require('qs');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-window.axios.defaults.paramsSerializer = params => {
-    return qs.stringify(params, { arrayFormat: 'brackets' });
-}
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
@@ -59,25 +54,3 @@ if (token) {
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
-
-// window.toastr = require('toastr');
-
-import Vue from 'vue';
-import VCalendar from 'v-calendar';
-import { Form } from './utils';
-import Toasted from 'vue-toasted';
-import moment from 'moment-timezone';
-
-Vue.use(Toasted, {
-    iconPack: 'fontawesome',
-    duration: 5000,
-});
-
-Vue.use(VCalendar, {
-    locale: 'pt-br',
-});
-
-window.moment = moment;
-window.laroute = require('./commons/laroute');
-window.route = laroute.route;
-window.Form = Form;

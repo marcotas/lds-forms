@@ -64,7 +64,11 @@ class VueFilesRecipe extends Recipe
     public function getInputFields()
     {
         return $this->getFields()->map(function (Field $field) {
-            return $field->getVueFormComponent();
-        })->filter()->implode('');
+            $component = $field->createVueFormComponent();
+
+            return "\n" . str_repeat(' ', 12) . "$component";
+            // return "\n{$field->formComponent}(:form=\"form\", field=\"{$field->name}\", " .
+            //     "label=\"{$field->titleName()}\", v-model=\"form.{$field->name}\")";
+        })->implode('');
     }
 }

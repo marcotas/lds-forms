@@ -1,40 +1,27 @@
-
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
-@import url('https://use.fontawesome.com/releases/v5.5.0/css/all.css');
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
 
-
-// Other Libraries
+// Plugins
 @import '~axios-progress-bar/dist/nprogress.css';
 @import '~v-calendar/lib/v-calendar.min.css';
 
-// Application imports
+// Variables
 @import 'variables';
-@import 'components/tables';
-@import 'components/typography';
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
-@import 'effects';
+
+// App
+@import 'typography';
+@import 'tabs';
+@import 'transitions';
+@import 'site-layout';
 
 .navbar-laravel {
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
-
-.cursor-pointer {
-    cursor: pointer;
-}
-
-.avatar {
-    max-width: 2rem;
-}
-
-// Helpers
-.overflow-hidden {
-    overflow: hidden;
-}
-
 
 .nav-settings {
     @extend .mb-4;
@@ -57,4 +44,54 @@
             color: $primary;
         }
     }
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.bg-transparent {
+    background-color: transparent !important;
+}
+.bg-white-50 {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.border-transparent {
+    border-color: transparent !important;
+}
+.border-white {
+    border-color: white !important;
+}
+.border-primary {
+    border-color: $primary !important;
+}
+.opacity-50 {
+    opacity: 0.5 !important;
+}
+
+.dropdown.top-menu {
+    .dropdown-item {
+        img {
+            max-width: 20px;
+            border-radius: 20px;
+        }
+        .fa-check {
+            font-size: 16px;
+        }
+    }
+}
+
+$loaderColor: lighten($primary, 10%);
+#nprogress .bar {
+    background: $loaderColor !important;
+}
+
+#nprogress .peg {
+    box-shadow: 0 0 10px $loaderColor, 0 0 5px $loaderColor !important;
+}
+
+#nprogress .spinner-icon {
+    border-top-color: $loaderColor !important;
+    border-left-color: $loaderColor !important;
 }

@@ -1,12 +1,15 @@
 <?php
+
 return PhpCsFixer\Config::create()
     ->setRules(array(
         '@PSR2' => true,
+        'array_indentation' => true,
         'array_syntax' => array('syntax' => 'short'),
         'combine_consecutive_unsets' => true,
         'method_separation' => true,
         'no_multiline_whitespace_before_semicolons' => true,
         'single_quote' => true,
+
         'binary_operator_spaces' => array(
             'align_double_arrow' => true,
             'align_equals' => true,
@@ -16,7 +19,7 @@ return PhpCsFixer\Config::create()
         'braces' => array(
             'allow_single_line_closure' => true,
         ),
-        'cast_spaces' => true,
+        // 'cast_spaces' => true,
         // 'class_definition' => array('singleLine' => true),
         'concat_space' => array('spacing' => 'one'),
         'declare_equal_normalize' => true,
@@ -49,7 +52,7 @@ return PhpCsFixer\Config::create()
         // 'no_trailing_comma_in_list_call' => true,
         // 'no_trailing_comma_in_singleline_array' => true,
         // 'no_unneeded_control_parentheses' => true,
-        // 'no_unused_imports' => true,
+        'no_unused_imports' => true,
         'no_whitespace_before_comma_in_array' => true,
         'no_whitespace_in_blank_line' => true,
         // 'normalize_index_brace' => true,

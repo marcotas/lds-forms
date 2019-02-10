@@ -2,7 +2,6 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- CSRF Token -->
@@ -14,75 +13,59 @@
     <script src="{{ mix('js/app.js') }}" defer></script>
 
     <!-- Fonts -->
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <script>
+        window.Globals = <?php echo json_encode(\App\Globals::variables()); ?>;
+    </script>
 </head>
 <body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark-blue navbar-laravel">
-            <div class="container">
+    <div id="app" class="body-container site-menubar-smart">
+        <nav class="navbar navbar-expand site-navbar navbar-light bg-white navbar-laravel">
+            <div class="navbar-header">
+                <div class="ml-3 mt-1 d-md-none">
+                    <menu-icon v-model="sidebarVisible"></menu-icon>
+                </div>
+
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            </div>
 
+            <div class="navbar-container container-fluid">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a href="{{ route('home') }}" class="nav-link">Atas</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ route('topics.index') }}" class="nav-link">Topics</a>
-                        </li>
-                    </ul>
-
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
-                        @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                            </li>
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} <span class="caret"></span>
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a href="{{ route('admin.users.index') }}" class="dropdown-item">Users</a>
-                                    <a href="{{ route('admin.topics.index') }}" class="dropdown-item">Topics</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        Sair
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
+                        @include('navs.user-right')
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <main class="py-4" style="margin-top: 55px">
-            @yield('content')
-        </main>
+        <div class="layout-wrapper">
+            @auth
+                <div class="site-menubar" :class="{active: sidebarVisible}">
+                    <scrollable class="site-menubar-body flex-fill">
+                        <ul class="site-menu">
+                            @include('navs.user-left')
+                        </ul>
+                    </scrollable>
+
+                    <div class="site-menubar-footer d-flex align-items-center justify-content-center">
+                        @include('navs.user-left-footer')
+                    </div>
+                </div>
+            @endauth
+
+            <scrollable class="site-page flex-fill">
+                @yield('content')
+            </scrollable>
+        </div>
     </div>
 </body>
 </html>

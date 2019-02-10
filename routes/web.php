@@ -11,39 +11,67 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::view('/', 'welcome');
 
-Auth::routes();
+// Auth Routes...
+Auth::routes(['register' => false, 'verify' => true]);
+
+// Subscription Routes...
+Route::view('subscribe', 'auth.subscribe');
+Route::post('subscribe', 'Auth\SubscribeController')->name('subscribe');
+
+Route::get('home', 'HomeController@index')->name('home');
 
 Route::middleware('auth')->group(function () {
-    Route::get('home', 'HomeController@index')->name('home');
-    Route::view('atas', 'minutes.index')->name('minutes.index');
-    // Route::get('minutes', 'Web\MinutesController@index')->name('minutes.index');
-    Route::get('atas/next', 'Web\MinutesController@next')->name('minutes.next');
-    Route::get('atas/prev', 'Web\MinutesController@prev')->name('minutes.prev');
-    Route::get('atas/next-form', 'Web\MinutesController@nextForm')->name('minutes.next-form');
-    Route::get('atas/prev-form', 'Web\MinutesController@prevForm')->name('minutes.prev-form');
-    Route::get('atas/{minute}', 'Web\MinutesController@show')->name('minutes.show');
-    Route::get('atas/{minute}/form', 'Web\MinutesController@form')->name('minutes.form');
+    // Users
+    Route::put('/users/{user}/personal-info-update', 'Users\UpdatePersonalInfoController')->name('users.personal-info-update');
+    Route::put('/users/{user}/password-update', 'Users\UpdatePasswordController')->name('users.password-update');
 
-    // Recipes
-    Route::get('receitas', 'Web\RecipesController@index')->name('recipes.index');
+    // Permissions
+    Route::apiResource('permissions', 'PermissionController', ['only' => ['index']]);
 
-    // Topics
-    Route::view('topics', 'topics.agenda')->name('topics.index');
+    // Teams
+    Route::view('settings/account', 'settings.account')->name('settings.account');
+    Route::view('settings/team', 'settings.team')->name('settings.team');
+    Route::apiResource('teams', 'TeamController', ['except' => ['store']]);
+    Route::get('teams/{team}/switch', 'Teams\SwitchTeamController')->name('teams.switch');
+
+    // Users
+    Route::get('users/stop-impersonating', 'Admin\Users\ImpersonationController@stopImpersonating')
+        ->name('users.stop-impersonating');
 
     // Admin
-    Route::prefix('admin')->group(function () {
-        // Users
-        Route::view('users', 'admin.users.index')->name('admin.users.index');
-        Route::view('users/new', 'admin.users.new')->name('admin.users.new');
-        Route::get('users/{user}/edit', 'UserController@edit')->name('admin.users.edit');
+    Route::middleware('admin')->group(function () {
+        // Admin Routes
+        Route::name('admin.')->prefix('admin')->namespace('Admin')->group(function () {
+            // Teams
+            Route::apiResource('teams', 'TeamController', ['only' => ['index', 'show']]);
 
-        // Topics
-        Route::view('topics', 'admin.topics.index')->name('admin.topics.index');
-        Route::view('topics/new', 'admin.topics.new')->name('admin.topics.new');
-        Route::get('topics/{topic}/edit', 'TopicController@edit')->name('admin.topics.edit');
+            // Users
+            Route::get('users/{user}/impersonate', 'Users\ImpersonationController@impersonate')
+            ->name('users.impersonate');
+            Route::put('users/{user}/update-permissions', 'Users\UpdatePermissionsController')
+            ->name('users.update-permissions');
+        });
+
+        // Users
+        Route::get('users/roles', 'Users\GetRolesController')->name('users.roles');
+        Route::post('users/bulk-destroy', 'UserController@bulkDestroy')->name('users.bulk-destroy');
+        Route::resource('users', 'UserController');
     });
+
+    // Services
+    Route::delete('services/{service}/force', 'ServiceController@forceDestroy')->name('services.force-destroy');
+    Route::post('services/{service}/restore', 'ServiceController@restore')->name('services.restore');
+    Route::get('services', 'ServiceController@index')->name('services.index');
+    Route::apiResource('services', 'ServiceController', ['except' => ['show', 'index']]);
+
+    // Clients
+    Route::post('clients/bulk-destroy', 'ClientController@bulkDestroy')->name('clients.bulk-destroy');
+    Route::delete('clients/{client}/force', 'ClientController@forceDestroy')->name('clients.force-destroy');
+    Route::post('clients/{client}/restore', 'ClientController@restore')->name('clients.restore');
+    Route::resource('clients', 'ClientController');
+
+    // Appointment
+    Route::view('agenda', 'agenda.index')->name('agenda');
 });

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Faker\Generator as Faker;
 
 /*
@@ -14,14 +15,11 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(App\Models\User::class, function (Faker $faker) {
-    $gender = collect(['male', 'female'])->random();
-
     return [
-        'name'           => $faker->name($gender),
-        'email'          => $faker->unique()->safeEmail,
-        'gender'         => $gender,
-        'active'         => collect([true, false])->random(),
-        'password'       => bcrypt('123456'), // secret
-        'remember_token' => str_random(10),
+        'name'              => $faker->name,
+        'email'             => $faker->unique()->safeEmail,
+        'email_verified_at' => now(),
+        'password'          => '123456', // secret
+        'remember_token'    => str_random(10),
     ];
 });

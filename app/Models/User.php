@@ -2,77 +2,90 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasSecurePassword;
-use App\Traits\Filterable;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\Models\HasRoleAndPermissions;
+use App\Traits\Models\HasTeams;
+use App\Traits\Models\Searchable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\Models\Media;
 
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable implements MustVerifyEmail, HasMedia
 {
-    use Notifiable, HasApiTokens, HasMediaTrait, Filterable, SoftDeletes, HasSecurePassword;
+    use HasMediaTrait, Searchable, Notifiable, HasTeams, HasRoleAndPermissions;
 
     protected $fillable = [
+        'name', 'email', 'password', 'role', 'current_team_id',
+    ];
+
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
+
+    protected $searchableFields = [
         'name',
         'email',
-        'gender',
-        'password',
-        'active',
-        'remember_token',
-    ];
-    protected $hidden  = ['password', 'remember_token'];
-    protected $appends = ['avatar'];
-    protected $casts   = [
-        'active'     => 'boolean',
-        'updated_at' => 'datetime',
-        'created_at' => 'datetime',
-        'deleted_at' => 'datetime',
     ];
 
-    public function recipes() : HasMany
+    protected $appends = ['is_admin', 'role', 'permissions', 'photo_url'];
+
+    public function setPasswordAttribute($password)
     {
-        return $this->hasMany(Recipe::class);
+        if ($password && !is_bool($password)) {
+            $this->attributes['password'] = bcrypt($password);
+        }
     }
 
-    public function topics(): HasMany
+    public function setRoleAttribute($role)
     {
-        return $this->hasMany(Topic::class);
+        if ($this->id) {
+            $this->assignRole($role, $this->current_team);
+        }
+    }
+
+    public function getIsAdminAttribute()
+    {
+        return $this->isAn(Role::ADMIN);
     }
 
     public function registerMediaCollections()
     {
-        $this->addMediaCollection('avatar')->singleFile();
+        $this->addMediaCollection('photo')->singleFile();
     }
 
-    public function registerMediaConversions(\Spatie\MediaLibrary\Models\Media $media = null)
+    public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('thumb')
-            ->fit(Manipulations::FIT_CROP, 256, 256)
-            ->nonOptimized()
+            ->fit(Manipulations::FIT_CROP, 512, 512)
             ->nonQueued()
-            ->performOnCollections('avatar');
+            ->performOnCollections('photo');
     }
 
-    public function getAvatarAttribute()
+    public function getPhotoAttribute()
     {
-        if (!$this->hasMedia('avatar')) {
+        if (!$this->hasMedia('photo')) {
             return null;
         }
 
-        return [
-            'original' => $this->getFirstMedia('avatar')->getFullUrl(),
-            'thumb'    => $this->getFirstMedia('avatar')->getFullUrl('thumb'),
+        return (object) [
+            'original' => $this->getFirstMedia('photo')->getFullUrl(),
+            'thumb'    => $this->getFirstMedia('photo')->getFullUrl('thumb')
         ];
     }
 
-    public function scopeActive(Builder $query)
+    public function getPhotoUrlAttribute()
     {
-        return $query->whereActive(true);
+        return optional($this->photo)->thumb;
+    }
+
+    public function setRoleOnTeam($role, $team): self
+    {
+        $this->assignRole($role, $team);
+        $this->refresh();
+
+        return $this;
     }
 }

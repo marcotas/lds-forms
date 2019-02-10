@@ -1,13 +1,11 @@
 /node_modules
 /public/hot
 /public/storage
-/public/js
-/public/css
-/public/mix-manifest.json
 /storage/*.key
 /vendor
 /.idea
 /.vscode
+/nbproject
 /.vagrant
 Homestead.json
 Homestead.yaml
@@ -15,5 +13,9 @@ npm-debug.log
 yarn-error.log
 .env
 .env.testing
-
-resources/js/commons/laroute.js
+.phpunit.result.cache
+resources/js/plugins/laroute.js
+public/mix-manifest.json
+/public/js/
+/public/css/
+/public/fonts/vendor/

@@ -4,15 +4,14 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-import './bootstrap';
-import axios from 'axios';
-import Vue from 'vue';
-import ToggleButton from 'vue-js-toggle-button';
-import { loadProgressBar } from 'axios-progress-bar';
-import VueAvatar from 'vue-avatar';
+require('./bootstrap');
+require('./globals');
+require('./plugins');
+require('./filters');
+require('./directives');
+require('./components');
 
-Vue.use(ToggleButton);
-Vue.component('avatar', VueAvatar);
+window.Vue = require('vue');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -20,32 +19,39 @@ Vue.component('avatar', VueAvatar);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-window.Vue = require('vue');
+const app = new Vue({
+    el: '#app',
+    data() {
+        return {
+            sidebarVisible: false,
+        };
+    },
+    created() {
+        this.$axios.interceptors.response.use(
+            response => response,
+            error => {
+                if (error.response && error.response.status === 403) {
+                    if (error.response.status === 403) {
+                        this.$toasted.error('Você não tem permissão para executar esta operação');
+                    }
+                    if (error.response.status === 400) {
+                        this.$toasted.error('Você não pode executar esta operação');
+                    }
+                }
 
-require('./commons');
-require('./filters');
-require('./directives');
-require('./components');
-
-require('./components/table');
-require('./components/dialogs');
-require('./components/forms');
-
-// Resources
-require('./minutes');
-require('./recipes');
-require('./users');
-require('./topics');
-
-Vue.prototype.$route = window.laroute.route;
-Vue.prototype.$http = window.axios;
-Vue.prototype.$axios = axios;
-Vue.prototype.$obj_get = (obj, str) => {
-    return str.split('.').reduce((a, c) => (a ? a[c] : null), obj);
-};
-
-loadProgressBar();
-
-new Vue({
-    el: '#app'
+                return Promise.reject(error);
+            }
+        );
+    },
+    mounted() {
+        this.loadTooltips();
+    },
+    updated() {
+        this.$nextTick(() => this.loadTooltips());
+    },
+    methods: {
+        loadTooltips() {
+            $('[data-tooltip]').tooltip();
+        },
+    },
 });
