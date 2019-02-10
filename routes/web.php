@@ -59,19 +59,4 @@ Route::middleware('auth')->group(function () {
         Route::post('users/bulk-destroy', 'UserController@bulkDestroy')->name('users.bulk-destroy');
         Route::resource('users', 'UserController');
     });
-
-    // Services
-    Route::delete('services/{service}/force', 'ServiceController@forceDestroy')->name('services.force-destroy');
-    Route::post('services/{service}/restore', 'ServiceController@restore')->name('services.restore');
-    Route::get('services', 'ServiceController@index')->name('services.index');
-    Route::apiResource('services', 'ServiceController', ['except' => ['show', 'index']]);
-
-    // Clients
-    Route::post('clients/bulk-destroy', 'ClientController@bulkDestroy')->name('clients.bulk-destroy');
-    Route::delete('clients/{client}/force', 'ClientController@forceDestroy')->name('clients.force-destroy');
-    Route::post('clients/{client}/restore', 'ClientController@restore')->name('clients.restore');
-    Route::resource('clients', 'ClientController');
-
-    // Appointment
-    Route::view('agenda', 'agenda.index')->name('agenda');
 });
