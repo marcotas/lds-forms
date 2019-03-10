@@ -8,7 +8,12 @@ class TeamsTableSeeder extends Seeder
 {
     public function run()
     {
-        create(Team::class, ['name' => 'Gama I', 'owner_id' => User::find(1)]);
-        create(Team::class, ['name' => 'Gama Centro', 'owner_id' => create(User::class)]);
+        $user = User::find(1);
+        create(Team::class, ['name' => 'Gama I', 'owner_id' => $user]);
+        create(Team::class, ['name' => 'Gama Centro', 'owner_id' => $user]);
+
+        Team::each(function ($team) use ($user) {
+            $user->joinTeam($team, 'owner');
+        });
     }
 }

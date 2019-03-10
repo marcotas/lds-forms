@@ -19,6 +19,8 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+    @routes
+
     <script>
         window.Globals = <?php echo json_encode(\App\Globals::variables()); ?>;
     </script>

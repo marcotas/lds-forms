@@ -4,13 +4,14 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Traits\Generators\GenerateRecipes;
-use App\Traits\Generators\ModelFieldsArguments;
 
 class ControllerGeneratorCommand extends Command
 {
-    use GenerateRecipes, ModelFieldsArguments;
+    use GenerateRecipes;
 
-    protected $signature = 'crud:controller';
+    protected $signature = 'crud:controller
+        {name : Controller name}
+        {model : Model name}';
 
     protected $description = 'Generates a CRUD controller class with requests for eloquent model.';
 

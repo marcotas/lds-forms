@@ -2,14 +2,14 @@
 
 namespace App\Traits\Generators;
 
-trait GenerateRecipes
+trait GenerateModelRecipes
 {
-    public function makeRecipes(array $recipes)
+    public function makeModelRecipes(array $recipes)
     {
         collect($recipes)->each(function ($recipeClass) {
             $recipeClassName = collect(explode('\\', $recipeClass))->last();
             $recipeName = str_replace('-', ' ', kebab_case(str_replace('ModelRecipe', '', $recipeClassName)));
-            $recipe = new $recipeClass($this);
+            $recipe = new $recipeClass($this->model(), $this->argument('fields'), $this);
             $this->comment("Making $recipeName...");
             $result = $recipe->make();
 
@@ -22,5 +22,10 @@ trait GenerateRecipes
             }
             $this->info($result);
         });
+    }
+
+    public function model()
+    {
+        return studly_case(str_singular($this->argument('model')));
     }
 }

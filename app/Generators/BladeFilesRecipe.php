@@ -4,7 +4,7 @@ namespace App\Generators;
 
 use Illuminate\Support\Facades\File;
 
-class BladeFilesRecipe extends Recipe
+class BladeFilesRecipe extends ModelRecipe
 {
     public function make()
     {

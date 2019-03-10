@@ -2,7 +2,7 @@
 
 namespace App\Generators;
 
-class ControllerRecipe extends Recipe
+class ControllerRecipe extends ModelRecipe
 {
     public function make()
     {

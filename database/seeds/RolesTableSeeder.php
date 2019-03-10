@@ -9,26 +9,31 @@ class RolesTableSeeder extends Seeder
 {
     public function run()
     {
-        $admin = Role::create(['name' => Role::ADMIN]);
-        $admin->givePermissionTo('*');
+        Bouncer::allow('admin')->everything();
+        Bouncer::allow('bishop')->to('create', User::class);
 
-        $marco  = User::find(1);
-        $marco->assignRole(Role::ADMIN);
+        User::find(1)->assign('admin');
 
-        Team::all()->each(function (Team $team) use ($marco) {
-            $roleOwner = $team->roles()->create(['name' => Role::OWNER]);
-            $roleOwner->givePermissionTo('manage.team', $team);
+        // $admin = Role::create(['name' => Role::ADMIN]);
+        // $admin->givePermissionTo('*');
 
-            $member = $team->roles()->create(['name' => Role::MEMBER]);
+        // $marco  = User::find(1);
+        // $marco->assignRole(Role::ADMIN);
 
-            if (!$marco->onTeam($team)) {
-                $marco->joinTeam($team);
-            }
+        // Team::all()->each(function (Team $team) use ($marco) {
+        //     $roleOwner = $team->roles()->create(['name' => Role::OWNER]);
+        //     $roleOwner->givePermissionTo('manage.team', $team);
 
-            if (!$team->owner) {
-                $team->owner()->associate($marco);
-            }
-            $team->owner->joinTeam($team, Role::OWNER);
-        });
+        //     $member = $team->roles()->create(['name' => Role::MEMBER]);
+
+        //     if (!$marco->onTeam($team)) {
+        //         $marco->joinTeam($team);
+        //     }
+
+        //     if (!$team->owner) {
+        //         $team->owner()->associate($marco);
+        //     }
+        //     $team->owner->joinTeam($team, Role::OWNER);
+        // });
     }
 }

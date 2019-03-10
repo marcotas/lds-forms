@@ -38,7 +38,6 @@ export default {
 
             this.personalInfoForm = new Form(updated, 'multipart');
             this.$toasted.success('Informações pessoais atualizadas com sucesso!');
-            window.location.reload();
         },
     },
 };

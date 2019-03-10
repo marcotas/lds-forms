@@ -2,11 +2,13 @@
 
 namespace App\Generators;
 
-class RequestRecipe extends ModelRecipe
+class RequestsRecipe extends Recipe
 {
     public function make()
     {
         $created = collect();
+
+        dd('oi');
 
         $this->createDir('app/Http/Requests');
 

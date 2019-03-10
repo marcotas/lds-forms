@@ -2,46 +2,35 @@
 
 namespace App\Generators;
 
-use App\Generators\Traits\Stubs;
+use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 
 class ModelRecipe extends Recipe
 {
-    public function make()
+    /**
+     * @var \Illuminate\Database\Eloquent\Model
+     */
+    protected $model;
+
+    /**
+     * @var \Illuminate\Support\Collection
+     */
+    protected $fields;
+
+    public function __construct($model, $fields, Command $command)
     {
-        $this->createDir('app/Models');
-        $this->createDir('app/Traits/Models');
-        $created = collect();
-
-        $created->push($this->createFileFromStub(
-            'TraitSearchable',
-            null,
-            null,
-            'app/Traits/Models/Searchable.php'
-        ));
-
-        $created->push($this->createFileFromStub(
-            'Model',
-            ['DummyClass', 'DummyFillables', 'DummySearchableFields'],
-            [$this->model, $this->getFillable(), $this->getSearchableFields()],
-            "app/Models/{$this->model}.php"
-        ));
-
-        return $created;
+        parent::__construct($command);
+        $this->model   = $model;
+        $this->fields  = collect($fields);
     }
 
-    private function getFillable()
+    public function getFieldNames() : Collection
     {
-        return $this->fields->map(function ($field) {
-            list($field) = explode(':', $field);
-
-            return "\n" . str_repeat(' ', 8) . "'$field',";
-        })->implode('');
+        return $this->getFields()->map->name;
     }
 
-    public function getSearchableFields()
+    public function getFields() : Collection
     {
-        return $this->getFields()->filter->isSearchable()->map->name->map(function ($field) {
-            return "\n" . str_repeat(' ', 8) . "'$field',";
-        })->implode('');
+        return $this->fields->mapInto(Field::class);
     }
 }

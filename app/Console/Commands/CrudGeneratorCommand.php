@@ -3,12 +3,12 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Traits\Generators\GenerateRecipes;
+use App\Traits\Generators\GenerateModelRecipes;
 use App\Traits\Generators\ModelFieldsArguments;
 
 class CrudGeneratorCommand extends Command
 {
-    use GenerateRecipes, ModelFieldsArguments;
+    use GenerateModelRecipes, ModelFieldsArguments;
 
     protected $signature = 'crud:generate';
 
@@ -27,7 +27,7 @@ class CrudGeneratorCommand extends Command
 
     public function handle()
     {
-        $this->makeRecipes($this->recipes);
+        $this->makeModelRecipes($this->recipes);
         $this->info("\nCRUD for {$this->model()} created successfully.");
     }
 }

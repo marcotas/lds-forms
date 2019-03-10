@@ -37,10 +37,9 @@ export default {
 
     methods: {
         async save() {
-            const { data: team } = await this.form.save(this.$laroute('teams.index'));
+            const { data: team } = await this.form.save(route('teams.index'));
 
             this.$toasted.success('Equipe atualizada com sucesso.');
-            setTimeout(() => window.location.reload(), 1000);
         },
     },
 };

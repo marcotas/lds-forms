@@ -2,32 +2,15 @@
 
 namespace App\Generators;
 
-use App\Generators\Field;
-use Illuminate\Console\Command;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\File;
-
 class Recipe
 {
-    /**
-     * @var \Illuminate\Database\Eloquent\Model
-     */
-    protected $model;
-
-    /**
-     * @var \Illuminate\Support\Collection
-     */
-    protected $fields;
-
     /**
      * @var \Illuminate\Console\Command
      */
     protected $command;
 
-    public function __construct($model, $fields, Command $command)
+    public function __construct(Command $command)
     {
-        $this->model   = $model;
-        $this->fields  = collect($fields);
         $this->command = $command;
     }
 
@@ -76,16 +59,6 @@ class Recipe
     public function routesFile()
     {
         return base_path('routes/web.php');
-    }
-
-    public function getFieldNames() : Collection
-    {
-        return $this->getFields()->map->name;
-    }
-
-    public function getFields() : Collection
-    {
-        return $this->fields->mapInto(Field::class);
     }
 
     public function confirm(string $question, bool $default = false) : bool

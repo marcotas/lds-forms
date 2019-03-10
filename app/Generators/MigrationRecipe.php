@@ -4,7 +4,7 @@ namespace App\Generators;
 
 use App\Generators\Traits\Stubs;
 
-class MigrationRecipe extends Recipe
+class MigrationRecipe extends ModelRecipe
 {
     public function make()
     {

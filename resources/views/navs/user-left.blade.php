@@ -1,5 +1,12 @@
 <li class="site-menu-header">Principal</li>
 
+<li class="site-menu-item {{ active('settings.account') }}">
+    <a href="{{ route('settings.account') }}">
+        <i class="fa fa-fw icon-left fa-user-circle"></i>
+        {{ __('Conta') }}
+    </a>
+</li>
+
 <li class="site-menu-header">Configurações</li>
 
 <li class="site-menu-item {{ active('settings.account') }}">

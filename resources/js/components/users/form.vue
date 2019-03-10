@@ -1,5 +1,5 @@
 <template lang="pug">
-    div
+    .my-4
         .row.mb-0
             .col-md-4.mb-3
                 h3.mb-0 {{ this.resource ? 'Editar' : 'Novo' }} Usuário

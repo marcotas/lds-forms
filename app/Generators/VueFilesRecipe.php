@@ -4,7 +4,7 @@ namespace App\Generators;
 
 use Illuminate\Support\Facades\File;
 
-class VueFilesRecipe extends Recipe
+class VueFilesRecipe extends ModelRecipe
 {
     protected $componentsPath  = 'resources/js/components';
     protected $componentsIndex = 'resources/js/components/index.js';

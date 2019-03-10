@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import Laroute from './laroute';
 import axios from 'axios';
 import Toasted from 'vue-toasted';
 import moment from 'moment-timezone';
@@ -23,7 +22,7 @@ Vue.use(VueTheMask);
 
 window.moment = moment;
 window.Form = Form;
-export const laroute = Laroute.route;
+export const laroute = route;
 
 Vue.prototype.$user = Globals.user;
 Vue.prototype.$teams = Globals.teams;

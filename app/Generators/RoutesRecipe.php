@@ -4,7 +4,7 @@ namespace App\Generators;
 
 use Illuminate\Support\Facades\File;
 
-class RoutesRecipe extends Recipe
+class RoutesRecipe extends ModelRecipe
 {
     public function make()
     {
