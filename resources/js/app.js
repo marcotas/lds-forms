@@ -10,6 +10,7 @@ require('./plugins');
 require('./filters');
 require('./directives');
 require('./components');
+require('./pages');
 
 window.Vue = require('vue');
 

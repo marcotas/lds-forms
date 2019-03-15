@@ -148,5 +148,7 @@ return [
         'price'            => 'preço',
         'description'      => 'descrição',
         'phone'            => 'telefone',
+        'speaker'          => 'orador',
+        'title'            => 'título',
     ],
 ];

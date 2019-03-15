@@ -10,6 +10,7 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             TeamsTableSeeder::class,
             RolesTableSeeder::class,
+            SpeechSeeder::class,
         ]);
     }
 }

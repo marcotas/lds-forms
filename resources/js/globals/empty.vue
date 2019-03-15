@@ -22,7 +22,7 @@ export default {
         height: { default: '100%' },
         width: { default: '300px' },
         opacity: { default: 0.5 },
-        color: { default: '#6c63ff' },
+        color: { default: () => $primaryColor },
         type: { default: 'no-data' }, // no-data, security-on, swipe-profiles
     },
 };

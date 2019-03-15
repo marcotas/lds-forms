@@ -28,7 +28,13 @@ class UserController extends Controller
         }
 
         return DataResource::collection(
-            QueryBuilder::for(User::class)->search($request->search)->paginate()
+            QueryBuilder::for(User::class)
+                ->whereHas('teams', function ($team) {
+                    $team->whereId(team()->id);
+                })
+                ->search($request->search)
+                ->orderBy('name')
+                ->paginate($request->get('per_page', 15))
         );
     }
 

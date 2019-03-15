@@ -1,5 +1,5 @@
 // Body
-$body-bg: whitesmoke;
+$body-bg: #e4eaec;
 
 // Typography
 $font-family-sans-serif: 'Nunito', sans-serif;
@@ -8,6 +8,7 @@ $line-height-base: 1.6;
 
 // Colors
 $blue: #3490dc;
+$darkblue: #00364a;
 $indigo: #6574cd;
 // $purple: #9561e2;
 $purple: #9561e2;
@@ -20,11 +21,11 @@ $teal: #4dc0b5;
 $cyan: #6cb2eb;
 $grey: #e6eaec;
 
-$primary: #6c63ff;
+$primary: #0091bc;
 $danger: $red;
 $success: $green;
 $info: $cyan;
-$light: whitesmoke;
+$light: $body-bg;
 $dark: #262c3f;
 $warning: $orange;
 
@@ -35,7 +36,8 @@ $custom-checkbox-indicator-border-radius: $border-radius-sm !default;
 $yiq-contrasted-threshold: 150;
 
 $theme-colors: (
-    'default': whitesmoke,
+    'default': $body-bg,
     'grey': $grey,
     'whatsapp': #4be677,
+    'dark-blue': $darkblue,
 );

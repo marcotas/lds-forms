@@ -51,7 +51,7 @@
 
         <div class="layout-wrapper">
             @auth
-                <div class="site-menubar" :class="{active: sidebarVisible}">
+                <div class="site-menubar bg-dark-blue text-white" :class="{active: sidebarVisible}">
                     <scrollable class="site-menubar-body flex-fill">
                         <ul class="site-menu">
                             @include('navs.user-left')

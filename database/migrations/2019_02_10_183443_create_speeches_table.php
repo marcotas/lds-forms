@@ -10,13 +10,14 @@ class CreateSpeechesTable extends Migration
     {
         Schema::create('speeches', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 255);
+            $table->string('title', 255);
             $table->string('link', 255)->nullable();
             $table->unsignedInteger('duration')->nullable();
             $table->unsignedInteger('order')->nullable();
             $table->unsignedInteger('speaker_id')->nullable();
+            $table->unsignedInteger('team_id');
 
-            $table->dateTime('date')->nullable();
+            $table->date('date')->nullable();
             $table->dateTime('invited_at')->nullable();
             $table->unsignedInteger('invited_by')->nullable();
             $table->dateTime('approved_at')->nullable();
@@ -26,6 +27,7 @@ class CreateSpeechesTable extends Migration
             $table->timestamps();
 
             $table->foreign('speaker_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
             $table->foreign('invited_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('approved_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('confirmed_by')->references('id')->on('users')->onDelete('cascade');

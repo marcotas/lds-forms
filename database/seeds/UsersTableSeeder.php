@@ -8,5 +8,6 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         create(User::class, ['email' => 'marcotulio.avila@gmail.com', 'name' => 'Marco Túlio']);
+        create(User::class, [], 16);
     }
 }

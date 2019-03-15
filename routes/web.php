@@ -58,5 +58,8 @@ Route::middleware('auth')->group(function () {
         Route::get('users/roles', 'Users\GetRolesController')->name('users.roles');
         Route::post('users/bulk-destroy', 'UserController@bulkDestroy')->name('users.bulk-destroy');
         Route::resource('users', 'UserController');
+
+        // Speeches
+        Route::resource('speeches', 'SpeechController');
     });
 });

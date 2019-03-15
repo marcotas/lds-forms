@@ -10,6 +10,7 @@
             <input :type="type" class="form-control"
                    :value="value"
                    ref="input"
+                   :step="step"
                    @input="$emit('input', $event.target.value)"
                    :placeholder="placeholder"
                    :class="{ [inputClass]: inputClass, 'is-invalid': form && form.errors.has(field) }"
@@ -28,6 +29,7 @@
                 :min="min"
                 ref="input"
                 :value="value"
+                :step="step"
                 @input="$emit('input', $event.target.value)"
                 :placeholder="placeholder"
                 :class="{
@@ -86,6 +88,7 @@ export default {
         labelClass: { default: null },
         leftIcon: { default: null },
         rightIcon: { default: null },
+        step: { default: undefined },
     },
 
     methods: {

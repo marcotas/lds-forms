@@ -5,13 +5,14 @@ import moment from 'moment-timezone';
 import { loadProgressBar } from 'axios-progress-bar';
 import VCalendar from 'v-calendar';
 import VueAvatar from 'vue-avatar';
-import { Tabs, Card } from 'bootstrap-vue/es/components';
+import { Tabs, Card, Tooltip } from 'bootstrap-vue/es/components';
 import vBTooltip from 'bootstrap-vue/es/directives/tooltip/tooltip';
-import DevsquadUi, { Form } from '@elitedevsquad/ui';
+import DevsquadUi from '@elitedevsquad/ui';
 import VueRouter from 'vue-router';
 import VueTheMask from 'vue-the-mask';
 import VuePerfectScrollbar from 'vue-perfect-scrollbar';
 import 'v-calendar/lib/v-calendar.min.css';
+import Form from './form';
 
 Vue.directive('tooltip', vBTooltip);
 Vue.use(Tabs);
@@ -19,9 +20,12 @@ Vue.use(Card);
 Vue.use(DevsquadUi);
 Vue.use(VueRouter);
 Vue.use(VueTheMask);
+Vue.use(Tooltip);
 
 window.moment = moment;
+moment.locale('pt-br');
 window.Form = Form;
+window.$primaryColor = '#0091bc';
 export const laroute = route;
 
 Vue.prototype.$user = Globals.user;

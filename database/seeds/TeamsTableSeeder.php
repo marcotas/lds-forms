@@ -15,5 +15,10 @@ class TeamsTableSeeder extends Seeder
         Team::each(function ($team) use ($user) {
             $user->joinTeam($team, 'owner');
         });
+
+        $team = Team::find(1);
+        User::whereNotIn('id', [1])->each(function ($user) use ($team) {
+            $user->joinTeam($team);
+        });
     }
 }

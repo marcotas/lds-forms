@@ -14,3 +14,4 @@ Vue.component('resource-table', require('./resource-table').default);
 Vue.component('empty', require('./empty').default);
 Vue.component('site-menubar', require('./layout/site-menubar').default);
 Vue.component('menu-icon', require('./layout/menu-icon').default);
+Vue.component('spinner', require('./spinner').default);

@@ -85,10 +85,6 @@ export default {
         };
     },
 
-    mounted() {
-        console.log('mounted select 2', this.noOptions);
-    },
-
     watch: {
         value() {
             this.selected = this.value;

@@ -56,4 +56,9 @@ class Team extends Model
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
+
+    public function speeches()
+    {
+        return $this->hasMany(Speech::class);
+    }
 }

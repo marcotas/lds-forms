@@ -5,7 +5,7 @@ export default class {
     constructor(data = {}, format = 'json') {
         this.errors = new Errors();
         this.submitting = false;
-        this.__data = data;
+        this.setup(data);
         this.__multipart = format.toLowerCase() === 'multipart';
     }
 
@@ -22,6 +22,10 @@ export default class {
         for (let field in object) {
             this[field] = object[field];
         }
+    }
+
+    setup(data) {
+        this.__data = data;
     }
 
     data() {
@@ -73,6 +77,13 @@ export default class {
         }
 
         this.errors.clear();
+    }
+
+    save(url, fieldName = null) {
+        url = this.id ? `${url}/${this.id}` : url;
+        const method = this.id ? 'put' : 'post';
+
+        return this[method](url, fieldName);
     }
 
     post(url, fieldName = null) {

@@ -1,9 +1,9 @@
 <li class="site-menu-header">Principal</li>
 
-<li class="site-menu-item {{ active('settings.account') }}">
-    <a href="{{ route('settings.account') }}">
-        <i class="fa fa-fw icon-left fa-user-circle"></i>
-        {{ __('Conta') }}
+<li class="site-menu-item {{ active('speeches.index') }}">
+    <a href="{{ route('speeches.index') }}">
+        <i class="fa fa-fw icon-left fa-comment-dots"></i>
+        {{ __('Discursos') }}
     </a>
 </li>
 
