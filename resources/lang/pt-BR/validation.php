@@ -141,7 +141,7 @@ return [
         'permissions.*.id' => 'ID da permissão',
         'name'             => 'nome',
         'email'            => 'e-mail',
-        'team_name'        => 'nome da equipe',
+        'team_name'        => 'nome da ala',
         'role'             => 'perfil',
         'password'         => 'senha',
         'commission'       => 'comissão',

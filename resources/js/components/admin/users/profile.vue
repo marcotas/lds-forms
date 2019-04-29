@@ -25,7 +25,7 @@
 
         b-card.border-0.shadow-sm(no-body, v-if="user")
             b-tabs(card)
-                b-tab.mb-0.pt-1(title="Equipes", title-link-class="white")
+                b-tab.mb-0.pt-1(title="Alas", title-link-class="white")
                     .d-flex.align-items-center.mt-3(v-for="team of user.teams", :key="team.id")
                         avatar(:username="team.name", :src="team.photo_url", color="white", :size="35")
                         .ml-3

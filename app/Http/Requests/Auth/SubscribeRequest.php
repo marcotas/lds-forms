@@ -41,7 +41,7 @@ class SubscribeRequest extends FormRequest
     public function messages()
     {
         return [
-            'team_name.unique' => 'Esse usuário já é dono de uma equipe com esse nome.',
+            'team_name.unique' => 'Esse usuário já é dono de uma ala com esse nome.',
         ];
     }
 }

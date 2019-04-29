@@ -15,7 +15,7 @@
         .site-menubar-footer.d-flex.align-items-center.justify-content-center
             a.site-menubar-footer-button(href='#', v-tooltip="'Configurações'")
                 i.fa.fa-tools
-            a.site-menubar-footer-button(href='#', v-tooltip="'Equipe'")
+            a.site-menubar-footer-button(href='#', v-tooltip="'Ala'")
                 i.fa.fa-users
             a.site-menubar-footer-button(href='#', v-tooltip="'Sair'")
                 i.fa.fa-power-off

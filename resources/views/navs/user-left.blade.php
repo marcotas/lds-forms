@@ -22,7 +22,7 @@
     <li class="site-menu-item {{ active('settings.team') }}">
         <a href="{{ route('settings.team') }}">
             <i class="fas fa-fw icon-left fa-users"></i>
-            {{ __('Equipe') }}
+            {{ __('Ala') }}
         </a>
     </li>
 @endcan

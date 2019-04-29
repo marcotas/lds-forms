@@ -30,7 +30,7 @@
 
             @auth
                 <template v-if="$teams.length">
-                    <h6 class="dropdown-header">Equipes</h6>
+                    <h6 class="dropdown-header">Alas</h6>
 
                     <a class="dropdown-item" v-for="team of $teams" :key="team.id" :href="'/teams/' + team.id + '/switch'">
                         <span v-if="$team && team.id === $team.id">

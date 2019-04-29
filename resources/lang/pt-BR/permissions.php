@@ -1,7 +1,7 @@
 <?php
 return [
     '*'           => 'Todas as permissões',
-    'manage.team' => 'Gerenciar equipes',
+    'manage.team' => 'Gerenciar alas',
 
     'roles' => [
         'owner'  => 'dono',

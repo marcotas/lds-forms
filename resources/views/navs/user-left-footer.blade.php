@@ -2,7 +2,7 @@
     <i class="fa fa-tools"></i>
 </a>
 
-<a href="{{ route('settings.team') }}" v-tooltip="'Equipe'" class="site-menubar-footer-button">
+<a href="{{ route('settings.team') }}" v-tooltip="'Ala'" class="site-menubar-footer-button">
     <i class="fa fa-users"></i>
 </a>
 

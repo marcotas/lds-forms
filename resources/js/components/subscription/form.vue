@@ -6,7 +6,7 @@
                     .card-body
                         h5.card-title.mb-3 Inscrição
 
-                        input-text.row(:form="form", field="team_name", label="Nome da Equipe", v-model="form.team_name", :input-wrapper-class="inputWrapperClass", :label-class="labelClass")
+                        input-text.row(:form="form", field="team_name", label="Nome da Ala", v-model="form.team_name", :input-wrapper-class="inputWrapperClass", :label-class="labelClass")
                         input-text.row(:form="form", field="name", label="Nome", v-model="form.name", :input-wrapper-class="inputWrapperClass", :label-class="labelClass")
                         input-text.row(type="email", :form="form", field="email", label="E-mail", v-model="form.email", :input-wrapper-class="inputWrapperClass", :label-class="labelClass")
                         input-text.row(type="password", :form="form", field="password", label="Senha", v-model="form.password", :input-wrapper-class="inputWrapperClass", :label-class="labelClass")

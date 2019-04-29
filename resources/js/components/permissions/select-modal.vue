@@ -7,8 +7,8 @@
             v-model="team_id"
             :searchable="true"
             :async="false"
-            search-placeholder="Pesquisar equipes..."
-            search-empty-message="Nenhuma equipe encontrada."
+            search-placeholder="Pesquisar alas..."
+            search-empty-message="Nenhuma ala encontrada."
             @click.stop="() => null",
             :options="teams",
             placeholder="Deixe vazio para global")

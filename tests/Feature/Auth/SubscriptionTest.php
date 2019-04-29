@@ -115,14 +115,14 @@ class SubscriptionTest extends TestCase
     public function it_should_validate_team_name()
     {
         $this->assertGuest()->subscribe(['team_name' => ''])
-            ->assertJsonHasFragmentError('team_name', __('validation.required', ['attribute' => 'nome da equipe']));
+            ->assertJsonHasFragmentError('team_name', __('validation.required', ['attribute' => 'nome da ala']));
         $this->assertGuest()->subscribe(['team_name' => str_random(256)])
-            ->assertJsonHasFragmentError('team_name', 'O campo nome da equipe não pode ser superior a 255 caracteres.');
+            ->assertJsonHasFragmentError('team_name', 'O campo nome da ala não pode ser superior a 255 caracteres.');
 
         // Validates uniqueness for owner (the owner cannot be able to create a team with the same name of a team he already owns)
         $team = $this->createTeam();
         $this->assertGuest()->subscribe(['team_name' => $team->name, 'email' => $team->owner->email])
-            ->assertJsonHasFragmentError('team_name', 'Esse usuário já é dono de uma equipe com esse nome.');
+            ->assertJsonHasFragmentError('team_name', 'Esse usuário já é dono de uma ala com esse nome.');
     }
 
     /** @test */

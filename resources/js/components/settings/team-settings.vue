@@ -4,7 +4,7 @@
             .card-body
                 h5.card-title.mb-3 Informações
 
-                input-text.row(label="Nome da Equipe", v-model="form.name", input-wrapper-class="col-md-6", label-class="col-md-3 col-form-label text-md-right")
+                input-text.row(label="Nome da Ala", v-model="form.name", input-wrapper-class="col-md-6", label-class="col-md-3 col-form-label text-md-right")
 
                 .row
                     .col-md-3.offset-3
@@ -39,7 +39,7 @@ export default {
         async save() {
             const { data: team } = await this.form.save(route('teams.index'));
 
-            this.$toasted.success('Equipe atualizada com sucesso.');
+            this.$toasted.success('Ala atualizada com sucesso.');
         },
     },
 };

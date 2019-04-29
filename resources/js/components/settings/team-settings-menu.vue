@@ -1,6 +1,6 @@
 <template lang="pug">
     .nav-settings
-        h5.nav-heading Configurações da Equipe
+        h5.nav-heading Configurações da Ala
 
         .d-flex
             input-select(v-model="selectedTeamId", :options="$teams")
