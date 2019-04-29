@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Users;
 
-use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UserCreateRequest extends FormRequest
 {

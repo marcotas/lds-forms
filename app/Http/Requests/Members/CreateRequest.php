@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Requests\Teams;
+namespace App\Http\Requests\Members;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRequest extends FormRequest
+class CreateRequest extends FormRequest
 {
     public function authorize()
     {
-        return user()->can('manage.teams', team());
+        return true;
     }
 
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => 'required|max:255',
         ];
     }
 }

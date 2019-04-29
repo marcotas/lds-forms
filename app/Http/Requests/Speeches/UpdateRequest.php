@@ -16,6 +16,7 @@ class UpdateRequest extends FormRequest
         return [
             'title'      => 'required',
             'link'       => 'required|url',
+            'author'     => 'sometimes|max:255',
             'date'       => 'sometimes|nullable|date',
             'speaker_id' => 'sometimes|nullable|exists:users,id',
             'order'      => 'nullable|numeric|min:1',

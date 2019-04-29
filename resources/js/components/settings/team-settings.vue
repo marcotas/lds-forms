@@ -4,7 +4,10 @@
             .card-body
                 h5.card-title.mb-3 Informações
 
-                input-text.row(label="Nome da Ala", v-model="form.name", input-wrapper-class="col-md-6", label-class="col-md-3 col-form-label text-md-right")
+                .row
+                    label.col-md-3.col-form-label.text-md-right Nome da Ala
+                    .col-md-6
+                        input-text(v-model="form.name")
 
                 .row
                     .col-md-3.offset-3

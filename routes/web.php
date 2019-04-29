@@ -47,7 +47,10 @@ Route::middleware('auth')->group(function () {
         ->name('speeches.import-all');
     Route::resource('speeches', 'SpeechController');
 
-    Route::get('users', 'UserController@index')->name('users.index');
+    // Members
+    Route::get('members', 'MemberController@index')->name('members.index');
+    Route::post('members', 'MemberController@store')->name('members.store');
+    Route::put('members', 'MemberController@update')->name('members.update');
 
     // Admin
     Route::middleware('admin')->group(function () {
@@ -66,6 +69,6 @@ Route::middleware('auth')->group(function () {
         // Users
         Route::get('users/roles', 'Users\GetRolesController')->name('users.roles');
         Route::post('users/bulk-destroy', 'UserController@bulkDestroy')->name('users.bulk-destroy');
-        Route::resource('users', 'UserController', ['except' => ['index']]);
+        Route::resource('users', 'UserController');
     });
 });

@@ -30,13 +30,18 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         'email',
     ];
 
-    protected $appends = ['is_admin', 'permissions', 'photo_url'];
+    protected $appends = ['is_admin', 'permissions', 'photo_url', 'is_user'];
 
     public function setPasswordAttribute($password)
     {
         if ($password && !is_bool($password)) {
             $this->attributes['password'] = bcrypt($password);
         }
+    }
+
+    public function getIsUserAttribute()
+    {
+        return $this->password !== null;
     }
 
     public function getIsAdminAttribute()

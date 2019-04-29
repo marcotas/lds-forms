@@ -4,9 +4,19 @@
         .card-body
             h5.card-title Alterar Senha
 
-            input-text.row(type="password", :form="passwordForm", field="current_password", label="Senha Atual", v-model="passwordForm.current_password", input-wrapper-class="col-md-6", label-class="col-md-3 col-form-label text-md-right")
-            input-text.row(type="password", :form="passwordForm", field="password", label="Nova Senha", v-model="passwordForm.password", input-wrapper-class="col-md-6", label-class="col-md-3 col-form-label text-md-right")
-            input-text.row(type="password", :form="passwordForm", field="password_confirmation", label="Confirmar Senha", v-model="passwordForm.password_confirmation", input-wrapper-class="col-md-6", label-class="col-md-3 col-form-label text-md-right")
+            .row
+                label.col-md-3.col-form-label.text-md-right Senha Atual
+                .col-md-6
+                    input-text(type="password", :form="passwordForm", field="current_password", v-model="passwordForm.current_password")
+            .row
+                label.col-md-3.col-form-label.text-md-right Nova Senha
+                .col-md-6
+                    input-text(type="password", :form="passwordForm", field="password", v-model="passwordForm.password")
+            .row
+                label.col-md-3.col-form-label.text-md-right Confirmar Senha
+                .col-md-6
+                    input-text(type="password", :form="passwordForm", field="password_confirmation", v-model="passwordForm.password_confirmation")
+
 
             .form-group.row
                 .offset-md-3.col-md-6
@@ -37,4 +47,3 @@ export default {
     },
 };
 </script>
-

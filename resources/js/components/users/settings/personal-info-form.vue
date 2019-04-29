@@ -10,8 +10,14 @@
                             :image="personalInfoForm.photo_url",
                             :error="personalInfoForm.errors.get('new_photo')",
                             @updatePersonalInfo:error="personalInfoForm.errors.clear('new_photo')")
-            input-text.row(:form="personalInfoForm", field="name", label="Name", v-model="personalInfoForm.name", input-wrapper-class="col-md-6", label-class="col-md-3 col-form-label text-md-right")
-            input-text.row(:form="personalInfoForm", field="email", label="E-mail", v-model="personalInfoForm.email", input-wrapper-class="col-md-6", label-class="col-md-3 col-form-label text-md-right")
+            .row
+                label.col-md-3.col-form-label.text-md-right Nome
+                .col-md-6
+                    input-text(:form="personalInfoForm", field="name", v-model="personalInfoForm.name")
+            .row
+                label.col-md-3.col-form-label.text-md-right E-mail
+                .col-md-6
+                    input-text(:form="personalInfoForm", field="email", v-model="personalInfoForm.email")
 
             .form-group.row
                 .offset-md-3.col-md-6

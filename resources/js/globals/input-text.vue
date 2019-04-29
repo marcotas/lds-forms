@@ -58,17 +58,17 @@
 <style lang="sass" scoped>
 .form-group
     input.left-icon
-        padding-left: 36px
+        padding-left: 2rem
     i.left-icon
         position: absolute
-        top: 10px
+        top: 11px
         left: 10px
         opacity: 0.5
     input.right-icon
-        padding-right: 36px
+        padding-right: 2rem
     i.right-icon
         position: absolute
-        top: 10px
+        top: 11px
         right: 10px
         opacity: 0.5
 

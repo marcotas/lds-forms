@@ -13,10 +13,15 @@
                 @click="select(item)"
                 :class="{active: isSelected(item), highlighted: isCurrent(item)}"
                 style="min-height: fit-content"
-                class="list-group-item px-3 py-2 list-group-item-action tw-cursor-pointer overflow-hidden">
+                class="list-group-item px-3 py-2 list-group-item-action t-cursor-pointer overflow-hidden">
                 <slot name="option" :item="item" :selected="isSelected(item)" :highlighted="isCurrent(item)">
                     {{ item[labelBy] }}
                 </slot>
+            </li>
+
+            <li v-if="search && !options.length && allowCreate" class="list-group-item px-3 py-2 list-group-item-action t-cursor-pointer"
+                @click="onCreate">
+                <slot name="footer" :search="search">Add <b>{{ search }}</b></slot>
             </li>
         </ul>
     </div>
@@ -56,12 +61,13 @@ export default {
         placeholder: { default: null },
         trackBy: { default: 'id' },
         labelBy: { default: 'name' },
-        openOnFocus: { default: false },
+        openOnFocus: { default: true },
         closeOnSelect: { default: true },
         loading: { default: false },
         options: { default: () => [] },
         form: { default: null },
         field: { default: null },
+        allowCreate: { default: false },
     },
 
     model: {
@@ -90,6 +96,10 @@ export default {
         rightIcon() {
             if (this.loading) return 'fa fa-spinner fa-spin';
             return this.visible ? 'fa fa-angle-up' : 'fa fa-angle-down';
+        },
+
+        self() {
+            return this;
         },
     },
 
@@ -190,6 +200,10 @@ export default {
             if (this.changed) {
                 this.$emit('search', this.search);
             }
+        },
+
+        onCreate() {
+            this.$emit('create', this.search);
         },
 
         updateDisplay() {
