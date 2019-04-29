@@ -6,6 +6,7 @@ Vue.component('input-textarea', require('./input-textarea').default);
 Vue.component('input-texteditor', require('./input-texteditor').default);
 Vue.component('input-select', require('./input-select').default);
 Vue.component('input-select-2', require('./input-select-2').default);
+Vue.component('input-suggestions', require('./input-suggestions').default);
 Vue.component('select-dropdown', require('./select-dropdown').default);
 Vue.component('modal', require('./modal').default);
 Vue.component('confirmation', require('./confirmation').default);
