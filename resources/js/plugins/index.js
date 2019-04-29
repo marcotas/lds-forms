@@ -54,6 +54,7 @@ Vue.use(Toasted, {
     duration: 5000,
 });
 
+Vue.mixin({ methods: { route: window.route } });
 Vue.use(VCalendar, { locale: 'pt_BR', firstDayOfWeek: 1 });
 Vue.component('avatar', VueAvatar);
 Vue.component('scrollable', VuePerfectScrollbar);

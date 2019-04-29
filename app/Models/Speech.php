@@ -13,6 +13,8 @@ class Speech extends Model
     protected $fillable = [
         'title',
         'link',
+        'author',
+        'image_url',
         'duration',
         'order',
         'team_id',
@@ -20,14 +22,11 @@ class Speech extends Model
         'date',
         'invited_at',
         'invited_by',
-        'approved_at',
-        'approved_by',
         'confirmed_at',
         'confirmed_by',
     ];
 
     protected $dates = [
-        'approved_at',
         'invited_at',
         'confirmed_at',
         'created_at',
@@ -38,12 +37,7 @@ class Speech extends Model
         'date' => 'date:Y-m-d',
     ];
 
-    protected $with = ['speaker', 'approvedBy', 'invitedBy', 'confirmedBy'];
-
-    public function approvedBy()
-    {
-        return $this->belongsTo(User::class, 'approved_by');
-    }
+    protected $with = ['speaker', 'invitedBy', 'confirmedBy'];
 
     public function invitedBy()
     {

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use App\Services\Site;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,8 +18,12 @@ class AppServiceProvider extends ServiceProvider
             Role::class,
         ]);
 
-        Blade::if('role', function ($role) {
-            return user() && user()->isA($role);
+        Blade::if('role', function (...$roles) {
+            return user() && user()->isA(...$roles);
+        });
+
+        $this->app->singleton('site', function () {
+            return new Site();
         });
     }
 

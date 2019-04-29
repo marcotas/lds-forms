@@ -40,6 +40,15 @@ Route::middleware('auth')->group(function () {
     Route::get('users/stop-impersonating', 'Admin\Users\ImpersonationController@stopImpersonating')
         ->name('users.stop-impersonating');
 
+    // Speeches
+    Route::get('speeches/get-from-conference', 'Speeches\GetSpeechesFromConferenceController')
+        ->name('speeches.get-from-conference');
+    Route::post('speeches/import-all', 'Speeches\ImportAllController')
+        ->name('speeches.import-all');
+    Route::resource('speeches', 'SpeechController');
+
+    Route::get('users', 'UserController@index')->name('users.index');
+
     // Admin
     Route::middleware('admin')->group(function () {
         // Admin Routes
@@ -57,9 +66,6 @@ Route::middleware('auth')->group(function () {
         // Users
         Route::get('users/roles', 'Users\GetRolesController')->name('users.roles');
         Route::post('users/bulk-destroy', 'UserController@bulkDestroy')->name('users.bulk-destroy');
-        Route::resource('users', 'UserController');
-
-        // Speeches
-        Route::resource('speeches', 'SpeechController');
+        Route::resource('users', 'UserController', ['except' => ['index']]);
     });
 });

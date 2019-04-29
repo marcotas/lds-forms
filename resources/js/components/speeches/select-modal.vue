@@ -2,11 +2,11 @@
     modal(ref="modal")
         h5(slot="title") Selecione um Discurso
 
-        .card.mb-2.cursor-pointer(v-if="!fetching", v-for="speech of speeches", :key="speech.id", @click="select(speech)",
-            :class="{'border-primary': isSelected(speech)}")
-            .card-body.py-2.px-3.d-flex.align-items-center
-                span.mr-2 {{ speech.title }}
-                i.fa.fa-check.ml-auto.text-primary(v-if="isSelected(speech)")
+        speech-card(v-for="speech of speeches", :key="speech.id",
+            :speech="speech",
+            :selected="isSelected(speech)",
+            @click="select(speech)"
+            selectable)
 
         .d-flex.justify-content-center.text-black-50(v-if="fetching")
             spinner(width="1rem")
@@ -16,16 +16,20 @@
             empty(title="Não há discursos para selecionar")
 
         .d-flex.w-100(slot="footer")
-            button.btn.btn-default.mr-2(@click="create") Criar
+            button.btn.btn-default.mr-2(@click="create") Adicionar
             button.btn.btn-default.mr-2.ml-auto(@click="close") Cancelar
-            button-loading.btn.btn-primary(@click="save", :loading="selected.submitting") Salvar
+            button-loading.btn.btn-primary(@click="save", :loading="selected.submitting") Selecionar
 </template>
 
 <script>
 import ModalComponent from '@/mixins/modal-component';
+import SpeechCard from '@/components/speeches/speech-card';
 
 export default {
     mixins: [ModalComponent],
+    components: {
+        SpeechCard,
+    },
 
     data() {
         return {
@@ -48,6 +52,7 @@ export default {
         select(speech) {
             this.selected = new Form({ ...speech });
             this.selected.date = this.sunday;
+            this.selected.duration = 15;
         },
 
         isSelected(speech) {
@@ -56,8 +61,7 @@ export default {
 
         create() {
             this.close();
-            // console.log('click create sunday', this.sunday);
-            this.$emit('clickCreate', { date: this.sunday });
+            this.$emit('clickAdd', { date: this.sunday });
         },
 
         async fetchSpeeches() {

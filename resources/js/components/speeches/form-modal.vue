@@ -47,12 +47,10 @@ export default {
 
     methods: {
         setup(speech = {}) {
-            // console.log('speech in setup of form', speech);
             this.form = new Form(speech);
             this.speakers = (speech.speaker && [speech.speaker]) || [];
             this.form.order = this.form.order || 1;
-            this.form.duration = this.form.duration || 5;
-            // console.log('form', this.form.date);
+            this.form.duration = this.form.duration || 15;
             this.fetchSpeakers();
             return this;
         },
@@ -63,9 +61,13 @@ export default {
         },
 
         async fetchSpeakers() {
-            const params = { per_page: 100 };
-            const { data: users } = await this.$axios.get(route('users.index'), { params });
-            this.speakers = users.data;
+            try {
+                const params = { per_page: 100 };
+                const { data: users } = await this.$axios.get(route('users.index'), { params });
+                this.speakers = users.data;
+            } catch (error) {
+                console.log('error', error);
+            }
         },
 
         async save() {

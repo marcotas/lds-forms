@@ -18,7 +18,7 @@ class UpdateRequest extends FormRequest
             'link'       => 'required|url',
             'date'       => 'sometimes|nullable|date',
             'speaker_id' => 'sometimes|nullable|exists:users,id',
-            'order'      => 'required|numeric|min:1',
+            'order'      => 'nullable|numeric|min:1',
             'duration'   => 'required|numeric|min:5',
         ];
     }

@@ -110,6 +110,10 @@ export default class {
         return this.submit('delete', url, fieldName);
     }
 
+    get(url, fieldName = null) {
+        return this.submit('get', url, fieldName);
+    }
+
     submit(requestType, url, fieldName = null) {
         const data = fieldName ? { [fieldName]: this.data() } : this.data();
         this.submitting = true;

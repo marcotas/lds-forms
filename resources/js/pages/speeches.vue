@@ -6,6 +6,9 @@
             .text-center
                 h3.mb-0 Discursantes
                 h5.mb-0.text-muted.subtitle {{ today | date('MMMM YYYY') }}
+                button.btn.btn-default.rounded-pill.mt-2.btn-sm(@click="importSpeeches")
+                    i.fa.fa-download.mr-1
+                    | Importar
             button.btn.btn-secondary.btn-sm.ml-3.rounded-pill(v-tooltip="'Próximo Mês'", @click="nextMonth")
                 i.fa.fa-arrow-right
 
@@ -17,7 +20,7 @@
             .col-lg-4.col-sm-6.col-xl-3(v-for="(sunday, index) of sundays", :key="index")
                 .date.mb-4
                     h5.text-center {{ sunday | date }}
-                    speech-card(v-for="speech of speechesOf(sunday)", :key="speech.id", :speech="speech"
+                    speaker-card(v-for="speech of speechesOf(sunday)", :key="speech.id", :speech="speech"
                         @click="openSpeech")
                     .card.placeholder.d-flex.align-items-center.justify-content-center(v-if="speechesOf(sunday).length < 3")
                         div
@@ -26,7 +29,8 @@
                             a.text-primary.ml-1(href="#", @click.prevent="selectSpeetchFor(sunday)") Selecionar
 
         speech-form-modal(ref="form", @saved="fetchSpeeches", @clickSelect="selectSpeetchFor($event.date)")
-        speech-select-modal(ref="select", @selected="fetchSpeeches", @clickCreate="addSpeetchAt($event.date)")
+        speech-select-modal(ref="select", @selected="fetchSpeeches", @clickAdd="addSpeetchAt($event.date)")
+        speech-import-modal(ref="importSpeeches", @imported="fetchSpeeches")
 </template>
 
 <style lang="sass" scoped>
@@ -52,10 +56,11 @@
 <script>
 import SpeechFormModal from '@/components/speeches/form-modal';
 import SpeechSelectModal from '@/components/speeches/select-modal';
-import SpeechCard from '@/components/speeches/card';
+import SpeakerCard from '@/components/speeches/speaker-card';
+import SpeechImportModal from '@/components/speeches/import-modal';
 
 export default {
-    components: { SpeechFormModal, SpeechSelectModal, SpeechCard },
+    components: { SpeechFormModal, SpeechSelectModal, SpeakerCard, SpeechImportModal },
 
     props: {
         data: { default: () => [] },
@@ -134,6 +139,10 @@ export default {
             } finally {
                 this.fetching = false;
             }
+        },
+
+        importSpeeches() {
+            this.$refs.importSpeeches.open();
         },
     },
 };

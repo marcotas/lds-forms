@@ -36,12 +36,17 @@ class SpeechController extends Controller
 
     public function store(StoreRequest $request)
     {
-        return team()->speeches()->create($request->validated());
+        $order = team()->speeches()->whereDate('date', $request->date)->count() + 1;
+        $order = $request->order ?? $order;
+
+        return team()->speeches()->create(array_merge(compact('order'), $request->validated()));
     }
 
     public function update(UpdateRequest $request, Speech $speech)
     {
-        $speech->update($request->validated());
+        $order = team()->speeches()->whereDate('date', $request->date)->count() + 1;
+        $order = $speech->order ?? $order;
+        $speech->update(array_merge(compact('order'), $request->validated()));
 
         return $speech->refresh();
     }

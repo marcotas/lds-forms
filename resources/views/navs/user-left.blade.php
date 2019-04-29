@@ -1,11 +1,13 @@
 <li class="site-menu-header">Principal</li>
 
-<li class="site-menu-item {{ active('speeches.index') }}">
-    <a href="{{ route('speeches.index') }}">
-        <i class="fa fa-fw icon-left fa-comment-dots"></i>
-        {{ __('Discursos') }}
-    </a>
-</li>
+@can('manage', \App\Models\Speech::class)
+    <li class="site-menu-item {{ active('speeches.index') }}">
+        <a href="{{ route('speeches.index') }}">
+            <i class="fa fa-fw icon-left fa-comment-dots"></i>
+            {{ __('Discursos') }}
+        </a>
+    </li>
+@endcan
 
 <li class="site-menu-header">Configurações</li>
 
@@ -16,7 +18,7 @@
     </a>
 </li>
 
-@can('manage.team')
+@can('manage', team())
     <li class="site-menu-item {{ active('settings.team') }}">
         <a href="{{ route('settings.team') }}">
             <i class="fas fa-fw icon-left fa-users"></i>
@@ -25,7 +27,7 @@
     </li>
 @endcan
 
-@role('admin')
+@role('admin', 'superadmin')
     <li class="site-menu-header">Administração</li>
 
     <li class="site-menu-item {{ active('users.index') }}">

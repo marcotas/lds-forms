@@ -7,9 +7,9 @@ use App\Http\Requests\Auth\SubscribeRequest;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Bouncer;
+use App\Models\Speech;
 
 class SubscribeController extends Controller
 {
@@ -22,8 +22,15 @@ class SubscribeController extends Controller
                 'owner_id' => $user->id,
             ]);
 
+            Bouncer::allow('superadmin')->everything();
+
+            Bouncer::scope()->to($team->id);
+            Bouncer::allow('owner')->to('*', Speech::class);
+            Bouncer::allow('owner')->to('*', $team);
+
             $user->joinTeam($team, Role::OWNER);
             $user->switchToTeam($team);
+            $user->assign('owner');
 
             event(new Registered($user));
 
