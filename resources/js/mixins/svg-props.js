@@ -1,6 +1,6 @@
 export default {
     props: {
-        color: { default: '#6c63ff' },
+        color: { default: '#0091bc' },
         title: { default: 'No data' },
     },
 };

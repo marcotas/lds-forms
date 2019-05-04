@@ -9,9 +9,28 @@ use App\Models\Speech;
 use Illuminate\Support\Carbon;
 use App\Http\Requests\Speeches\StoreRequest;
 use App\Http\Requests\Speeches\UpdateRequest;
+use Illuminate\Http\Response;
 
 class SpeechController extends Controller
 {
+    public function list(Request $request)
+    {
+        $speeches = DataResource::collection(
+            QueryBuilder::for(Speech::ofTeam(team()))
+                ->orderBy('created_at', 'desc')
+                ->search($request->search)
+                ->paginate($request->get('perPage', 15))
+        );
+
+        if (request()->ajax()) {
+            return $speeches;
+        }
+
+        $speeches = $speeches->toResponse($request)->getData(true);
+
+        return view('speeches.list', compact('speeches'));
+    }
+
     public function index(Request $request)
     {
         $hasNoDate = $request->has('no-date');
@@ -44,6 +63,8 @@ class SpeechController extends Controller
 
     public function update(UpdateRequest $request, Speech $speech)
     {
+        abort_unless($speech->sameTeamOf(user()), Response::HTTP_NOT_FOUND);
+
         $order = team()->speeches()->whereDate('date', $request->date)->count() + 1;
         $order = $speech->order ?? $order;
         $speech->update(array_merge(compact('order'), $request->validated()));
@@ -53,6 +74,8 @@ class SpeechController extends Controller
 
     public function destroy(Speech $speech)
     {
+        abort_unless($speech->sameTeamOf(user()), Response::HTTP_NOT_FOUND);
+
         $speech->delete();
     }
 }

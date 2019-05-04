@@ -22,7 +22,7 @@ Route::post('subscribe', 'Auth\SubscribeController')->name('subscribe');
 
 Route::get('home', 'HomeController@index')->name('home');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     // Users
     Route::put('/users/{user}/personal-info-update', 'Users\UpdatePersonalInfoController')->name('users.personal-info-update');
     Route::put('/users/{user}/password-update', 'Users\UpdatePasswordController')->name('users.password-update');
@@ -45,7 +45,8 @@ Route::middleware('auth')->group(function () {
         ->name('speeches.get-from-conference');
     Route::post('speeches/import-all', 'Speeches\ImportAllController')
         ->name('speeches.import-all');
-    Route::resource('speeches', 'SpeechController');
+    Route::get('speeches/list', 'SpeechController@list')->name('speeches.list');
+    Route::apiResource('speeches', 'SpeechController');
 
     // Members
     Route::get('members', 'MemberController@index')->name('members.index');

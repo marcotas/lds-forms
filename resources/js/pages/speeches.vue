@@ -28,7 +28,7 @@
                             |  ou
                             a.text-primary.ml-1(href="#", @click.prevent="selectSpeetchFor(sunday)") Selecionar
 
-        speech-form-modal(ref="form", @saved="fetchSpeeches", @clickSelect="selectSpeetchFor($event.date)")
+        speech-form-modal(ref="form", @saved="fetchSpeeches", @removed="fetchSpeeches", @clickSelect="selectSpeetchFor($event.date)")
         speech-select-modal(ref="select", @selected="fetchSpeeches", @clickAdd="addSpeetchAt($event.date)")
         speech-import-modal(ref="importSpeeches", @imported="fetchSpeeches")
 </template>

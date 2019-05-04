@@ -37,6 +37,11 @@ class Speech extends Model
         'date' => 'date:Y-m-d',
     ];
 
+    protected $searchableFields = [
+        'title',
+        'author',
+    ];
+
     protected $with = ['speaker', 'invitedBy', 'confirmedBy'];
 
     public function invitedBy()

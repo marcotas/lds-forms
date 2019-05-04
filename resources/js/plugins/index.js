@@ -13,6 +13,7 @@ import VueTheMask from 'vue-the-mask';
 import VuePerfectScrollbar from 'vue-perfect-scrollbar';
 import 'v-calendar/lib/v-calendar.min.css';
 import Form from './form';
+import VueSweetalert2 from 'vue-sweetalert2';
 
 Vue.directive('tooltip', vBTooltip);
 Vue.use(Tabs);
@@ -26,8 +27,13 @@ window.moment = moment;
 moment.locale('pt-br');
 window.Form = Form;
 window.$primaryColor = '#0091bc';
+window.$dangerColor = '#ce2d4f';
 export const laroute = route;
 
+Vue.use(VueSweetalert2);
+
+Vue.prototype.$primaryColor = $primaryColor;
+Vue.prototype.$dangerColor = $dangerColor;
 Vue.prototype.$user = Globals.user;
 Vue.prototype.$teams = Globals.teams;
 Vue.prototype.$team = Globals.team;

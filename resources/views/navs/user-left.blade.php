@@ -1,10 +1,17 @@
-<li class="site-menu-header">Principal</li>
-
 @can('manage', \App\Models\Speech::class)
+    <li class="site-menu-header">Discursos</li>
+
     <li class="site-menu-item {{ active('speeches.index') }}">
         <a href="{{ route('speeches.index') }}">
-            <i class="fa fa-fw icon-left fa-comment-dots"></i>
-            {{ __('Discursos') }}
+            <i class="fa fa-fw icon-left fa-book-reader"></i>
+            {{ __('Discursantes') }}
+        </a>
+    </li>
+
+    <li class="site-menu-item {{ active('speeches.list') }}">
+        <a href="{{ route('speeches.list') }}">
+            <i class="fa fa-fw icon-left fa-list"></i>
+            {{ __('Lista') }}
         </a>
     </li>
 @endcan

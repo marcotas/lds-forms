@@ -51,8 +51,13 @@
 
         .d-flex.w-100(slot="footer")
             button.btn.btn-default.mr-2(v-if="!form.id", @click="onSelectClick") Selecionar
+            button.btn.btn-outline-danger.mr-2(v-if="form.id", @click="confirmRemove")
+                i.fa.fa-trash-alt
+                span.ml-2 Remover
             button.btn.btn-default.mr-2.ml-auto(@click="close") Cancelar
             button-loading.btn.btn-primary(@click="save", :loading="form.submitting") Salvar
+
+        confirmation(ref="confirmation", :dangerous="true")
 </template>
 
 <script>
@@ -122,6 +127,44 @@ export default {
             } finally {
                 this.creatingUser = false;
             }
+        },
+
+        async confirmRemove() {
+            try {
+                const { value: confirmed } = await this.$swal({
+                    title: 'Tem certeza?',
+                    text: 'Isto não poderá ser desfeito!',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: this.$dangerColor,
+                    confirmButtonText: 'Sim, apagar!',
+                    cancelButtonText: 'Cancelar',
+                    showLoaderOnConfirm: true,
+                    preConfirm: this.remove.bind(this),
+                });
+
+                if (confirmed) {
+                    await this.$swal({
+                        title: 'Sucesso!',
+                        text: 'Discurso removido com sucesso.',
+                        type: 'success',
+                    });
+
+                    this.close();
+                    this.$emit('removed');
+                }
+            } catch (error) {
+                console.log('error', error, error.response);
+                this.$swal({
+                    title: 'Oops!',
+                    text: 'Ocorreu um erro desconhecido. Por favor tente mais tarde',
+                    type: 'error',
+                });
+            }
+        },
+
+        async remove() {
+            await this.$axios.delete(this.route('speeches.destroy', this.form));
         },
     },
 };

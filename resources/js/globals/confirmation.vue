@@ -27,10 +27,10 @@
 <script>
 export default {
     props: {
-        title: { default: 'Confirmation' },
-        message: { default: 'Are you sure you want to perform this action?' },
-        yesLabel: { default: "Yes, I'm sure" },
-        noLabel: { default: "No, I'm not" },
+        title: { default: 'Confirmação' },
+        message: { default: 'Tem ceteza que deseja realizar esta operação?' },
+        yesLabel: { default: 'Sim' },
+        noLabel: { default: 'Não' },
         async: { default: true },
         dangerous: { default: false },
     },

@@ -12,10 +12,11 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
+use Illuminate\Auth\MustVerifyEmail as VerifyEmail;
 
 class User extends Authenticatable implements MustVerifyEmail, HasMedia
 {
-    use HasMediaTrait, Searchable, Notifiable, HasTeams, HasRolesAndAbilities;
+    use HasMediaTrait, Searchable, Notifiable, HasTeams, HasRolesAndAbilities, VerifyEmail;
 
     protected $fillable = [
         'name', 'email', 'password', 'role', 'current_team_id',

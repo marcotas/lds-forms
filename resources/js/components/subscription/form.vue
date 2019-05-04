@@ -6,15 +6,30 @@
                     .card-body
                         h5.card-title.mb-3 Inscrição
 
-                        input-text.row(:form="form", field="team_name", label="Nome da Ala", v-model="form.team_name", :input-wrapper-class="inputWrapperClass", :label-class="labelClass")
-                        input-text.row(:form="form", field="name", label="Nome", v-model="form.name", :input-wrapper-class="inputWrapperClass", :label-class="labelClass")
-                        input-text.row(type="email", :form="form", field="email", label="E-mail", v-model="form.email", :input-wrapper-class="inputWrapperClass", :label-class="labelClass")
-                        input-text.row(type="password", :form="form", field="password", label="Senha", v-model="form.password", :input-wrapper-class="inputWrapperClass", :label-class="labelClass")
-                        input-text.row(type="password", :form="form", field="password_confirmation", label="Confirmar Senha", v-model="form.password_confirmation", :input-wrapper-class="inputWrapperClass", :label-class="labelClass")
+                        .form-group.row
+                            label.form-label.col-md-4.text-md-right.mb-0.mt-2 Nome da Ala
+                            .col-md-6
+                                input-text.mb-0(:form="form", field="team_name", v-model="form.team_name")
+                        .form-group.row
+                            label.form-label.col-md-4.text-md-right.mb-0.mt-2 Nome
+                            .col-md-6
+                                input-text.mb-0(:form="form", field="name", v-model="form.name")
+                        .form-group.row
+                            label.form-label.col-md-4.text-md-right.mb-0.mt-2 E-mail
+                            .col-md-6
+                                input-text.mb-0(type="email", :form="form", field="email", v-model="form.email")
+                        .form-group.row
+                            label.form-label.col-md-4.text-md-right.mb-0.mt-2 Senha
+                            .col-md-6
+                                input-text.mb-0(type="password", :form="form", field="password", v-model="form.password")
+                        .form-group.row
+                            label.form-label.col-md-4.text-md-right.mb-0.mt-2 Confirmar Senha
+                            .col-md-6
+                                input-text.mb-0(type="password", :form="form", field="password_confirmation", v-model="form.password_confirmation")
 
                         .form-group.row.mb-0
                             .col-md-6.offset-md-4
-                                button-loading.btn.btn-primary(@click="subscribe" :loading="form.submitting") Inscrever-me
+                                button-loading.btn.btn-primary(@click.mt-2="subscribe" :loading="form.submitting") Inscrever-me
 </template>
 
 <script>
