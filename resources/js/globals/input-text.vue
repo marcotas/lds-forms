@@ -8,18 +8,19 @@
             </div>
 
             <input :type="type" ref="input"
-                   :value="value"
-                   :min="min"
-                   :minlength="minlength"
-                   :max="max"
-                   :maxlength="maxlength"
-                   @focus="$emit('focus', $event)"
-                   @blur="$emit('blur', $event)"
-                   @input="$emit('input', $event.target.value)"
-                   :placeholder="placeholder"
-                   :class="{ [inputClass]: inputClass, 'is-invalid': (form && form.errors.has(field)) || hasError }"
-                   :disabled="disabled"
-                   :readonly="readonly">
+                :value="value"
+                :min="min"
+                :minlength="minlength"
+                :max="max"
+                :maxlength="maxlength"
+                :step="step"
+                @focus="$emit('focus', $event)"
+                @blur="$emit('blur', $event)"
+                @input="$emit('input', $event.target.value)"
+                :placeholder="placeholder"
+                :class="{ [inputClass]: inputClass, 'is-invalid': (form && form.errors.has(field)) || hasError }"
+                :disabled="disabled"
+                :readonly="readonly">
 
             <div class="input-group-append" v-if="groupAppend">
                 <span class="input-group-text">{{ groupAppend }}</span>
@@ -35,6 +36,7 @@
                 :max="max"
                 :maxlength="maxlength"
                 :value="value"
+                :step="step"
                 @focus="$emit('focus', $event)"
                 @blur="$emit('blur', $event)"
                 @input="$emit('input', $event.target.value)"
@@ -93,6 +95,7 @@ export default {
         minlength: { default: null },
         max: { default: null },
         maxlength: { default: null },
+        step: { default: null },
         placeholder: { default: null },
         form: { default: null },
         field: { default: null },

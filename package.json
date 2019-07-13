@@ -26,13 +26,14 @@
         "sass-loader": "7.*",
         "tailwindcss": "^0.7.4",
         "vue": "^2.6.10",
+        "vue-clipboard2": "^0.3.0",
         "vue-template-compiler": "^2.6.10",
         "vue-toasted": "^1.1.25"
     },
     "dependencies": {
         "@elitedevsquad/ui": "^0.0.9",
         "axios-progress-bar": "^1.2.0",
-        "bootstrap-vue": "^2.0.0-rc.14",
+        "bootstrap-vue": "^2.0.0-rc.26",
         "v-calendar": "^0.9.7",
         "vue-avatar": "^2.1.7",
         "vue-perfect-scrollbar": "^0.1.0",

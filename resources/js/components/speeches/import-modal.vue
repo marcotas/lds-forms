@@ -16,7 +16,7 @@
         .w-100.d-flex(slot="footer")
             button.btn.btn-default.mr-auto(@click="clear") Limpar Todos
             button.btn.btn-default.ml-2(@click="close") Cancelar
-            button.btn.btn-primary.ml-2(@click="importAll") Importar ({{ form.speeches.length }})
+            button-loading.btn.btn-primary.ml-2(@click="importAll", :loading="importing") Importar ({{ form.speeches.length }})
 </template>
 
 <style lang="sass" scoped>
@@ -51,6 +51,7 @@ export default {
     data() {
         return {
             form: new Form({ link: 'https://www.lds.org/general-conference?lang=por', speeches: [] }),
+            importing: false,
         };
     },
 
@@ -61,14 +62,19 @@ export default {
         },
 
         async importAll() {
-            const { data: speeches } = await this.form.post(route('speeches.import-all'));
-            this.$emit('imported');
-            this.close();
+            try {
+                this.importing = true;
+                const { data: speeches } = await this.form.post(route('speeches.import-all'));
+                this.$emit('imported');
+                this.close();
+                this.$toasted.show('Discursos importados com sucesso');
+            } finally {
+                this.importing = false;
+            }
         },
 
         remove(speech) {
             this.form.speeches.splice(this.form.speeches.indexOf(speech), 1);
-            // this.form.speeches = this.form.speeches.filter(s => s.link !== speech.link);
         },
 
         clear() {

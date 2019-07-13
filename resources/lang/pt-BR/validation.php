@@ -150,5 +150,6 @@ return [
         'phone'            => 'telefone',
         'speaker'          => 'orador',
         'title'            => 'título',
+        'gender'           => 'sexo',
     ],
 ];

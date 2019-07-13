@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Resources\DataResource;
-use Spatie\QueryBuilder\QueryBuilder;
-use App\Models\Speech;
-use Illuminate\Support\Carbon;
 use App\Http\Requests\Speeches\StoreRequest;
 use App\Http\Requests\Speeches\UpdateRequest;
+use App\Http\Resources\DataResource;
+use App\Models\Speech;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class SpeechController extends Controller
 {
@@ -58,7 +58,28 @@ class SpeechController extends Controller
         $order = team()->speeches()->whereDate('date', $request->date)->count() + 1;
         $order = $request->order ?? $order;
 
-        return team()->speeches()->create(array_merge(compact('order'), $request->validated()));
+        $speech = team()->speeches()->create(array_merge(
+            compact('order'),
+            collect($request->validated())->except('invited_at', 'confirmed_at')->toArray()
+        ));
+
+        if (false === $request->invited_at) {
+            $speech->update(['invited_at' => null, 'invited_by' => null]);
+        }
+
+        if (false === $request->confirmed_at) {
+            $speech->update(['confirmed_at' => null, 'confirmed_by' => null]);
+        }
+
+        if (true === $request->invited_at && !$speech->invitedBy) {
+            $speech->update(['invited_at' => now(), 'invited_by' => user()->id]);
+        }
+
+        if (true === $request->confirmed_at && !$speech->confirmedBy) {
+            $speech->update(['confirmed_at' => now(), 'confirmed_by' => user()->id]);
+        }
+
+        return $speech;
     }
 
     public function update(UpdateRequest $request, Speech $speech)
@@ -67,7 +88,26 @@ class SpeechController extends Controller
 
         $order = team()->speeches()->whereDate('date', $request->date)->count() + 1;
         $order = $speech->order ?? $order;
-        $speech->update(array_merge(compact('order'), $request->validated()));
+        $speech->update(array_merge(
+            compact('order'),
+            collect($request->validated())->except('invited_at', 'confirmed_at')->toArray()
+        ));
+
+        if (false === $request->invited_at) {
+            $speech->update(['invited_at' => null, 'invited_by' => null]);
+        }
+
+        if (false === $request->confirmed_at) {
+            $speech->update(['confirmed_at' => null, 'confirmed_by' => null]);
+        }
+
+        if (true === $request->invited_at && !$speech->invitedBy) {
+            $speech->update(['invited_at' => now(), 'invited_by' => user()->id]);
+        }
+
+        if (true === $request->confirmed_at && !$speech->confirmedBy) {
+            $speech->update(['confirmed_at' => now(), 'confirmed_by' => user()->id]);
+        }
 
         return $speech->refresh();
     }

@@ -120,7 +120,6 @@ export default {
         },
 
         addSpeetchAt(sunday) {
-            console.log('add speech', sunday);
             this.$refs.form.setup({ date: moment(sunday).format('YYYY-MM-DD') }).open();
         },
 

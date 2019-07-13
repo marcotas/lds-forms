@@ -18,6 +18,10 @@
                 label.col-md-3.col-form-label.text-md-right E-mail
                 .col-md-6
                     input-text(:form="personalInfoForm", field="email", v-model="personalInfoForm.email")
+            .row.mb-3
+                label.col-md-3.col-form-label.text-md-right Sexo
+                .col-md-6
+                    .my-2.text-muted.text-capitalize {{ personalInfoForm.gender | gender }}
 
             .form-group.row
                 .offset-md-3.col-md-6

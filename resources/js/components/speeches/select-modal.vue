@@ -13,7 +13,7 @@
                 span.ml-2 Carregando...
 
         div.text-center(v-if="!fetching && !speeches.length")
-            empty(title="Não há discursos para selecionar")
+            empty(title="Não há discursos para selecionar", style="max-width: 200px")
 
         .d-flex.w-100(slot="footer")
             button.btn.btn-default.mr-2(@click="create") Adicionar

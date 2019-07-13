@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Traits\Models\Searchable;
 use App\Traits\Models\BelongsToTeam;
+use App\Traits\Models\Searchable;
+use Illuminate\Database\Eloquent\Model;
 
 class Speech extends Model
 {

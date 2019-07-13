@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Faker\Generator as Faker;
 
 /*
@@ -15,10 +14,13 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(App\Models\User::class, function (Faker $faker) {
+    $gender = array_random(['male', 'female']);
+
     return [
-        'name'              => $faker->name,
+        'name'              => $faker->name($gender),
         'email'             => $faker->unique()->safeEmail,
         'email_verified_at' => now(),
+        'gender'            => $gender,
         'password'          => '123456', // secret
         'remember_token'    => str_random(10),
     ];

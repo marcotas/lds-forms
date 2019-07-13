@@ -5,7 +5,7 @@ import moment from 'moment-timezone';
 import { loadProgressBar } from 'axios-progress-bar';
 import VCalendar from 'v-calendar';
 import VueAvatar from 'vue-avatar';
-import { Tabs, Card, Tooltip } from 'bootstrap-vue/es/components';
+import BootstrapVue from 'bootstrap-vue'
 import vBTooltip from 'bootstrap-vue/es/directives/tooltip/tooltip';
 import DevsquadUi from '@elitedevsquad/ui';
 import VueRouter from 'vue-router';
@@ -14,14 +14,15 @@ import VuePerfectScrollbar from 'vue-perfect-scrollbar';
 import 'v-calendar/lib/v-calendar.min.css';
 import Form from './form';
 import VueSweetalert2 from 'vue-sweetalert2';
+import VueClipboard from 'vue-clipboard2';
+
+Vue.use(VueClipboard);
+Vue.use(BootstrapVue)
 
 Vue.directive('tooltip', vBTooltip);
-Vue.use(Tabs);
-Vue.use(Card);
 Vue.use(DevsquadUi);
 Vue.use(VueRouter);
 Vue.use(VueTheMask);
-Vue.use(Tooltip);
 
 window.moment = moment;
 moment.locale('pt-br');

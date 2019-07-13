@@ -18,8 +18,15 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
 {
     use HasMediaTrait, Searchable, Notifiable, HasTeams, HasRolesAndAbilities, VerifyEmail;
 
+    const GENDERS = ['male', 'female'];
+
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'current_team_id',
+        'name',
+        'email',
+        'password',
+        'role',
+        'current_team_id',
+        'gender'
     ];
 
     protected $hidden = [

@@ -27,14 +27,15 @@ class SubscribeRequest extends FormRequest
                         return $team->where('owner_id', optional($existingUser)->id);
                     }),
             ],
-            'name'      => 'required|max:255',
-            'email'     => [
+            'name'  => 'required|max:255',
+            'email' => [
                 'required',
                 'email',
                 'max:255',
                 Rule::unique('users', 'email'),
             ],
-            'password'  => 'required|min:6|confirmed'
+            'gender'   => 'required|in:male,female',
+            'password' => 'required|min:6|confirmed'
         ];
     }
 

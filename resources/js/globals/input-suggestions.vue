@@ -38,15 +38,11 @@
     transition: .3s ease
     opacity: 0
     perspective: 1000px
-    transform: rotateX(-90deg)
-    transform-origin: top left
-    transform-style: preserve-3d
-    will-change: transform, opacity
+    will-change: opacity
     z-index: 99
     &.visible
         opacity: 1
         visibility: visible
-        transform: rotateX(0deg)
     .highlighted:not(.active)
         background-color: #eee
 </style>
@@ -97,15 +93,12 @@ export default {
             if (this.loading) return 'fa fa-spinner fa-spin';
             return this.visible ? 'fa fa-angle-up' : 'fa fa-angle-down';
         },
-
-        self() {
-            return this;
-        },
     },
 
     watch: {
         value() {
             this.updateDisplay();
+            console.log('value changed');
         },
 
         options() {
@@ -207,7 +200,7 @@ export default {
         },
 
         updateDisplay() {
-            if (!this.value) return;
+            if (!this.value) return (this.selected = null);
 
             const id = this.objectValue ? this.value[this.trackBy] : this.value;
             this.selected = this.options.find(op => op[this.trackBy] === id);
