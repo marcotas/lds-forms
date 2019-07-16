@@ -38,7 +38,7 @@
         "vue-avatar": "^2.1.7",
         "vue-perfect-scrollbar": "^0.1.0",
         "vue-router": "^3.0.2",
-        "vue-sweetalert2": "^1.6.4",
+        "vue-sweetalert2": "^2.1.1",
         "vue-the-mask": "^0.11.1"
     }
 }
