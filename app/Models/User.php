@@ -3,8 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Models\HasTeams;
-use App\Traits\Models\Searchable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Image\Manipulations;
@@ -12,11 +11,27 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
-use Illuminate\Auth\MustVerifyEmail as VerifyEmail;
+// use Illuminate\Auth\MustVerifyEmail as VerifyEmail;
+use MarcoT89\Bullet\Traits\Searchable;
 
-class User extends Authenticatable implements MustVerifyEmail, HasMedia
+/**
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property int $current_team_id
+ * @property string $gender
+ * @property mix $photo
+ * @property string $photo_url
+ * @property bool $is_admin
+ * @property bool $is_user
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon $email_verified_at
+ * @property \Illuminate\Support\Carbon $phone_verified_at
+ */
+class User extends Authenticatable implements HasMedia
 {
-    use HasMediaTrait, Searchable, Notifiable, HasTeams, HasRolesAndAbilities, VerifyEmail;
+    use HasMediaTrait, Searchable, Notifiable, HasTeams, HasRolesAndAbilities;
 
     const GENDERS = ['male', 'female'];
 
@@ -24,9 +39,8 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         'name',
         'email',
         'password',
-        'role',
         'current_team_id',
-        'gender'
+        'gender',
     ];
 
     protected $hidden = [
@@ -36,9 +50,17 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     protected $searchableFields = [
         'name',
         'email',
+        'phone',
     ];
 
     protected $appends = ['is_admin', 'permissions', 'photo_url', 'is_user'];
+
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'email_verified_at',
+        'phone_verified_at',
+    ];
 
     public function setPasswordAttribute($password)
     {

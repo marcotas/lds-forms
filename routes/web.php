@@ -1,4 +1,5 @@
 <?php
+use MarcoT89\Bullet\Facades\Bullet;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,9 +50,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::apiResource('speeches', 'SpeechController');
 
     // Members
-    Route::get('members', 'MemberController@index')->name('members.index');
-    Route::post('members', 'MemberController@store')->name('members.store');
-    Route::put('members', 'MemberController@update')->name('members.update');
+    Bullet::namespace('Resources');
 
     // Admin
     Route::middleware('admin')->group(function () {

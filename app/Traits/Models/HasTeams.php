@@ -49,6 +49,17 @@ trait HasTeams
         return $this;
     }
 
+    public function leaveTeam(Team $team): self
+    {
+        if (!$this->onTeam($team)) {
+            return $this;
+        }
+
+        $this->teams()->detach($team->id);
+
+        return $this;
+    }
+
     public function switchToTeam($team)
     {
         if (!$this->onTeam($team)) {

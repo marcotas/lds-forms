@@ -5,8 +5,8 @@ import moment from 'moment-timezone';
 import { loadProgressBar } from 'axios-progress-bar';
 import VCalendar from 'v-calendar';
 import VueAvatar from 'vue-avatar';
-import BootstrapVue from 'bootstrap-vue'
-import vBTooltip from 'bootstrap-vue/es/directives/tooltip/tooltip';
+import BootstrapVue from 'bootstrap-vue';
+import vBTooltip from 'bootstrap-vue';
 import DevsquadUi from '@elitedevsquad/ui';
 import VueRouter from 'vue-router';
 import VueTheMask from 'vue-the-mask';
@@ -17,7 +17,7 @@ import VueSweetalert2 from 'vue-sweetalert2';
 import VueClipboard from 'vue-clipboard2';
 
 Vue.use(VueClipboard);
-Vue.use(BootstrapVue)
+Vue.use(BootstrapVue);
 
 Vue.directive('tooltip', vBTooltip);
 Vue.use(DevsquadUi);
@@ -31,7 +31,10 @@ window.$primaryColor = '#0091bc';
 window.$dangerColor = '#ce2d4f';
 export const laroute = route;
 
-Vue.use(VueSweetalert2);
+const options = {
+    confirmButtonColor: $primaryColor,
+};
+Vue.use(VueSweetalert2, options);
 
 Vue.prototype.$primaryColor = $primaryColor;
 Vue.prototype.$dangerColor = $dangerColor;
@@ -61,7 +64,28 @@ Vue.use(Toasted, {
     duration: 5000,
 });
 
-Vue.mixin({ methods: { route: window.route } });
+Vue.mixin({
+    methods: {
+        route: window.route,
+        async $confirm({ title, text } = {}) {
+            title = title || (title !== false ? 'Tem ceteza que deseja realizar esta operação?' : null);
+            const html = text;
+
+            const response = await this.$swal({
+                title,
+                html,
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim',
+                cancelButtonText: 'Não',
+                cancelButtonColor: $dangerColor,
+                reverseButtons: true,
+            });
+
+            return response.value || false;
+        },
+    },
+});
 Vue.use(VCalendar, { locale: 'pt_BR', firstDayOfWeek: 1 });
 Vue.component('avatar', VueAvatar);
 Vue.component('scrollable', VuePerfectScrollbar);
