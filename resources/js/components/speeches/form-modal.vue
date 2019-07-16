@@ -88,7 +88,9 @@
                         | Desde já agradecemos por seu apoio e dedicação em servir na casa do Senhor.
                         br
                         br
-                        | "Os anjos falam pelo poder do Espírito Santo; falam, portanto, as palavras de Cristo. Por isto eu vos disse: Banqueteai-vos com as palavras de Cristo; pois eis que as palavras de Cristo vos dirão todas as coisas que deveis fazer." 2 Néfi 32:3
+                        | "Os anjos falam pelo poder do Espírito Santo; falam, portanto, as palavras de Cristo. Por isto eu vos disse: Banqueteai-vos com as palavras de Cristo; pois eis que as palavras de Cristo vos dirão todas as coisas que deveis fazer."
+                        br
+                        | 2 Néfi 32:3
                         br
                         br
                         | Podemos contar com sua ajuda?
@@ -220,9 +222,9 @@
                 try {
                     this.creatingUser = true;
                     const { data: user } = await this.$axios.post(route('members.store'), { name });
-                    this.speakers = [user];
-                    this.form.speaker_id = user.id;
-                    this.$refs.speakerSuggestions.select(user);
+                    this.speakers = [user.data];
+                    this.form.speaker_id = user.data.id;
+                    this.$refs.speakerSuggestions.select(user.data);
                     this.$refs.speakerSuggestions.close();
                 } finally {
                     this.creatingUser = false;
