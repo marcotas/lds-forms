@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use App\Models\Menu;
 use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
