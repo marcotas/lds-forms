@@ -16,7 +16,7 @@
         "laravel-mix-tailwind": "^0.1.0",
         "lodash": "^4.17.19",
         "moment": "^2.22.2",
-        "moment-timezone": "^0.5.23",
+        "moment-timezone": "^0.5.35",
         "popper.js": "^1.14.6",
         "pug": "^2.0.3",
         "pug-plain-loader": "^1.0.0",
